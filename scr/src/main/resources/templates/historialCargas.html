@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('bandeja.detalle.title')}"></title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<fieldset>
+				<div class="col-md-12 espaciado-superior">
+					<div class="col-md-12">
+						<font size="4" th:text="${today}">
+						</font>
+					</div>
+					<div class="col-md-12 espaciado-superior" style="text-align: center;">
+						<font size="5" th:text="${#messages.msg('estatus.carga.title')}"></font>
+					</div>
+				</div>
+			</fieldset>
+
+			<div class="panel-heading">
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+					<form th:action="@{/bandejaCaudales}" role="form">
+						<button type="submit" class="btn btn-info">
+							<span class="glyphicon glyphicon-chevron-left"></span>
+							<div style="display: inherit;" th:text="${#messages.msg('estatus.carga.btn.regresar')}"></div>
+						</button>
+					</form>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+
+		</div>
+		
+		<div class="panel  espaciado-superior">
+			<div class="container_12">
+				<div th:replace="historialCargasTable :: resultsList" class="grid_10 height800" id="idTipoProcesoTable"></div>
+			</div>
+		</div>
+		<script type="text/javascript" th:src="@{/js/historialCargas.js}"></script>
+	</div>
+	
+</body>
+
+</html>

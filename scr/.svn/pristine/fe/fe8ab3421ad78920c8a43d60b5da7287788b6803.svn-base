@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('form312.Home.subtitulo')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+		
+		<h3 class="text-center" th:text="${#messages.msg('form312.Home.subtitulo')}"></h3>
+		
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			
+			<form name="frmReporteGrafico" id="frmReporteGrafico"  action="#" method="post"
+			      class="form-horizontal" role="form">
+				<fieldset>					
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+						    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-right no-padding" th:text="${#messages.msg('formulario314.Home.metodoEnsayo')}"></label>
+						    <div class="col-md-2 col-sm-2 col-xs-2">
+						         <select class="form-control" id="cboTipoEnsayo" name="cboTipoEnsayo" style="height: 33px;"></select>
+<!-- 							     <input type="hidden" id="cboTipoEnsayoHidden" th:value="*{tipoEnsayo}" /> -->
+						    </div>
+							<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right no-padding" th:text="${#messages.msg('formulario314.fechaInicio')}"></label>
+							<div class="col-md-2 col-sm-2 col-xs-2">                    		   
+			                    <input type="text" id="fechaIni"  class="form-control fondo-blanco"  readonly="readonly"
+								       style="text-align: center;" maxlength="20" />
+															
+								<input type="hidden" value="" id="idcabeceraHidden"/>
+							</div>
+							
+							<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right no-padding" th:text="${#messages.msg('formulario314.fechaFin')}"></label>
+							<div class="col-md-2 col-sm-2 col-xs-2">                    		   
+			                    <input type="text" id="fechaFin"  class="form-control fondo-blanco" readonly="readonly"
+								       style="text-align: center;" maxlength="20" />
+								
+								<input type="hidden" value="" id="idcabeceraHidden"/>
+							</div>
+						</div>
+					</div>					
+				</fieldset>
+			</form>
+		</div>
+		
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+					
+				</div>
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-right">
+					
+					<button type="button" id="idBtnBuscarFormulario" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span><label th:text="${#messages.msg('tipoProceso.buscar')}"></label></button>
+				</div>
+				<div class="clearfix"></div>
+			</div>			
+			<div class="container_12">
+				<div th:replace="formulario312/formulario312Table :: resultsList" class="grid_10 height800" id="idFormulario314Table"></div>
+			</div>		
+			
+			<fieldset class="espaciado-superior col-md-12 col-sm-12 col-xs-12" hidden="true" th:fragment="buttons">
+				<button type="button" id="idBtnCalculo" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span><label th:text="${#messages.msg('formulario314.calcular')}"></label></button>
+			</fieldset>
+			
+			<fieldset class="espaciado-superior2 col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+				<p class="main_heading">
+					<legend th:text="${#messages.msg('formulario312.calculo.titulo')}"></legend>
+				</p>
+			</fieldset>	
+			
+			<fieldset class="espaciado-superior col-md-12 col-sm-12 col-xs-12" style="width: 100%!important" th:fragment="buttons">
+				<div class="container_12">
+					<div th:replace="formulario314/formulario314CalculoTable :: resultsList" class="grid_10 height800" id="idCalculoFormulario314Table"></div>
+				</div>
+			</fieldset>	
+			
+		</div>
+
+		<div class="panel">
+			<div class="clear"></div>
+				<fieldset class="espaciado-superior2 col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+					<p class="main_heading">
+						<legend th:text="${#messages.msg('formulario312.reporte.titulo')}"></legend>
+					</p>
+				</fieldset>				
+				
+				<div id="wrap_chart_plot_02" class="container_12 espaciado-superior" >
+					<fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<div id="chart_plot_02" class="demo-placeholder"></div>
+						<div id="legendContainer"></div>  
+					</fieldset>
+				</div>
+				
+				<script type="text/javascript" th:src="@{/js/jquery.flot.js}"></script>
+				<script type="text/javascript" th:src="@{/js/jquery.flot.time.js}"></script>
+				<script type="text/javascript" th:src="@{/js/jquery.flot.symbol.js}"></script>
+				<script type="text/javascript" th:src="@{/js/jquery.flot.resize.js}"></script>
+				<script type="text/javascript" th:src="@{/js/jquery.flot.axislabels.js}"></script>
+				<script type="text/javascript" th:src="@{/js/formulario312.js}"></script>
+								
+		</div>
+		
+		
+		
+	</div>
+</body>
+</html>

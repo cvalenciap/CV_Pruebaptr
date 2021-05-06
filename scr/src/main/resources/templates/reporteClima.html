@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('reporte.clima.title')}"></title>
+<link rel="stylesheet" th:href="@{/css/bootstrap-multiselect.css}" />
+<style type="text/css">
+.demo-placeholder {
+    height: 280px
+}
+</style>
+</head>
+<body>
+	<div layout:fragment="content">
+	
+		<h3 class="text-center" th:text="${#messages.msg('reporte.clima.home')}"></h3>
+
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+
+			<form name="frmReporteGrafico" id="frmReporteGrafico" action="#"
+				method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<div class="col-md-12">
+						<div class="form-group">
+							<div class="col-md-1 right-align">
+								<label class="control-label"
+								th:text="${#messages.msg('reporte.clima.represa')}"></label>
+							</div>
+							<div class="col-md-7 left-align">
+								<select id="cbxRepresa" name="represasToGraph" multiple="multiple">
+									<option th:each="represa : ${represasActivas}" th:value="${represa.value}" th:text="${represa.label}"></option>
+								</select>
+							</div>
+							<div class="col-md-1 right-align">
+								<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding"
+								th:text="${#messages.msg('reporte.clima.periodo')}"></label>
+							</div>
+							<div class="col-md-3 left-align">
+								<input type="text" id="txtPeriodo" name="periodo" class="form-control" 
+										th:placeholder="${#messages.msg('reporte.clima.periodo.placeholder')}"
+										title ="Ingrese el periodo"  
+										style="text-align: center;" 
+										readonly="readonly"
+										maxlength="6" />
+							</div>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		
+		<div class="panel espaciado-superior">
+			<div class="col-md-12 label-name">
+				<div class="col-md-6">
+				</div>
+				<div class="col-md-6 right-align label-name">
+					<button type="button" class="btn btn-warning" onclick="generarReporteVisual();">
+						<span class="glyphicon glyphicon-stats"></span>
+						<div style="display: inherit;" th:text="${#messages.msg('reporte.almacenamiento.btn.generar')}"></div>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel">
+			<div class="clear"></div>
+				<div id="wrap_chart_plot_02" class="container_12 espaciado-superior" >
+					<div id="chart_plot_02" class="demo-placeholder"></div>
+					<div id="legendContainer"></div>  
+				</div>
+				<script type="text/javascript" th:src="@{/js/bootstrap-multiselect.js}"></script>
+				<script type="text/javascript" th:src="@{/js/jquery.flot.js}"></script>
+				<script type="text/javascript" th:src="@{/js/jquery.flot.time.js}"></script>
+				<script type="text/javascript" th:src="@{/js/jquery.flot.symbol.js}"></script>
+				<script type="text/javascript" th:src="@{/js/jquery.flot.resize.js}"></script>
+				<script type="text/javascript" th:src="@{/js/jquery.flot.axislabels.js}"></script>
+				<script type="text/javascript" th:src="@{/js/reporteClima.js}"></script>
+		</div>
+	</div>
+</body>
+</html>

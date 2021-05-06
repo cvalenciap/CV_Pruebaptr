@@ -1,0 +1,39 @@
+create or replace package body PCK_CATALOGO is
+PROCEDURE PRC_BUSCA_CATALOGO(
+   PAR_COD_TABLE IN ALC_CATALOGO.N_CCATLG%TYPE,
+   --Parametros de retorno
+   PAR_OUT_CURSOR OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(400);
+
+BEGIN
+  v_query := 'SELECT N_CDCATL,C_VALCAT,C_DDCATL,C_VALOR1,TO_NUMBER(TRIM(C_VALCAT)) AS ORDEN FROM  ALC_DETCATLG WHERE N_CCATLG ='||PAR_COD_TABLE || ' ORDER BY ORDEN ASC';
+  
+  OPEN PAR_OUT_CURSOR FOR v_query;
+
+END;
+
+PROCEDURE PRC_UPDATE_CAT_ACTIVIDADES(
+   PAR_VALOR2                   ALC_DETCATLG.C_VALOR2%TYPE,
+    --Campos Identificador registro
+   PAR_CDCATL                   ALC_DETCATLG.N_CDCATL%TYPE,
+      --Campos de Auditoria
+   PAR_USUA_MOD                   ALC_DETCATLG.A_USUMOD%TYPE,
+   PAR_PROGRAMA_MOD               ALC_DETCATLG.A_NOMPRG%TYPE
+)
+ IS
+ BEGIN
+
+  UPDATE ALC_DETCATLG
+  SET C_VALOR2 = PAR_VALOR2,
+      A_USUMOD = PAR_USUA_MOD,
+      A_NOMPRG = PAR_PROGRAMA_MOD
+  WHERE N_CDCATL = PAR_CDCATL;
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);    
+
+END;
+
+end PCK_CATALOGO;

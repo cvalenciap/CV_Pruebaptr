@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+
+	<div class="modal-content" id="id-modal-content">
+		
+		<form name="form-edit-mant-correo" id="form-edit-mant-correo"
+			th:action="@{/configuracionCorreo/save}"
+			th:object="${mantCorreoEditBean}" method="post"
+			class="form-horizontal" role="form"
+			th:fragment="formEdit">	
+			
+			<script type="text/javascript" th:inline="javascript">
+			    /*<![CDATA[*/
+			    $(document).ready(function() {
+			    	modelAttributeValue = [[${mantCorreoEditBean}]];
+			    });
+			    /*]]>*/
+			</script>
+			<script type="text/javascript" th:src="@{/js/configuracionCorreoEdit.js}"></script>
+			
+			<input type="hidden" id="lonCodigo" name="lonCodigo" th:value="${mantCorreoEditBean.lonCodigo}"/>
+			
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">
+					<span th:if="${mantCorreoEditBean.lonCodigo == null}" class="modal-title" th:text="${#messages.msg('correo.crear.configuracion.correo')}"></span>		
+					<span th:if="${mantCorreoEditBean.lonCodigo != null}" class="modal-title" >Editar Configuración de Correo</span>													
+				</h4>													
+			</div>
+			
+			<div class="modal-footer left-align"> 
+				
+				<fieldset class="col-md-12">
+					<div class="col-md-12 flex-parent">
+						<div class="col-md-4 right-align flex-child">
+							<label class="control-label" for="cbxTipoOperacionPopup" th:text="${#messages.msg('correo.extraccion.col1')}"></label>
+						</div>	
+						<div class="col-md-8 left-align flex-child">
+							<select class="form-control" id="cbxTipoOperacionPopup" th:field="*{strTipoOperacion}" name="strTipoOperacion" style="height: 33px; width: 66%">
+							</select>
+							<input type="hidden" id="cbxTipoOperacionHide" name="cbxTipoOperacionHide" th:value="${mantCorreoEditBean.strTipoOperacion}"/>
+						</div>
+					</div>
+				</fieldset>
+			
+				
+				<!-- FORMULARIO PARA TIPO REPORTE -->
+				<div id="form-correo-reportes">
+				
+					<fieldset class="col-md-12 espaciado-superior" id="sectEstadoRep">
+						<div class="col-md-12 flex-parent" th:if="${mantCorreoEditBean.lonCodigo != null}">
+							<div class="col-md-4 right-align flex-child">
+								<label class="control-label" for="strEstado">Estado</label>
+							</div>	
+							<div class="col-md-8 left-align flex-child">
+								<select class="form-control" id="strEstadoRep" th:field="*{strEstadoRep}" style="height: 33px; width: 66%">
+									<option value="1">ACTIVO</option>
+									<option value="2">INACTIVO</option>
+								</select>
+							</div>
+						</div>
+					</fieldset>
+				
+					<fieldset class="col-md-12">
+						<legend></legend>
+						<div class="col-md-12">
+							
+							<div class="col-md-6 label-name">
+							
+								<div id="div-para-group" class="form-group"> 
+									<div class="col-md-12">
+										<label class="control-label" for="strPara" th:text="${#messages.msg('correo.reporte.resumen.col11')}">para</label>
+									</div>
+									<div class="col-md-12">
+						                <input type="text" id="strPara" name="strPara" style="width: 95%;" class="form-control" data-tokens="" />
+									</div>
+								</div> 
+								
+								
+							</div>
+							
+							<div class="col-md-6 label-name">
+							
+								<div id="div-cc-group" class="form-group">
+									<div class="col-md-12">
+										<label class="control-label" for="strCc" th:text="${#messages.msg('correo.reporte.resumen.col12')}">cc</label>
+									</div>
+									<div class="col-md-12">
+						                <input type="text" id="strCc" name="strCc" style="width: 95%;" class="form-control" data-tokens="" />
+						            </div>
+								</div>
+								
+							</div>
+							
+						</div>
+					</fieldset>
+					<fieldset class="col-md-12">
+						<div class="form-group espaciado-superior">
+							<div class="col-md-12">
+								<label class="control-label" for="strAsuntoRep" th:text="${#messages.msg('correo.reporte.resumen.col13')}">asunto</label>
+							</div>
+							<div class="col-md-12">
+								<input type="text" class="form-control" id="strAsuntoRep" name="strAsuntoRep" th:field="*{strAsuntoRep}" data-toggle="tooltip" data-placement="below" placeholder="ASUNTO" title ="Ingrese asunto" maxlength="80"/>
+							</div>
+						</div>
+						<div class="form-group espaciado-superior">
+							<div class="col-md-12">
+								<label class="control-label" for="strCuerpo" th:text="${#messages.msg('correo.reporte.resumen.col14')}">cuerpo</label>
+							</div>
+							<div class="col-md-12">
+								<textarea style="white-space: pre-wrap;" maxlength="350" class="form-control allowEnter" rows="7" th:field="*{strCuerpo}" id="textAreaCuerpo"></textarea>
+							</div>
+						</div>
+					</fieldset>
+					
+					<fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" name="guardarRepButton" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+				
+				<!-- FORMULARIO PARA TIPO PROCESO -->
+				<div id="form-correo-proceso" style="display: none;">
+					
+					<fieldset class="col-md-12 espaciado-superior" id="sectEstadoExt">
+						<div class="col-md-12 flex-parent"  th:if="${mantCorreoEditBean.lonCodigo != null}">
+							<div class="col-md-4 right-align flex-child">
+								<label class="control-label" for="strEstado">Estado</label>
+							</div>	
+							<div class="col-md-8 left-align flex-child">
+								<select class="form-control" id="strEstadoExt" th:field="*{strEstadoExt}" style="height: 33px; width: 66%">
+									<option value="1">ACTIVO</option>
+									<option value="2">INACTIVO</option>
+								</select>
+								
+<!-- 								<input type="hidden" id="cbxEstadoHide" name="cbxEstadoHide" th:value="${mantCorreoEditBean.strTipoOperacion}"/> -->
+							</div>
+						</div>
+					</fieldset>
+					
+					<fieldset class="col-md-12">
+						<legend></legend>
+						<div class="col-md-12">
+							
+							<div class="col-md-6">
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="control-label" for="strAsuntoExt" th:text="${#messages.msg('correo.extraccion.col2')}">asunto</label>
+									</div>
+									<div class="col-md-12">
+										<input type="text" class="form-control" id="strAsuntoExt" name="strAsuntoExt" th:field="*{strAsuntoExt}" data-toggle="tooltip" data-placement="below" placeholder="ASUNTO" title ="Ingrese asunto" maxlength="80"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12 espaciado-superior">
+										<label class="control-label" for="strOrigen" th:text="${#messages.msg('correo.extraccion.col4')}">remite</label>
+									</div>
+									<div class="col-md-12">
+										<input type="text" class="form-control" id="strOrigen" name="strOrigen" th:field="*{strOrigen}" data-toggle="tooltip" data-placement="below" placeholder="REMITENTE" title ="Ingrese el remitente" maxlength="80"/>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-md-6">
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="control-label" for="strNomAdjunto" th:text="${#messages.msg('correo.extraccion.col3')}">nomadjunto</label>
+									</div>
+									<div class="col-md-12">
+										<input type="text" class="form-control" id="strNomAdjunto" name="strNomAdjunto" th:field="*{strNomAdjunto}" data-toggle="tooltip" data-placement="below" placeholder="NOMBRE ADJUNTO" title ="Ingrese el nombre adjunto" maxlength="100"/>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+					</fieldset>
+					
+					<fieldset class="col-md-12">
+						
+						<div class="col-md-12 espaciado-superior">
+						
+							<div class="col-md-6">
+								<!-- SE EMBEBE LA PARTE DE CONFIGURACION DE SERVIDOR DE CORREO -->
+								<div th:replace="configuracionServidorCorreo :: formServCorreo" ></div>
+							</div>
+							
+							<div class="col-md-6">
+								<div class="col-md-12" style="padding: 0px;">
+									<div class="panel panel-success">
+										<div class="panel-heading">
+											<label class="control-label" th:text="${#messages.msg('correo.reporte.servidor.archivo')}">servarchivo</label>
+										</div>
+									    <div class="panel-body">
+									    	<div class="checkbox">
+											  <label><input type="checkbox" id="chbxRutaDefault" name="lonRutaDefault" th:checked="${mantCorreoEditBean.lonRutaDefault == 1}" />Usar ruta por defecto</label>
+											</div>
+									    	<div class="form-group">
+										    	<div class="col-md-12 espaciado-superior">
+										    		<label class="control-label" for="strRutaServFile" th:text="${#messages.msg('correo.extraccion.col8')}">ruta</label>
+										    	</div>
+										    	<div class="col-md-12">
+										    		<input type="text" class="form-control" id="strRutaServFile" name="strRutaServFile" th:field="*{strRutaServFile}" data-toggle="tooltip" data-placement="below" placeholder="RUTA" title ="Ingrese la ruta" maxlength="80"
+										    			th:readonly="${mantCorreoEditBean.lonRutaDefault == 1}"/>
+										    	</div>
+										    </div>
+										    <div class="form-group">
+										    	<div class="col-md-12 espaciado-superior">
+										    		<label class="control-label" for="strUsuFile" th:text="${#messages.msg('correo.extraccion.col9')}">usuario</label>
+										    	</div>
+										    	<div class="col-md-12">
+										    		<input type="text" class="form-control" id="strUsuFile" name="strUsuFile" th:field="*{strUsuFile}" data-toggle="tooltip" data-placement="below" placeholder="USUARIO" title ="Ingrese el usuario" maxlength="80"
+										    			th:readonly="${mantCorreoEditBean.lonRutaDefault == 1}"/>
+										    	</div>
+										    </div>
+										    <div class="form-group">
+										    	<div class="col-md-12 espaciado-superior">
+										    		<label class="control-label" for="strPassFile" th:text="${#messages.msg('correo.extraccion.col10')}">password</label>
+										    	</div>
+										    	<div class="col-md-12">
+										    		<input type="text" class="form-control" id="strPassFile" name="strPassFile" th:field="*{strPassFile}" data-toggle="tooltip" data-placement="below" placeholder="CONTRASEÑA" title ="Ingrese la contraseña" maxlength="30" 
+										    			th:readonly="${mantCorreoEditBean.lonRutaDefault == 1}"/>
+										    	</div>
+										    </div>
+									    </div>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+						
+					</fieldset>
+					
+					<fieldset class="col-md-12 col-sm-12 col-xs-12">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" name="guardarExtButton" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			
+				<!-- FORMULARIO PARA TIPO ENVIOS -->
+				<div id="form-correo-envios">
+				
+					<fieldset class="col-md-12 espaciado-superior" id="sectEstadoEnv">
+						<div class="col-md-12 flex-parent" th:if="${mantCorreoEditBean.lonCodigo != null}">
+							<div class="col-md-4 right-align flex-child">
+								<label class="control-label" for="strEstado">Estado</label>
+							</div>	
+							<div class="col-md-8 left-align flex-child">
+								<select class="form-control" id="strEstadoEnv" th:field="*{strEstadoEnv}" style="height: 33px; width: 66%">
+									<option value="1">ACTIVO</option>
+									<option value="2">INACTIVO</option>
+								</select>
+							</div>
+						</div>
+					</fieldset>
+				
+				
+					<fieldset class="col-md-12">
+						<div class="col-md-2 espaciado-superior"></div>
+						<div class="col-md-8 espaciado-superior">
+								<!-- SE EMBEBE LA PARTE DE CONFIGURACION DE SERVIDOR DE CORREO -->
+								<div th:replace="configuracionServidorCorreo :: formServCorreoEnvio" ></div>
+						</div>
+						<div class="col-md-2 espaciado-superior"></div>
+					</fieldset>
+					
+					<fieldset class="col-md-12 col-sm-12 col-xs-12">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" name="guardarEnvButton" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+					
+				</div>
+				
+				<!-- FORMULARIO PARA TIPO REPORTE DE GERENCIA -->
+				<div id="form-correo-reportes-gerencia">
+				
+					<fieldset class="col-md-12 espaciado-superior" id="sectEstadoGerencia">
+						<div class="col-md-12 flex-parent" th:if="${mantCorreoEditBean.lonCodigo != null}">
+							<div class="col-md-4 right-align flex-child">
+								<label class="control-label" for="strEstado">Estado</label>
+							</div>	
+							<div class="col-md-8 left-align flex-child">
+								<select class="form-control" id="strEstadoGer" th:field="*{strEstadoGer}" style="height: 33px; width: 66%">
+									<option value="1">ACTIVO</option>
+									<option value="2">INACTIVO</option>
+								</select>
+							</div>
+						</div>
+					</fieldset>
+				
+					<fieldset class="col-md-12">
+						<legend></legend>
+						<div class="col-md-12">
+							
+							<div class="col-md-6 label-name">
+							
+								<div id="div-para-ger-group" class="form-group"> 
+									<div class="col-md-12">
+										<label class="control-label" for="strPara" th:text="${#messages.msg('correo.reporte.resumen.col11')}">para</label>
+									</div>
+									<div class="col-md-12">
+						                <input type="text" id="strParaGer" name="strParaGer" style="width: 95%;" class="form-control" data-tokens="" />
+									</div>
+								</div> 
+								
+								
+							</div>
+							
+							<div class="col-md-6 label-name">
+							
+								<div id="div-cc-ger-group" class="form-group">
+									<div class="col-md-12">
+										<label class="control-label" for="strCc" th:text="${#messages.msg('correo.reporte.resumen.col12')}">cc</label>
+									</div>
+									<div class="col-md-12">
+						                <input type="text" id="strCcGer" name="strCcGer" style="width: 95%;" class="form-control" data-tokens="" />
+						            </div>
+								</div>
+								
+							</div>
+							
+						</div>
+					</fieldset>
+					<fieldset class="col-md-12">
+						<div class="form-group espaciado-superior">
+							<div class="col-md-12">
+								<label class="control-label" for="strAsunto" th:text="${#messages.msg('correo.reporte.resumen.col13')}">asunto</label>
+							</div>
+							<div class="col-md-12">
+								<input type="text" class="form-control" id="strAsuntoGer" th:field="*{strAsuntoGer}" data-toggle="tooltip" data-placement="below" placeholder="ASUNTO" title ="Ingrese asunto" maxlength="80"/>
+							</div>
+						</div>
+						<div class="form-group espaciado-superior">
+							<div class="col-md-12">
+								<label class="control-label" for="strCuerpo" th:text="${#messages.msg('correo.reporte.resumen.col14')}">cuerpo</label>
+							</div>
+							<div class="col-md-12">
+								<textarea style="white-space: pre-wrap;" maxlength="350" class="form-control allowEnter" rows="7" th:field="*{strCuerpoGer}" id="textAreaCuerpo"></textarea>
+							</div>
+						</div>
+					</fieldset>
+					
+					<fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" name="guardarRepButton" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+				
+			</div>		
+		</form>
+	
+	</div>
+</body>
+</html>

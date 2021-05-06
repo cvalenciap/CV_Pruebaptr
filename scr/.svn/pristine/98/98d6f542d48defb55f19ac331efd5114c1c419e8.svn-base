@@ -1,0 +1,273 @@
+create or replace package body PCK_CORREO is
+
+-- ******************************************************************************
+-- Descripcion: 
+-- Metodo que permite obtener el registro de Rio por identificador
+--
+-- Input Parameters:
+-- PAR_CODIGO  Identificador del registro
+--
+-- Output Parameters:      
+-- PAR_OUT_CURSOR     Listado de registros
+--
+-- Author:      AESPINOZAL
+-- Proyecto:    SCR
+-- Responsable  T-Gestiona
+--
+-- Revisiones
+-- Fecha            Autor         Motivo del cambio    
+-- ----------------------------------------------------------------
+-- 19/06/2017     AESPINOZAL      Creacion Inicial.      
+-- ******************************************************************************
+
+PROCEDURE PRC_INSERT_MANT_CORREO (
+   par_ausuins          scr_mant_correo.a_usucrea%TYPE,
+   par_aprograma        scr_mant_correo.a_nomprg%TYPE,
+   par_acodarea         scr_mant_correo.n_codare%TYPE,
+   par_acodsist         scr_mant_correo.n_codsis%TYPE,
+   par_vtipooperacion   scr_mant_correo.c_tipope%TYPE,
+   par_vpara            scr_mant_correo.c_para%TYPE,
+   par_vcc              scr_mant_correo.c_cc%TYPE,
+   par_vasunto          scr_mant_correo.c_asunto%TYPE,
+   par_vcuerpo          scr_mant_correo.c_cuerpo%TYPE,
+   par_vorigen          scr_mant_correo.c_origen%TYPE,
+   par_vnomadj          scr_mant_correo.c_nomadj%TYPE,
+   par_vrutaservcorreo  scr_mant_correo.c_rserco%TYPE,
+   par_vusucorreo       scr_mant_correo.c_usucor%TYPE,
+   par_vpasscorreo      scr_mant_correo.c_pascor%TYPE,
+   par_vrutaservfile    scr_mant_correo.c_rserfile%TYPE,
+   par_vusufile         scr_mant_correo.c_usufile%TYPE,
+   par_vpassfile        scr_mant_correo.c_passfile%TYPE,
+   par_npuerto          scr_mant_correo.n_puerto%TYPE
+ )
+ IS
+ BEGIN
+     INSERT INTO scr_mant_correo (
+        a_usucrea,
+        a_feccrea,
+        a_usumod,
+        a_fecmod,
+        a_nomprg,
+        n_codare,
+        n_codsis,
+        n_codigo,
+        c_tipope,
+        c_estado,
+        c_para,
+        c_cc,
+        c_asunto,
+        c_cuerpo,
+        c_origen,
+        c_nomadj,
+        c_rserco,
+        c_usucor,
+        c_pascor,
+        c_rserfile,
+        c_usufile,
+        c_passfile,
+        n_puerto
+    ) VALUES (
+        par_ausuins,
+        sysdate,
+        par_ausuins,
+        sysdate,
+        par_aprograma,
+        par_acodarea,
+        par_acodsist,
+        SQ_CDL_MANT_CORREO.NEXTVAL,
+        par_vtipooperacion,
+        '1',
+        par_vpara,
+        par_vcc,
+        par_vasunto,
+        par_vcuerpo,
+        par_vorigen,
+        par_vnomadj,
+        par_vrutaservcorreo,
+        par_vusucorreo,
+        par_vpasscorreo,
+        par_vrutaservfile,
+        par_vusufile,
+        par_vpassfile,
+        par_npuerto
+    );
+ END;
+
+PROCEDURE PRC_UPDATE_MANT_CORREO (
+   par_ncodigo          scr_mant_correo.n_codigo%TYPE,
+   par_ausuupd          scr_mant_correo.a_usumod%TYPE,
+   par_aprograma        scr_mant_correo.a_nomprg%TYPE,
+   par_acodarea         scr_mant_correo.n_codare%TYPE,
+   par_acodsist         scr_mant_correo.n_codsis%TYPE,
+   par_vestado          scr_mant_correo.c_estado%TYPE,
+   par_vpara            scr_mant_correo.c_para%TYPE,
+   par_vcc              scr_mant_correo.c_cc%TYPE,
+   par_vasunto          scr_mant_correo.c_asunto%TYPE,
+   par_vcuerpo          scr_mant_correo.c_cuerpo%TYPE,
+   par_vorigen          scr_mant_correo.c_origen%TYPE,
+   par_vnomadj          scr_mant_correo.c_nomadj%TYPE,
+   par_vrutaservcorreo  scr_mant_correo.c_rserco%TYPE,
+   par_vusucorreo       scr_mant_correo.c_usucor%TYPE,
+   par_vpasscorreo      scr_mant_correo.c_pascor%TYPE,
+   par_vrutaservfile    scr_mant_correo.c_rserfile%TYPE,
+   par_vusufile         scr_mant_correo.c_usufile%TYPE,
+   par_vpassfile        scr_mant_correo.c_passfile%TYPE,
+   par_npuerto          scr_mant_correo.n_puerto%TYPE
+ )
+ IS
+ BEGIN
+    UPDATE scr_mant_correo
+        SET
+            a_usumod = par_ausuupd,
+            a_fecmod = sysdate,
+            a_nomprg = par_aprograma,
+            n_codare = par_acodarea,
+            n_codsis = par_acodsist,
+            c_estado = NVL(par_vestado, c_estado),
+            c_para = par_vpara,
+            c_cc = par_vcc,
+            c_asunto = par_vasunto,
+            c_cuerpo = par_vcuerpo,
+            c_origen = par_vorigen,
+            c_nomadj = par_vnomadj,
+            c_rserco = par_vrutaservcorreo,
+            c_usucor = par_vusucorreo,
+            c_pascor = par_vpasscorreo,
+            c_rserfile = par_vrutaservfile,
+            c_usufile = par_vusufile,
+            c_passfile = par_vpassfile,
+            n_puerto = par_npuerto
+        WHERE
+            n_codigo = par_ncodigo;
+ END;
+ 
+procedure PRC_GET_MANT_CORREO(
+   --Parametros de la busqueda
+   PAR_CODIGO IN SCR_MANT_CORREO.N_CODIGO%type,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+BEGIN
+  v_query := ' SELECT t.N_CODIGO, t.C_ESTADO, t.C_TIPOPE, t.C_PARA, t.C_CC , t.C_ASUNTO, t.C_CUERPO, ' ||
+             ' t.C_ORIGEN, t.C_NOMADJ, t.C_RSERCO, t.N_PUERTO, t.C_USUCOR, t.C_PASCOR, ' ||
+             ' t.C_RSERFILE, t.C_USUFILE, t.C_PASSFILE ' ||
+             ' FROM SCR_MANT_CORREO t '   ||
+             ' WHERE t.N_CODIGO = ' || PAR_CODIGO;
+	OPEN par_out_cursor FOR v_query;
+  
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+PROCEDURE PRC_BUSCA_MANT_CORREO (
+   --Parametros de la busqueda
+   par_tipo_operacion IN varchar2,
+   --Parametros de la paginacion
+   par_col_order_by IN integer, par_col_order_by_dir IN varchar2 , 
+   par_pag_desde IN integer, par_cantidad_pag IN integer,
+   --Parametros de retorno
+   par_out_quantity OUT integer,
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+
+BEGIN
+
+  v_query_count:= ' select count(*) ';
+    
+  v_query :=  'SELECT * FROM(SELECT a.*, rownum rn FROM( select  c.n_codigo, DECODE (c.c_tipope,''1'',''Reportes de Resumen'',''2'',''Proceso Automatico'', '' '') V_TIPOOPERACION, ' ||
+  ' c.a_usucrea, to_char(c.a_feccrea, ''DD/MM/YYYY''), c.a_usumod, to_char(c.a_fecmod,''DD/MM/YYYY''), DECODE (c.c_estado, 1, ''ACTIVO'', 2, ''INACTIVO'', '' '')  V_ESTADO, c.c_tipope COD_TIPOOPERACION ';
+
+  v_query_from := ' from scr_mant_correo c where ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := ' 1=1 ';
+  
+  if(LENGTH(TRIM(par_tipo_operacion))>0) then
+    v_query_where :=  v_query_where || ' and c.c_tipope = ''' || par_tipo_operacion || '''';
+  end if;
+
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+  
+  v_query := v_query || ' order by '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' and rn <= ' || (par_pag_desde+par_cantidad_pag);
+    
+  OPEN par_out_cursor FOR v_query;
+  
+  execute immediate v_query_count into par_out_quantity;
+
+END;
+
+PROCEDURE PRC_INACTIVA_CORREO(
+   par_codigo scr_mant_correo.n_codigo%TYPE,
+   par_vuser_update    scr_mant_correo.a_usumod%TYPE, 
+   par_vprogram_update scr_mant_correo.a_nomprg%TYPE,
+   par_acodarea        scr_mant_correo.n_codare%TYPE,
+   par_acodsist        scr_mant_correo.n_codsis%TYPE 
+ ) IS
+  BEGIN  
+    UPDATE scr_mant_correo
+      set c_estado=2,a_usumod=par_vuser_update,       
+       a_nomprg=par_vprogram_update,a_fecmod=sysdate,
+       n_codare=par_acodarea,n_codsis=par_acodsist
+    where n_codigo = par_codigo;
+  END;
+
+PROCEDURE PRC_GET_CONFIG_CORREO(
+	   --Parametro de busqueda
+	   PAR_V_TIPOPR  IN SCR_MANT_CORREO.C_TIPOPE%TYPE,
+	   PAR_V_ESTADO  		IN SCR_MANT_CORREO.C_ESTADO%TYPE,
+	   --Parametro de retorno
+	   PAR_OUT_CURSOR OUT SYS_REFCURSOR
+)
+
+IS
+BEGIN
+
+OPEN PAR_OUT_CURSOR FOR
+     SELECT N_CODIGO,
+		  	C_TIPOPE,
+			C_ESTADO,
+			C_PARA,
+			C_CC,
+			C_ASUNTO,
+			C_CUERPO,
+			C_ORIGEN,
+			C_RSERCO,
+			C_USUCOR,
+			C_PASCOR,
+			C_RSERFILE,
+			C_USUFILE,
+			C_PASSFILE,
+			N_PUERTO,
+			C_NOMADJ
+     FROM  SCR_MANT_CORREO
+     WHERE upper(C_TIPOPE) = upper(PAR_V_TIPOPR) AND C_ESTADO = PAR_V_ESTADO
+     ORDER BY N_CODIGO;
+
+END;
+
+PROCEDURE PRC_GET_VALIDATION_INFO(
+    --Parametro de retorno
+    PAR_OUT_QUANTITY_RESUMEN OUT INTEGER,
+    PAR_OUT_QUANTITY_AUTOMATICO OUT INTEGER
+)
+IS
+BEGIN
+    SELECT COUNT(*) INTO PAR_OUT_QUANTITY_RESUMEN FROM SCR_MANT_CORREO
+        WHERE C_ESTADO = '1' AND C_TIPOPE = '1';
+        
+    SELECT COUNT(*) INTO PAR_OUT_QUANTITY_AUTOMATICO FROM SCR_MANT_CORREO
+        WHERE C_ESTADO = '1' AND C_TIPOPE = '2';
+END;
+
+end PCK_CORREO;

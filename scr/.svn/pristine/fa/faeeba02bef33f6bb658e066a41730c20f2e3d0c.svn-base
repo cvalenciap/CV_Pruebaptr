@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('plan.operativo.title')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+	
+			<!-- Modal -->
+<!-- 		<div class="modal-content" id="id-modal-content" th:fragment="form-edit-tablaPoisson"> -->
+			
+<!-- 		</div> -->
+		
+			
+		<div id="modal-registra-parametroplan" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			
+				<!-- Modal content-->
+<!--  			    <div class="modal-content" id="id-modal-content" th:replace="planOperativo/planOperativoDetalleTableEdit :: form-edit-tablaPoisson"> -->
+<!--  			    </div>  -->
+			</div>
+		</div>
+		
+		<div id="tableDetalle">
+		 <div class="hidden btn btn-primary hidden" id="idBtnBuscarTablaPoisson"></div>
+		 <h3 class="text-center" th:text="${#messages.msg('plan.operativo.title')}"></h3>
+		
+		 <div>
+			<div class="container_12">
+				<div th:replace="planOperativo/planOperativoDetalleTable :: resultsList" class="grid_10 height800" id="idTablaPoissonTable" ></div>
+			</div>
+		 </div>
+		</div>
+		
+		<script type="text/javascript" th:src="@{/js/planOperativoDetalle.js}"></script>
+		
+	</div>
+</body>
+</html>

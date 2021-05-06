@@ -1,0 +1,76 @@
+<!DOCTYPE html>			
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsListThree" class="grid_10 height800" id="idThreeTable">
+		
+		<table  class="fancyTable" id="myTableMuestraThree" cellpadding="0" cellspacing="0" style="width: 100%">
+			<thead>				
+				<tr>		
+					<th th:text="Acciones" style="width: 20px;"></th>			
+					<th th:text="${#messages.msg('muestepaf21.table.col1')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestepaf21.table.col2')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestepaf21.table.col3')}" style="width: 50px;"></th>		
+					<th th:text="${#messages.msg('muestepaf21.table.col4')}" style="width: 50px;"></th>						
+					<th th:text="${#messages.msg('muestepaf21.table.col4')}" style="width: 0px;" class="hidden-xs"></th>							
+				</tr>
+			</thead>
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTableMuestraThree').DataTable({
+					"bProcessing": true,
+					"serverSide": true,
+					"searching": false,
+					"lengthChange":   false,					
+          			"bJQueryUI": true,
+					"ajax":{
+						url :"tableThree/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTableMuestraThree_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	
+			            	d.idCabecera = $('#intIdHide').val();
+			            }
+					},
+					"order": [ 5, 'asc' ],
+					"columnDefs": [ 
+						///{ targets: '_all', visible: true,  },		
+			            {	"width": "200px",
+		        			className: "dt-body-left",
+		                	"targets": 1                
+		            	},
+		            	{
+		            		visible : false,
+		            		"width": "0px",		            	
+		                	"targets": [5]                
+		            	},
+			            {   "type": "num",
+		            		"width": "100px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": [2,3,4]                
+			            },			           
+		              	{"width": "70px",
+		              		className: "dt-body-center",
+		              		"orderable": false,
+		              		"targets": 0,
+		              		visible: true,
+		              		"data": 1,
+		              		"render": function ( data, type, row) {
+		              			return row[1] != 'DUPLICADO'? '<button class="btn btn-danger btn-delete-punto" title="Eliminar" onclick="inactivarTableThree('+row[5]+')"><span class="glyphicon glyphicon-erase"></span></button>':"";
+		              		}
+		              	}
+					]
+				});
+			}); 
+			
+			
+		</script>	
+	</div>
+</body>
+</html>

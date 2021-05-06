@@ -1,0 +1,228 @@
+create or replace package body PCK_RIO is
+ procedure PRC_BUSCA_RIO(
+   --Parametros de la busqueda
+   PAR_VNOMBRE_RIO      IN SCR_MANT_RIO.C_NOMRIO%TYPE,
+   PAR_VABREVIATURA     IN SCR_MANT_RIO.C_ABREVI%TYPE,
+   PAR_VESTADO          IN SCR_MANT_RIO.C_ESTADO%TYPE,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+
+BEGIN
+
+  v_query_count:= ' select count(*) ';
+    
+  v_query :=  'SELECT * FROM(SELECT a.*, rownum rn FROM( select  c.N_CODIGO,c.C_NOMRIO, c.C_NOMLAR,DECODE (c.C_ESTADO, 1, ''ACTIVO'', 2, ''INACTIVO'', '' '')C_ESTADO, ' ||
+  ' c.A_USUCRE, to_char(c.A_FECCRE, ''DD/MM/YYYY''), c.A_USUMOD, to_char(c.A_FECMOD,''DD/MM/YYYY'')';
+
+  v_query_from := ' from scr_mant_rio c where ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := ' 1=1 ';
+  
+  
+   if(LENGTH(TRIM(PAR_VNOMBRE_RIO))>0) then
+     v_query_where :=  v_query_where || ' and  UPPER(c.C_NOMRIO) LIKE UPPER(''%' ||  PAR_VNOMBRE_RIO || '%'')';
+   end if;
+  
+  if(LENGTH(TRIM(PAR_VABREVIATURA))>0) then
+    v_query_where :=  v_query_where || ' and UPPER(c.C_ABREVI) LIKE UPPER(''%' ||  PAR_VABREVIATURA || '%'')';
+  end if;
+  
+  if(LENGTH(TRIM(par_vestado))>0) then
+    v_query_where :=  v_query_where || ' and c.C_ESTADO = ''' ||  PAR_VESTADO || '''';
+  end if;
+  
+
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+  
+  v_query := v_query || ' order by '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' and rn <= ' || (par_pag_desde+par_cantidad_pag);
+    
+  OPEN par_out_cursor FOR v_query;
+  
+  execute immediate v_query_count into par_out_quantity;
+
+END;
+
+procedure PRC_LISTA_RIO(
+  --Parametro de listado
+  PAR_V_ESTADO           IN SCR_MANT_RIO.C_ESTADO%TYPE,
+  --Parametro de retorno
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR 
+  	SELECT N_CODIGO, 
+  	       C_NOMRIO, 
+  	       C_NOMLAR, 
+  	       C_ABREVI, 
+  	       C_ESTADO 
+  	FROM SCR_MANT_RIO WHERE C_ESTADO = PAR_V_ESTADO AND N_CODIGO > 10000;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      dbms_output.put_line('Se ha producido el siguiente error: ' || sqlerrm);
+END;
+
+procedure PRC_LISTA_RIO2(
+  --Parametro de listado
+  PAR_V_ESTADO           IN SCR_MANT_RIO.C_ESTADO%TYPE,
+  --Parametro de retorno
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR 
+  	SELECT N_CODIGO, 
+  	       C_NOMRIO, 
+  	       C_NOMLAR, 
+  	       C_ABREVI, 
+  	       C_ESTADO 
+  	FROM SCR_MANT_RIO WHERE C_ESTADO = PAR_V_ESTADO;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      dbms_output.put_line('Se ha producido el siguiente error: ' || sqlerrm);
+END;
+
+
+ procedure PRC_GET_RIO(
+   --Parametros de la busqueda
+   PAR_CODIGO IN SCR_MANT_RIO.N_CODIGO%type,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+BEGIN
+  v_query := ' SELECT t.N_CODIGO, t.C_NOMRIO, t.C_NOMLAR, t.C_ABREVI, t.C_ESTADO, ' ||
+             ' t.A_NOMPRG, t.N_CODARE, t.N_CODSIS ' ||
+             ' FROM SCR_MANT_RIO t '   ||
+             ' WHERE t.N_CODIGO = ' || PAR_CODIGO;
+  OPEN par_out_cursor FOR v_query;
+  
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+
+PROCEDURE PRC_INSERT_RIO(
+   PAR_VNOMBRE_RIO                  SCR_MANT_RIO.C_NOMRIO%TYPE,
+   PAR_VNOMBRE_LARGO                SCR_MANT_RIO.C_NOMLAR%TYPE,
+   PAR_VABREVIATURA                 SCR_MANT_RIO.C_ABREVI%TYPE,
+   PAR_VESTADO                      SCR_MANT_RIO.C_ESTADO%TYPE,
+   --Campos de Auditoria
+   PAR_AUSUARIO_CREACION            SCR_MANT_RIO.A_USUCRE%TYPE,
+   PAR_AUSUARIO_MODIFICACION        SCR_MANT_RIO.A_USUMOD%TYPE,
+   PAR_APROGRAMA                    SCR_MANT_RIO.A_NOMPRG%TYPE,
+   PAR_ACODIGO_AREA                 SCR_MANT_RIO.N_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA              SCR_MANT_RIO.N_CODSIS%TYPE
+ )
+ 
+ IS
+ BEGIN
+ INSERT INTO SCR_MANT_RIO
+      (A_USUCRE,
+       A_FECCRE,
+       A_USUMOD,
+       A_FECMOD,
+       A_NOMPRG,
+       N_CODARE,
+       N_CODSIS,
+       N_CODIGO,
+       C_NOMRIO,
+       C_NOMLAR,
+       C_ABREVI,
+       C_ESTADO)
+    VALUES
+      (PAR_AUSUARIO_CREACION,
+       SYSDATE,
+       PAR_AUSUARIO_MODIFICACION,
+       SYSDATE,
+       PAR_APROGRAMA,
+       PAR_ACODIGO_AREA,
+       PAR_ACODIGO_SISTEMA,
+       SQ_CDL_MANT_RIO.NEXTVAL,
+       PAR_VNOMBRE_RIO,
+       PAR_VNOMBRE_LARGO,
+       PAR_VABREVIATURA,
+       PAR_VESTADO);
+       
+  EXCEPTION
+     WHEN OTHERS THEN
+          dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+ PROCEDURE PRC_UPDATE_RIO(
+   PAR_NCODIGO                      SCR_MANT_RIO.N_CODIGO%TYPE,
+   PAR_VNOMBRE_RIO                  SCR_MANT_RIO.C_NOMRIO%TYPE,
+   PAR_VNOMBRE_RIO_LARGO            SCR_MANT_RIO.C_NOMLAR%TYPE,
+   PAR_VABREVIATURA                 SCR_MANT_RIO.C_ABREVI%TYPE,
+   PAR_VESTADO                      SCR_MANT_RIO.C_ESTADO%TYPE,
+   --Campos de Auditoria
+   PAR_AUSUARIO_MODIFICACION        SCR_MANT_RIO.A_USUMOD%TYPE,
+   PAR_APROGRAMA                    SCR_MANT_RIO.A_NOMPRG%TYPE,
+   PAR_ACODIGO_AREA                 SCR_MANT_RIO.N_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA              SCR_MANT_RIO.N_CODSIS%TYPE  
+ )
+ IS
+ BEGIN
+   
+  UPDATE SCR_MANT_RIO
+  SET  A_USUCRE = PAR_AUSUARIO_MODIFICACION,
+       A_FECCRE  = SYSDATE,
+       A_NOMPRG           = PAR_APROGRAMA,
+       N_CODARE         = PAR_ACODIGO_AREA ,
+       N_CODSIS      = PAR_ACODIGO_SISTEMA,
+       C_NOMRIO          = PAR_VNOMBRE_RIO,
+       C_NOMLAR        = PAR_VNOMBRE_RIO_LARGO,
+       C_ABREVI        = PAR_VABREVIATURA,
+       C_ESTADO             = PAR_VESTADO
+  WHERE N_CODIGO = PAR_NCODIGO;
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+
+END;
+
+PROCEDURE PRC_INACTIVA_RIO(
+   PAR_NCODIGO                      SCR_MANT_RIO.N_CODIGO%TYPE,
+   PAR_AUSUARIO_MODIFICACION        SCR_MANT_RIO.A_USUMOD%TYPE, 
+   PAR_APROGRAMA                    SCR_MANT_RIO.A_NOMPRG%TYPE,
+   PAR_ACODIGO_AREA                 SCR_MANT_RIO.N_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA              SCR_MANT_RIO.N_CODSIS%TYPE  
+ ) 
+ IS
+ BEGIN
+  UPDATE SCR_MANT_RIO
+    SET C_ESTADO=2,
+        A_USUMOD = PAR_AUSUARIO_MODIFICACION,
+        A_FECMOD  = SYSDATE,       
+        A_NOMPRG           = PAR_APROGRAMA,
+        N_CODARE         = PAR_ACODIGO_AREA ,
+        N_CODSIS      = PAR_ACODIGO_SISTEMA
+    WHERE N_CODIGO = PAR_NCODIGO;
+
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+
+  END;
+ 
+end PCK_RIO;

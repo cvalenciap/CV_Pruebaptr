@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('configuracion.correo.title')}"></title>
+<link rel="stylesheet" th:href="@{/css/bootstrap-tokenfield.min.css}" />
+<link rel="stylesheet" th:href="@{/css/tokenfield-typeahead.min.css}" />
+</head>
+<body>
+	<div layout:fragment="content">
+	
+	<!-- MODAL PARA CREACION/EDICION DE REGISTRO -->
+		<div id="modal-registra-correo" class="modal fade" role="dialog" data-backdrop="static">
+		  <div class="modal-dialog" style="width: 60%;">
+		<!-- Modal content-->
+		    <div class="modal-content" id="id-modal-content" >
+		    	<form id="form-edit-mant-correo"></form>
+		    </div>
+		  </div>
+		</div>
+	
+<!-- 		FORMULARIO PARA INACTIVACION -->
+		<form name="formInactivaCorreo" id="form-inactiva-correo" style="display:none;" 
+			  th:action="@{/configuracionCorreo/inactivar}" method="post">
+			<input type="hidden" id="inacIdMantCorreo" name="inacIdMantCorreo" />
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>	
+
+		<h3 class="text-center" th:text="${#messages.msg('home.configuracion.correo')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<label class="control-label col-md-2 text-right no-padding" th:text="${#messages.msg('correo.tipo.operacion')}"></label>
+					<div class="col-md-4 ">
+						<select id="cbxTipoOperacion" name="tipoOperacion" class="form-control">
+						</select>
+						<input type="hidden" value="" id="tipoOperacionHide"/>
+					</div>
+					
+					<label class="control-label col-md-2 text-right no-padding" th:text="${#messages.msg('correo.estado')}"></label>
+					<div class="col-md-4 ">
+						<select id="cbxEstado" name="estado" class="form-control">
+							<option value="">-TODOS-</option>
+							<option value="1" >ACTIVO</option>
+							<option value="2">INACTIVO</option>
+						</select>
+						<input type="hidden" value="" id="estadoHide"/>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+				</div>
+				
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-right">
+					<button type="button" class="btn btn-info btn-crear-mant-correo" data-toggle="modal" onclick="modificarCorreo(0,'','')"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('tipoProceso.agregar')}"></label></button>
+					<button type="button" id="idBtnBuscarCorreo" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span><label th:text="${#messages.msg('tipoProceso.buscar')}"></label></button>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="container_12">
+				<div th:replace="configuracionCorreoTable :: resultsList" class="grid_10 height800" id="idTipoProcesoTable"></div>
+			</div>
+			<script type="text/javascript" th:src="@{/js/bootstrap-tokenfield.min.js}"></script>
+			<script type="text/javascript" th:src="@{/js/mantenimientoCorreo.js}"></script>
+		</div>
+	</div>
+</body>
+</html>

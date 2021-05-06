@@ -1,0 +1,100 @@
+package pe.com.sedapal.scr.correo.job;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import microsoft.exchange.webservices.data.core.ExchangeService;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.credential.WebCredentials;
+import pe.com.sedapal.scr.correo.core.beans.ConfiguracionCorreo;
+import pe.com.sedapal.scr.correo.core.beans.MensajeCorreo;
+import pe.com.sedapal.scr.correo.core.common.Constants;
+import pe.com.sedapal.scr.correo.service.IConfigCorreoService;
+import pe.com.sedapal.scr.correo.task.EnviarMensajeTask;
+import pe.com.sedapal.scr.correo.task.LeerMensajesTask.RedirectionUrlCallback;
+
+@Component
+public class ETLReporteGerenciaJob {
+	
+	final static Logger logger = Logger.getLogger(ETLReporteGerenciaJob.class);
+
+	@Autowired
+	private EnviarMensajeTask enviarMensajeTask;
+	
+	@Autowired
+	private IConfigCorreoService configCorreoService;
+	
+	private ExchangeService exchangeService;
+	
+	/**
+	 * Método que permite ejecutar la tarea programada de envío de correo a gerencia
+	 * @Return No hay objeto de retorno 
+	 * @throws Exception Excepción que puede ser lanzada
+	 */
+	public void execute(String strTableResumenHtml) throws Exception{
+		
+		ConfiguracionCorreo configCorreoEnvios 
+		= configCorreoService.obtenerConfigCorreo(Constants.TIPO_CORREO_ENVIOS, Constants.ESTADO_ACTIVO);
+		
+		if(configCorreoEnvios == null){
+			logger.error("No se ha encontrado correo fuente configurado para envios");
+		}
+		
+		ConfiguracionCorreo configCorreo 
+			= configCorreoService.obtenerConfigCorreo(Constants.TIPO_PROCESO_REPORTE_GERENCIA, Constants.ESTADO_ACTIVO);
+		
+		if(configCorreoEnvios == null){
+			logger.error("No se ha encontrado configuracion de correo para gerencia a quien enviar");
+		}
+		
+		exchangeService = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
+	
+		WebCredentials credentials 
+			= new WebCredentials(configCorreoEnvios.getCuentaCorreo().getStrUsuario(), 
+					configCorreoEnvios.getCuentaCorreo().getStrClave());
+		exchangeService.setCredentials(credentials);
+		exchangeService.autodiscoverUrl(configCorreoEnvios.getCuentaCorreo().getStrCorreo(), new RedirectionUrlCallback());
+		exchangeService.setTraceEnabled(true);		
+		
+		MensajeCorreo mensajeCorreo = new MensajeCorreo();
+		
+		/* ---Remitente--- */
+		mensajeCorreo.setStrRemitente(configCorreoEnvios.getCuentaCorreo().getStrCorreo());
+		
+		/* ---Destinatarios--- */
+		List<String> destinatarios = new ArrayList<String>();
+		String paraBd = configCorreo.getMensajeCorreo().getStrPara() != null ? configCorreo.getMensajeCorreo().getStrPara() : "";
+		String[] arrDestinatarios = paraBd.split(",");
+		for(int j=0; j<arrDestinatarios.length; j++){
+			String strDestinatario = arrDestinatarios[j].trim();					
+			destinatarios.add(strDestinatario);
+		}
+		mensajeCorreo.setLstDestinatarios(destinatarios);
+		
+		/* ---CCs--- */
+		List<String> ccs = new ArrayList<String>();
+		String ccBd = configCorreo.getMensajeCorreo().getStrConCopia() != null ? configCorreo.getMensajeCorreo().getStrConCopia() : "";
+		String[] arrCcs = ccBd.split(",");
+		for(int j=0; j<arrCcs.length; j++){
+			String strCc = arrCcs[j].trim();
+			if(!StringUtils.isEmpty(strCc)){
+				ccs.add(strCc);
+			}
+		}
+		mensajeCorreo.setLstCcs(ccs);
+		
+			
+		/* ---Asunto--- */
+		mensajeCorreo.setStrAsunto(configCorreo.getMensajeCorreo().getStrAsunto());
+		
+		/* ---Contenido--- */
+		mensajeCorreo.setStrContenido(configCorreo.getMensajeCorreo().getStrContenido()+""+strTableResumenHtml);
+		
+		enviarMensajeTask.enviarMensaje(mensajeCorreo, exchangeService);	
+	}
+}

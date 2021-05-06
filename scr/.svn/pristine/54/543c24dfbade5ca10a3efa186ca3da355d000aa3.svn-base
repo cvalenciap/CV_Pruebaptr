@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+
+<head>
+	<title th:text="${#messages.msg('represas.title')}"></title>
+	<script th:inline="javascript">
+		/*<![CDATA[*/   
+		var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+		lstRepresasActivasCombo = [[${represasActivas}]];
+		lstRepresasTodoCombo = [[${represasTodas}]];
+		
+		lstColaboradoresActivosCombo = [[${colaboradoresActivos}]];
+		lstColaboradoresTodoCombo = [[${colaboradoresTodos}]];
+		
+		lstClimasActivosCombo = [[${climasActivos}]];
+		lstClimasTodoCombo = [[${climasTodos}]];
+		/*]]>*/
+	</script>
+	
+	<link rel="stylesheet" th:href="@{/css/jasny-bootstrap.css}" />
+<style type="text/css">
+.modal-body{
+    max-height: calc(100vh - 210px);
+   	overflow-y: auto;
+}
+</style>
+</head>
+<body>
+	<div layout:fragment="content">	
+	
+		<!-- REPRESAS Modal -->
+		<div id="modal-registra-represas" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">		
+				<!-- Modal content-->
+			    <div class="modal-content" id="id-modal-content" th:replace="represasEdit :: form-edit-represas">
+			    		
+				</div>
+			</div>
+		</div>	
+		
+		<!-- Modal -->
+		<div id="modal-importar-represas" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+			<div class="modal-dialog" style="width: 80%;">		
+				<!-- Modal content-->
+			    <div class="modal-content" id="id-modal-content" th:replace="importarRepresaPreload :: form-import-detail">
+			    		
+				</div>
+			</div>
+		</div>
+		
+		<!-- MANIOBRAS Modal -->
+		<div id="modal-maniobras" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+			<div class="modal-dialog" style="width: 80%;">		
+				<!-- Modal content-->
+			    <div class="modal-content" id="id-modal-content" th:replace="maniobrasEdit :: form-edit-maniobras">
+			    		
+				</div>
+			</div>
+		</div>
+		
+		<form id="form-save-import" th:action="@{/represas/import}" method="post" style="display: none;"></form>
+	
+		<form name="formInactivaRepresas" id="form-inactiva-represas" style="display:none;" 
+			  th:action="@{/represas/inactivar}" method="post">
+			<input type="hidden" id="inacIdRepresas" name="inacIdRepresas" />  
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>	
+
+		<h3 class="text-center" th:text="${#messages.msg('home.represas')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp" id="form-search-tp" action="#" method="post" class="form-horizontal" role="form">				 
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-md-2 col-sm-2 col-xs-3 text-right no-padding" th:text="${#messages.msg('represas.represa')}"></label>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<input 	type="text" 
+										id="cpNomRep" 
+										onkeypress="return MYAPPL.soloLetrasNumerosEspacio(event)"
+										name="cpNomRep" 
+										class="form-control" 
+										th:placeholder="${#messages.msg('represas.represa')}"
+										style="text-transform: uppercase;" />
+							</div>
+							
+							<label class="control-label col-md-2 col-sm-2 col-xs-3 text-right no-padding" th:text="${#messages.msg('represas.nro.precipitacion')}"></label>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<input 	type="text" 
+										id="cpNumPre" 
+										onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"
+										name="cpNumPre" 
+										class="form-control" 
+										th:placeholder="${#messages.msg('represas.nro.precipitacion')}"
+										style="text-transform: uppercase;"/>
+							</div>	
+						</div>						
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<form role="form" th:action="@{/represasResumen}" method="get">
+					<div class="col-md-6 col-sm-6 no-padding text-left">
+						<button type="submit" class="btn btn-warning btn-resumen">
+							<span class="glyphicon glyphicon-list-alt"></span> 
+							<div style="display: inherit;" th:text="${#messages.msg('resumen.ver')}"></div>
+						</button>
+					</div>
+				</form>
+				<div class="col-md-6 col-sm-6 no-padding text-right">	
+					<button type="button" id="idBtnCrearRepresas"  class="btn btn-info btn-create-represas" data-toggle="modal" data-target="#modal-registra-represas"><span class="glyphicon glyphicon-plus"></span> <label th:text="${#messages.msg('represas.agregar')}"></label></button>	
+					<button type="button" id="idBtnFormBuscarRepresas" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> <label th:text="${#messages.msg('represas.buscar')}"></label></button>					
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+			
+		<div class="panel">	
+			<form id="form-upload-file" th:action="@{/represas/uploadFile}" method="post" style="display: none;"></form>			
+			<div class="col-md-12 label-name">
+				<div class="fileinput fileinput-new" data-provides="fileinput">
+					<form id="upload-file-form">
+					    <span class="btn btn-default btn-file"><span class="glyphicon glyphicon-folder-open"> Importar</span><input name="uploadfile" id="upload-carga-input" type="file" accept=".xls"/></span>
+					    <span class="fileinput-filename"></span><span id="emptyFileMessage" class="fileinput-new" th:text="${#messages.msg('represas.importar.empty')}"></span>
+					</form>
+				</div>	
+			</div>
+			<div class="col-md-12 label-name">
+				<a th:href="@{/represas/downloadTemplate}"><span class="glyphicon glyphicon-download-alt"></span>
+					<!-- <label th:text="${#messages.msg('represas.descargar')}">mje</label> -->
+					Descargar Plantilla
+				</a>
+			</div>
+		</div>
+			
+		<div class="panel espaciado-superior">
+			<div class="container_12 espaciado-superior">
+				<div th:replace="represasTable :: resultsList" class="grid_10 height800" id="idRepresasTable"></div>
+			</div>
+			<script type="text/javascript" th:src="@{/js/jquery.browser.min.js}"></script>
+			<script type="text/javascript" th:src="@{/js/jasny-bootstrap.js}"></script>
+			<script type="text/javascript" th:src="@{/js/math.min.js}"></script>
+			<script type="text/javascript" th:src="@{/js/represas.js}"></script>
+			<script type="text/javascript" th:src="@{/js/maniobras.js}"></script>
+		</div>
+	</div>
+</body>
+</html>

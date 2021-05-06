@@ -1,0 +1,426 @@
+create or replace PACKAGE BODY PKG_ALC_PHMETRO AS
+
+    PROCEDURE PRC_BUSCA_PHMETRO_DIGITAL(
+       --Parametros de la busqueda
+       PAR_NCODIGO_EQUIPO             IN ALC_FORMULAR292.C_CODEQU%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER,
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR 
+    )IS 
+    V_QUERY VARCHAR2(4000);
+    V_QUERY_FROM VARCHAR2(4000);
+    V_QUERY_COUNT VARCHAR2(4000); 
+  
+    BEGIN
+    
+          V_QUERY_COUNT := 'select count(*) '; 
+ 
+          V_QUERY := 'select * 
+                      from (select a.*, rownum rn
+                            from (select c_nomequ, c_codequ, c_marequ, c_modequ, c_serieq, n_cof292' ;
+        
+          IF(PAR_NCODIGO_EQUIPO <> '0')THEN
+            V_QUERY_FROM := ' from ALC_FORMULAR292 c
+                              where c.n_status = 1 and UPPER(c.c_codequ) like UPPER(''%' || PAR_NCODIGO_EQUIPO || '%'')';
+          ELSE
+            V_QUERY_FROM := ' from ALC_FORMULAR292 c
+                              where c.n_status = 1';
+          END IF;
+          
+        
+          V_QUERY := V_QUERY || V_QUERY_FROM;
+         
+          V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+        
+          V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+    
+    
+             
+          OPEN par_out_cursor FOR v_query;
+          
+          execute immediate v_query_count into par_out_quantity;
+    
+    END;
+    
+    PROCEDURE PRC_GET_PHMETRO_DIGITAL(
+       --Parametros de la busqueda
+        PAR_NID_EQUIPO  IN ALC_FORMULAR292.N_COF292%TYPE,
+       --Parametros de retorno
+        par_out_cursor OUT SYS_REFCURSOR)
+       
+    IS
+        v_query VARCHAR2(4000); 
+        BEGIN
+          v_query := 'SELECT C_NOMEQU,C_CODEQU,C_MAREQU,C_MODEQU,C_SERIEQ,
+                        C_CNOMB1,C_CNOMB2,C_CNOMB3,C_CLOTE1,C_CLOTE2,C_CLOTE3,C_CCODI1,C_CCODI2,C_CCODI3,C_CCADU1,C_CCADU2,
+                        C_CCADU3,C_CMARC1,C_CMARC2,C_CMARC3,C_CESPE1,C_CESPE2,C_CESPE3,C_VNOMB1,C_VNOMB2,C_VNOMB3,C_VLOTE1,
+                        C_VLOTE2,C_VLOTE3,C_VCODI1,C_VCODI2,C_VCODI3,C_VCADU1,C_VCADU2,C_VCADU3,C_VMARC1,C_VMARC2,C_VMARC3,
+                        C_VESPE1,C_VESPE2,C_VESPE3,N_STATUS, N_COF292, C_CPEND1, C_CPEND2, C_CPEND3, C_CPEND4
+                        FROM ALC_FORMULAR292 WHERE N_STATUS = 1 AND N_COF292 = ' || PAR_NID_EQUIPO;
+          OPEN par_out_cursor FOR v_query;
+                    
+    END;
+    
+    PROCEDURE PRC_INSERT_PHMETRO_DIGITAL(
+       PAR_NCODIGO_EQUIPO        IN ALC_FORMULAR292.C_CODEQU%TYPE,
+       PAR_CNOMBRE_EQUIPO        IN ALC_FORMULAR292.C_NOMEQU%TYPE,
+       PAR_CMARCA                IN ALC_FORMULAR292.C_MAREQU%TYPE,
+       PAR_CMODELO               IN ALC_FORMULAR292.C_MODEQU%TYPE,
+       PAR_CNRO_SERIE            IN ALC_FORMULAR292.C_SERIEQ%TYPE,
+       PAR_CCALIF_NOMBRE1       IN ALC_FORMULAR292.C_CNOMB1%TYPE,
+       PAR_CCALIF_NOMBRE2       IN ALC_FORMULAR292.C_CNOMB2%TYPE,
+       PAR_CCALIF_NOMBRE3       IN ALC_FORMULAR292.C_CNOMB3%TYPE,
+       PAR_CCALIF_LOTE1         IN ALC_FORMULAR292.C_CLOTE1%TYPE,
+       PAR_CCALIF_LOTE2         IN ALC_FORMULAR292.C_CLOTE2%TYPE,
+       PAR_CCALIF_LOTE3         IN ALC_FORMULAR292.C_CLOTE3%TYPE,
+       PAR_CCALIF_CODIGO1       IN ALC_FORMULAR292.C_CCODI1%TYPE,
+       PAR_CCALIF_CODIGO2       IN ALC_FORMULAR292.C_CCODI2%TYPE,
+       PAR_CCALIF_CODIGO3       IN ALC_FORMULAR292.C_CCODI3%TYPE,
+       PAR_CCALIF_CADUCIDAD1    IN ALC_FORMULAR292.C_CCADU1%TYPE,
+       PAR_CCALIF_CADUCIDAD2    IN ALC_FORMULAR292.C_CCADU2%TYPE,
+       PAR_CCALIF_CADUCIDAD3    IN ALC_FORMULAR292.C_CCADU3%TYPE,
+       PAR_CCALIF_MARCA1        IN ALC_FORMULAR292.C_CMARC1%TYPE,
+       PAR_CCALIF_MARCA2        IN ALC_FORMULAR292.C_CMARC2%TYPE,
+       PAR_CCALIF_MARCA3        IN ALC_FORMULAR292.C_CMARC3%TYPE,
+       PAR_CCALIF_ESPECIFICACION1 IN ALC_FORMULAR292.C_CESPE1%TYPE,
+       PAR_CCALIF_ESPECIFICACION2 IN ALC_FORMULAR292.C_CESPE2%TYPE,
+       PAR_CCALIF_ESPECIFICACION3 IN ALC_FORMULAR292.C_CESPE3%TYPE,	
+       PAR_CCALIF_PENDIENTE1      IN ALC_FORMULAR292.C_CPEND1%TYPE,
+       PAR_CCALIF_PENDIENTE2      IN ALC_FORMULAR292.C_CPEND2%TYPE,
+       PAR_CCALIF_PENDIENTE3      IN ALC_FORMULAR292.C_CPEND3%TYPE,
+       PAR_CCALIF_PENDIENTE4      IN ALC_FORMULAR292.C_CPEND4%TYPE, 
+       PAR_CVERIF_NOMBRE1       IN ALC_FORMULAR292.C_VNOMB1%TYPE,
+       PAR_CVERIF_NOMBRE2       IN ALC_FORMULAR292.C_VNOMB2%TYPE,
+       PAR_CVERIF_NOMBRE3       IN ALC_FORMULAR292.C_VNOMB3%TYPE,
+       PAR_CVERIF_LOTE1         IN ALC_FORMULAR292.C_VLOTE1%TYPE,
+       PAR_CVERIF_LOTE2         IN ALC_FORMULAR292.C_VLOTE2%TYPE,
+       PAR_CVERIF_LOTE3         IN ALC_FORMULAR292.C_VLOTE3%TYPE,
+       PAR_CVERIF_CODIGO1       IN ALC_FORMULAR292.C_VCODI1%TYPE,
+       PAR_CVERIF_CODIGO2       IN ALC_FORMULAR292.C_VCODI2%TYPE,
+       PAR_CVERIF_CODIGO3       IN ALC_FORMULAR292.C_VCODI3%TYPE,
+       PAR_CVERIF_CADUCIDAD1    IN ALC_FORMULAR292.C_VCADU1%TYPE,
+       PAR_CVERIF_CADUCIDAD2    IN ALC_FORMULAR292.C_VCADU2%TYPE,
+       PAR_CVERIF_CADUCIDAD3    IN ALC_FORMULAR292.C_VCADU3%TYPE,
+       PAR_CVERIF_MARCA1        IN ALC_FORMULAR292.C_VMARC1%TYPE,
+       PAR_CVERIF_MARCA2        IN ALC_FORMULAR292.C_VMARC2%TYPE,
+       PAR_CVERIF_MARCA3        IN ALC_FORMULAR292.C_VMARC3%TYPE,
+       PAR_CVERIF_ESPECIFICACION1 IN ALC_FORMULAR292.C_VESPE1%TYPE,
+       PAR_CVERIF_ESPECIFICACION2 IN ALC_FORMULAR292.C_VESPE2%TYPE,
+       PAR_CVERIF_ESPECIFICACION3 IN ALC_FORMULAR292.C_VESPE3%TYPE,       
+       PAR_VESTADO                IN ALC_FORMULAR292.N_STATUS%TYPE,       
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION     IN ALC_FORMULAR292.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI         IN ALC_FORMULAR292.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_FORMULAR292.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN        OUT INTEGER
+     )IS
+       
+         BEGIN         
+            SELECT COUNT(c_codequ) INTO PAR_OUT_RETURN FROM ALC_FORMULAR292 WHERE UPPER(c_codequ) = UPPER(PAR_NCODIGO_EQUIPO);
+            
+            IF(PAR_OUT_RETURN = 0) THEN
+                PAR_OUT_RETURN := SQ_ALC_FORMULAR292.NEXTVAL; 
+            
+                INSERT INTO ALC_FORMULAR292 (
+                           A_USUCRE, A_FECCRE,A_USUMOD,A_FECMOD,A_NOMPRG,N_COF292,C_NOMEQU,C_CODEQU,C_MAREQU,C_MODEQU,C_SERIEQ,
+                            C_CNOMB1,C_CNOMB2,C_CNOMB3,C_CLOTE1,C_CLOTE2,C_CLOTE3,C_CCODI1,C_CCODI2,C_CCODI3,C_CCADU1,C_CCADU2,                            
+                            C_CCADU3,C_CMARC1,C_CMARC2,C_CMARC3,C_CESPE1,C_CESPE2,C_CESPE3,C_CPEND1,C_CPEND2,C_CPEND3,C_CPEND4,
+                            C_VNOMB1,C_VNOMB2,C_VNOMB3,C_VLOTE1,C_VLOTE2,C_VLOTE3,C_VCODI1,C_VCODI2,C_VCODI3,C_VCADU1,C_VCADU2,
+                            C_VCADU3,C_VMARC1,C_VMARC2,C_VMARC3,C_VESPE1,C_VESPE2,C_VESPE3,N_STATUS)
+                    VALUES(
+                           PAR_CUSUARIO_CREACION,
+                           SYSDATE,
+                           PAR_CUSUARIO_MODI,
+                           SYSDATE,
+                           PAR_CPROGRAMA,
+                           PAR_OUT_RETURN,
+                           NVL(PAR_CNOMBRE_EQUIPO, ' '),
+                           PAR_NCODIGO_EQUIPO,                           
+                           NVL(PAR_CMARCA, ' '),
+                           NVL(PAR_CMODELO, ' '),
+                           NVL(PAR_CNRO_SERIE, ' '),
+                           NVL(PAR_CCALIF_NOMBRE1   , ' '),
+                           NVL(PAR_CCALIF_NOMBRE2   , ' '),
+                           NVL(PAR_CCALIF_NOMBRE3   , ' '),
+                           NVL(PAR_CCALIF_LOTE1     , ' '),
+                           NVL(PAR_CCALIF_LOTE2     , ' '),
+                           NVL(PAR_CCALIF_LOTE3     , ' '),
+                           NVL(PAR_CCALIF_CODIGO1   , ' '),
+                           NVL(PAR_CCALIF_CODIGO2   , ' '),
+                           NVL(PAR_CCALIF_CODIGO3   , ' '),
+                           NVL(PAR_CCALIF_CADUCIDAD1, ' '),
+                           NVL(PAR_CCALIF_CADUCIDAD2, ' '),
+                           NVL(PAR_CCALIF_CADUCIDAD3, ' '),
+                           NVL(PAR_CCALIF_MARCA1    , ' '),
+                           NVL(PAR_CCALIF_MARCA2    , ' '),
+                           NVL(PAR_CCALIF_MARCA3    , ' '),
+                           NVL(PAR_CCALIF_ESPECIFICACION1, ' '),
+                           NVL(PAR_CCALIF_ESPECIFICACION2, ' '),
+                           NVL(PAR_CCALIF_ESPECIFICACION3, ' '),	
+                           NVL(PAR_CCALIF_PENDIENTE1, ' '),
+                           NVL(PAR_CCALIF_PENDIENTE2, ' '),
+                           NVL(PAR_CCALIF_PENDIENTE3, ' '),
+                           NVL(PAR_CCALIF_PENDIENTE4, ' '),
+                           NVL(PAR_CVERIF_NOMBRE1   , ' '),
+                           NVL(PAR_CVERIF_NOMBRE2   , ' '),
+                           NVL(PAR_CVERIF_NOMBRE3   , ' '),
+                           NVL(PAR_CVERIF_LOTE1     , ' '),
+                           NVL(PAR_CVERIF_LOTE2     , ' '),
+                           NVL(PAR_CVERIF_LOTE3     , ' '),
+                           NVL(PAR_CVERIF_CODIGO1   , ' '),
+                           NVL(PAR_CVERIF_CODIGO2   , ' '),
+                           NVL(PAR_CVERIF_CODIGO3   , ' '),
+                           NVL(PAR_CVERIF_CADUCIDAD1, ' '),
+                           NVL(PAR_CVERIF_CADUCIDAD2, ' '),
+                           NVL(PAR_CVERIF_CADUCIDAD3, ' '),
+                           NVL(PAR_CVERIF_MARCA1    , ' '),
+                           NVL(PAR_CVERIF_MARCA2    , ' '),
+                           NVL(PAR_CVERIF_MARCA3    , ' '),
+                           NVL(PAR_CVERIF_ESPECIFICACION1, ' '),
+                           NVL(PAR_CVERIF_ESPECIFICACION2, ' '),
+                           NVL(PAR_CVERIF_ESPECIFICACION3, ' '),
+                           NVL(PAR_VESTADO, 0)                                          
+                        ); 
+            ELSE
+                PAR_OUT_RETURN := -1;
+            END IF;
+      
+    END;
+    
+    PROCEDURE PRC_UPDATE_PHMETRO_DIGITAL(
+       PAR_NID_EQUIPO            IN ALC_FORMULAR292.N_COF292%TYPE,
+       PAR_NCODIGO_EQUIPO        IN ALC_FORMULAR292.C_CODEQU%TYPE,
+       PAR_CNOMBRE_EQUIPO        IN ALC_FORMULAR292.C_NOMEQU%TYPE,
+       PAR_CMARCA                IN ALC_FORMULAR292.C_MAREQU%TYPE,
+       PAR_CMODELO               IN ALC_FORMULAR292.C_MODEQU%TYPE,
+       PAR_CNRO_SERIE            IN ALC_FORMULAR292.C_SERIEQ%TYPE,
+       PAR_CCALIF_NOMBRE1       IN ALC_FORMULAR292.C_CNOMB1%TYPE,
+       PAR_CCALIF_NOMBRE2       IN ALC_FORMULAR292.C_CNOMB2%TYPE,
+       PAR_CCALIF_NOMBRE3       IN ALC_FORMULAR292.C_CNOMB3%TYPE,
+       PAR_CCALIF_LOTE1         IN ALC_FORMULAR292.C_CLOTE1%TYPE,
+       PAR_CCALIF_LOTE2         IN ALC_FORMULAR292.C_CLOTE2%TYPE,
+       PAR_CCALIF_LOTE3         IN ALC_FORMULAR292.C_CLOTE3%TYPE,
+       PAR_CCALIF_CODIGO1       IN ALC_FORMULAR292.C_CCODI1%TYPE,
+       PAR_CCALIF_CODIGO2       IN ALC_FORMULAR292.C_CCODI2%TYPE,
+       PAR_CCALIF_CODIGO3       IN ALC_FORMULAR292.C_CCODI3%TYPE,
+       PAR_CCALIF_CADUCIDAD1    IN ALC_FORMULAR292.C_CCADU1%TYPE,
+       PAR_CCALIF_CADUCIDAD2    IN ALC_FORMULAR292.C_CCADU2%TYPE,
+       PAR_CCALIF_CADUCIDAD3    IN ALC_FORMULAR292.C_CCADU3%TYPE,
+       PAR_CCALIF_MARCA1        IN ALC_FORMULAR292.C_CMARC1%TYPE,
+       PAR_CCALIF_MARCA2        IN ALC_FORMULAR292.C_CMARC2%TYPE,
+       PAR_CCALIF_MARCA3        IN ALC_FORMULAR292.C_CMARC3%TYPE,
+       PAR_CCALIF_ESPECIFICACION1 IN ALC_FORMULAR292.C_CESPE1%TYPE,
+       PAR_CCALIF_ESPECIFICACION2 IN ALC_FORMULAR292.C_CESPE2%TYPE,
+       PAR_CCALIF_ESPECIFICACION3 IN ALC_FORMULAR292.C_CESPE3%TYPE,	
+       PAR_CCALIF_PENDIENTE1      IN ALC_FORMULAR292.C_CPEND1%TYPE,
+       PAR_CCALIF_PENDIENTE2      IN ALC_FORMULAR292.C_CPEND2%TYPE,
+       PAR_CCALIF_PENDIENTE3      IN ALC_FORMULAR292.C_CPEND3%TYPE,
+       PAR_CCALIF_PENDIENTE4      IN ALC_FORMULAR292.C_CPEND4%TYPE,
+       PAR_CVERIF_NOMBRE1       IN ALC_FORMULAR292.C_VNOMB1%TYPE,
+       PAR_CVERIF_NOMBRE2       IN ALC_FORMULAR292.C_VNOMB2%TYPE,
+       PAR_CVERIF_NOMBRE3       IN ALC_FORMULAR292.C_VNOMB3%TYPE,
+       PAR_CVERIF_LOTE1         IN ALC_FORMULAR292.C_VLOTE1%TYPE,
+       PAR_CVERIF_LOTE2         IN ALC_FORMULAR292.C_VLOTE2%TYPE,
+       PAR_CVERIF_LOTE3         IN ALC_FORMULAR292.C_VLOTE3%TYPE,
+       PAR_CVERIF_CODIGO1       IN ALC_FORMULAR292.C_VCODI1%TYPE,
+       PAR_CVERIF_CODIGO2       IN ALC_FORMULAR292.C_VCODI2%TYPE,
+       PAR_CVERIF_CODIGO3       IN ALC_FORMULAR292.C_VCODI3%TYPE,
+       PAR_CVERIF_CADUCIDAD1    IN ALC_FORMULAR292.C_VCADU1%TYPE,
+       PAR_CVERIF_CADUCIDAD2    IN ALC_FORMULAR292.C_VCADU2%TYPE,
+       PAR_CVERIF_CADUCIDAD3    IN ALC_FORMULAR292.C_VCADU3%TYPE,
+       PAR_CVERIF_MARCA1        IN ALC_FORMULAR292.C_VMARC1%TYPE,
+       PAR_CVERIF_MARCA2        IN ALC_FORMULAR292.C_VMARC2%TYPE,
+       PAR_CVERIF_MARCA3        IN ALC_FORMULAR292.C_VMARC3%TYPE,
+       PAR_CVERIF_ESPECIFICACION1 IN ALC_FORMULAR292.C_VESPE1%TYPE,
+       PAR_CVERIF_ESPECIFICACION2 IN ALC_FORMULAR292.C_VESPE2%TYPE,
+       PAR_CVERIF_ESPECIFICACION3 IN ALC_FORMULAR292.C_VESPE3%TYPE,       
+       PAR_VESTADO                IN ALC_FORMULAR292.N_STATUS%TYPE,       
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_FORMULAR292.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_FORMULAR292.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN        OUT INTEGER
+     )IS 
+         BEGIN
+         UPDATE ALC_FORMULAR292
+            SET A_USUMOD = PAR_CUSUARIO_MODI         ,
+                A_FECMOD = SYSDATE                   ,
+                A_NOMPRG =  NVL(PAR_CPROGRAMA             ,' '),
+                C_NOMEQU =  NVL(PAR_CNOMBRE_EQUIPO        ,' '),
+                C_CODEQU =  PAR_NCODIGO_EQUIPO        ,
+                C_MAREQU =  NVL(PAR_CMARCA                ,' '),
+                C_MODEQU =  NVL(PAR_CMODELO               ,' '),
+                C_SERIEQ =  NVL(PAR_CNRO_SERIE            ,' '),
+                C_CNOMB1 =  NVL(PAR_CCALIF_NOMBRE1        ,' '),
+                C_CNOMB2 =  NVL(PAR_CCALIF_NOMBRE2        ,' '),
+                C_CNOMB3 =  NVL(PAR_CCALIF_NOMBRE3        ,' '),
+                C_CLOTE1 =  NVL(PAR_CCALIF_LOTE1          ,' '),
+                C_CLOTE2 =  NVL(PAR_CCALIF_LOTE2          ,' '),
+                C_CLOTE3 =  NVL(PAR_CCALIF_LOTE3          ,' '),
+                C_CCODI1 =  NVL(PAR_CCALIF_CODIGO1        ,' '),
+                C_CCODI2 =  NVL(PAR_CCALIF_CODIGO2        ,' '),
+                C_CCODI3 =  NVL(PAR_CCALIF_CODIGO3        ,' '),
+                C_CCADU1 =  NVL(PAR_CCALIF_CADUCIDAD1     ,' '),
+                C_CCADU2 =  NVL(PAR_CCALIF_CADUCIDAD2     ,' '),
+                C_CCADU3 =  NVL(PAR_CCALIF_CADUCIDAD3     ,' '),
+                C_CMARC1 =  NVL(PAR_CCALIF_MARCA1         ,' '),
+                C_CMARC2 =  NVL(PAR_CCALIF_MARCA2         ,' '),
+                C_CMARC3 =  NVL(PAR_CCALIF_MARCA3         ,' '),
+                C_CESPE1 =  NVL(PAR_CCALIF_ESPECIFICACION1,' '),
+                C_CESPE2 =  NVL(PAR_CCALIF_ESPECIFICACION2,' '),
+                C_CESPE3 =  NVL(PAR_CCALIF_ESPECIFICACION3,' '),
+                C_CPEND1 =  NVL(PAR_CCALIF_PENDIENTE1     ,' '),
+                C_CPEND2 =  NVL(PAR_CCALIF_PENDIENTE2     ,' '),
+                C_CPEND3 =  NVL(PAR_CCALIF_PENDIENTE3     ,' '),
+                C_CPEND4 =  NVL(PAR_CCALIF_PENDIENTE4     ,' '),
+                C_VNOMB1 =  NVL(PAR_CVERIF_NOMBRE1        ,' '),
+                C_VNOMB2 =  NVL(PAR_CVERIF_NOMBRE2        ,' '),
+                C_VNOMB3 =  NVL(PAR_CVERIF_NOMBRE3        ,' '),
+                C_VLOTE1 =  NVL(PAR_CVERIF_LOTE1          ,' '),
+                C_VLOTE2 =  NVL(PAR_CVERIF_LOTE2          ,' '),
+                C_VLOTE3 =  NVL(PAR_CVERIF_LOTE3          ,' '),
+                C_VCODI1 =  NVL(PAR_CVERIF_CODIGO1        ,' '),
+                C_VCODI2 =  NVL(PAR_CVERIF_CODIGO2        ,' '),
+                C_VCODI3 =  NVL(PAR_CVERIF_CODIGO3        ,' '),
+                C_VCADU1 =  NVL(PAR_CVERIF_CADUCIDAD1     ,' '),
+                C_VCADU2 =  NVL(PAR_CVERIF_CADUCIDAD2     ,' '),
+                C_VCADU3 =  NVL(PAR_CVERIF_CADUCIDAD3     ,' '),
+                C_VMARC1 =  NVL(PAR_CVERIF_MARCA1         ,' '),
+                C_VMARC2 =  NVL(PAR_CVERIF_MARCA2         ,' '),
+                C_VMARC3 =  NVL(PAR_CVERIF_MARCA3         ,' '),
+                C_VESPE1 =  NVL(PAR_CVERIF_ESPECIFICACION1,' '),
+                C_VESPE2 =  NVL(PAR_CVERIF_ESPECIFICACION2,' '),
+                C_VESPE3 =  NVL(PAR_CVERIF_ESPECIFICACION3,' ')
+         WHERE 
+               N_COF292 = PAR_NID_EQUIPO;
+                
+         PAR_OUT_RETURN := 0;       
+                  
+    END;
+    
+    PROCEDURE PRC_INACTIVA_PHMETRO_DIGITAL(       
+       --Parametros de la busqueda
+      PAR_NID_EQUIPO           IN ALC_FORMULAR292.N_COF292%TYPE,
+      PAR_NESTADO              IN ALC_FORMULAR292.N_STATUS%TYPE
+     )IS
+     BEGIN
+        UPDATE ALC_FORMULAR292 
+        SET N_STATUS = PAR_NESTADO
+        WHERE  N_COF292 = PAR_NID_EQUIPO;
+           
+      END;
+      
+    PROCEDURE SP_DETALLE_PHMETRO_DIGITAL(
+       --Parametros de la busqueda
+       PAR_NID_EQUIPO             IN ALC_DETALFORM292.N_COF292%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER,
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+    V_QUERY VARCHAR2(4000);
+    V_QUERY_FROM VARCHAR2(4000);
+    V_QUERY_COUNT VARCHAR2(4000); 
+ 
+    BEGIN
+    
+          V_QUERY_COUNT := 'select count(*) '; 
+ 
+          V_QUERY := 'select * 
+                      from (select a.*, rownum rn
+                            from (select c.d_fecha, c.c_respon, c.c_cali01, c.c_cali02, c.c_cali03, c.c_cali04, 
+                                    c.c_veri01, c.c_veri02, c.c_veri03, c.n_confor, c.c_revisa, c.n_cdf292, c.n_cof292' ;
+        
+          IF(PAR_NID_EQUIPO <> '0')THEN
+            V_QUERY_FROM := ' from ALC_DETALFORM292 c
+                              where c.n_status = 1 and c.N_COF292 = ' || PAR_NID_EQUIPO;
+          ELSE
+            V_QUERY_FROM := ' from ALC_DETALFORM292 c
+                              where c.n_status = 1';
+          END IF;
+          
+        
+          V_QUERY := V_QUERY || V_QUERY_FROM;
+         
+          V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+        
+          V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+    
+    
+             
+          OPEN par_out_cursor FOR v_query;
+          
+          execute immediate v_query_count into par_out_quantity;
+    
+    END;
+    
+    PROCEDURE PRC_INS_DETALLE_PTRO_DIGITAL(
+       PAR_NID_EQUIPO               IN ALC_DETALFORM292.N_COF292%TYPE,
+       PAR_DFECHA                   IN ALC_DETALFORM292.D_FECHA%TYPE,
+       PAR_CRESPONSABLE_DET         IN ALC_DETALFORM292.C_RESPON%TYPE,
+       PAR_CCALIBRACION1            IN ALC_DETALFORM292.C_CALI01%TYPE,
+       PAR_CCALIBRACION2            IN ALC_DETALFORM292.C_CALI02%TYPE,
+       PAR_CCALIBRACION3            IN ALC_DETALFORM292.C_CALI03%TYPE,
+       PAR_CCALIBRACION4            IN ALC_DETALFORM292.C_CALI04%TYPE,
+       PAR_CVERIFICACION1           IN ALC_DETALFORM292.C_VERI01%TYPE,
+       PAR_CVERIFICACION2           IN ALC_DETALFORM292.C_VERI02%TYPE,
+       PAR_CVERIFICACION3           IN ALC_DETALFORM292.C_VERI03%TYPE,
+       PAR_CCONFORMIDAD             IN ALC_DETALFORM292.N_CONFOR%TYPE,
+       PAR_CREVISADO                IN ALC_DETALFORM292.C_REVISA%TYPE,       
+       PAR_VESTADO                  IN ALC_DETALFORM292.N_STATUS%TYPE,       
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION        IN ALC_DETALFORM292.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI            IN ALC_DETALFORM292.A_USUMOD%TYPE,
+       PAR_CPROGRAMA                IN ALC_DETALFORM292.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN               OUT INTEGER
+     )IS
+       
+         BEGIN         
+             INSERT INTO ALC_DETALFORM292 (
+                           A_USUCRE, A_FECCRE,A_USUMOD,A_FECMOD,A_NOMPRG,N_COF292,N_CDF292,D_FECHA,C_RESPON,C_CALI01,C_CALI02,
+                            C_CALI03,C_CALI04,C_VERI01,C_VERI02,C_VERI03,N_CONFOR,C_REVISA,N_STATUS)
+                    VALUES(
+                           PAR_CUSUARIO_CREACION,
+                           SYSDATE,
+                           PAR_CUSUARIO_MODI,
+                           SYSDATE,
+                           PAR_CPROGRAMA, 
+                           PAR_NID_EQUIPO,
+                           SQ_ALC_DETALFORM292.NEXTVAL,
+                           PAR_DFECHA,
+                           NVL(PAR_CRESPONSABLE_DET, ' '),                          
+                           NVL(PAR_CCALIBRACION1,' '),
+                           NVL(PAR_CCALIBRACION2,' '),
+                           NVL(PAR_CCALIBRACION3,' '),
+                           NVL(PAR_CCALIBRACION4,' '),
+                           NVL(PAR_CVERIFICACION1   ,' '),
+                           NVL(PAR_CVERIFICACION2   ,' '),
+                           NVL(PAR_CVERIFICACION3   ,' '),
+                           NVL(PAR_CCONFORMIDAD   ,0),
+                           NVL(PAR_CREVISADO   ,  ' '),                        
+                           NVL(PAR_VESTADO,0)                                          
+                        ); 
+              PAR_OUT_RETURN := 0;          
+    END;
+    
+   PROCEDURE PRC_INAC_DETALLE_PTRO_DIGITAL(       
+       --Parametros de la busqueda
+      PAR_NID_DETALLE           IN ALC_DETALFORM292.N_CDF292%TYPE,
+      PAR_NESTADO               IN ALC_FORMULAR292.N_STATUS%TYPE
+    )IS
+     BEGIN
+        UPDATE ALC_DETALFORM292 
+        SET N_STATUS = PAR_NESTADO
+        WHERE  N_CDF292 = PAR_NID_DETALLE;
+           
+      END;
+
+END PKG_ALC_PHMETRO;

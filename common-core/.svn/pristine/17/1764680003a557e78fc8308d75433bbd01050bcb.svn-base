@@ -1,0 +1,42 @@
+/***************************************
+Theme Name: UI TAYLOR BY GMD
+Author: Paulo Vicente, Adriana Salazar, Diego Guadalupe
+Version: 2.0
+UX GMD
+/**************************************/
+
+/******************************
+/*----IMPORT-----*/
+/*******************************/
+@import url(../bootstrap/css/bootstrap.css);
+@import url(../bootstrap-datatable/dataTables.bootstrap.css);
+@import url(../css/bootstrap-add.css);
+@import url(../font-awesome/font-awesome.css);
+@import url(comp.css);
+@import url(jquery.mCustomScrollbar.css);
+
+.btn-circle {
+  width: 15px;
+  height: 15px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+}
+.btn-circle.btn-lg {
+  width: 50px;
+  height: 50px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 25px;
+}
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  font-size: 24px;
+  line-height: 1.33;
+  border-radius: 35px;
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('bandeja.title')}"></title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+
+		<div id="modal-previsualizar-pdf" class="modal fade" role="dialog" data-backdrop="static">
+		  <div class="modal-dialog" style="width: 90%;">
+			<!-- Modal content-->
+		    <div class="modal-content" id="id-modal-content" th:replace="fragments/genericDialogPDF :: previsualizar-pdf">
+		    </div>
+		  </div>
+		</div>
+
+		<h3 class="text-center" th:text="${#messages.msg('reporte.resumen.home')}"></h3>
+
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp" id="form-search-tp"  action="#"
+				  method="post" class="form-horizontal" role="form">
+				<fieldset>
+				   <div class="col-md-12 col-sm-12 col-xs-12">
+		    	      <div class="form-group">
+							<label class="control-label col-md-2 col-sm-2 col-xs-3 text-right no-padding" th:text="${#messages.msg('reporte.almacenamiento.periodo')}"></label>
+							<div class="col-md-3 col-sm-4 col-xs-3">
+									<input type="text" id="txtPeriodo"   name="periodo" class="form-control" 
+										th:placeholder="${#messages.msg('reporte.almacenamiento.periodo')}"
+										title ="Ingrese el periodo"  
+										style="text-align: center;" 
+										readonly="readonly"
+										maxlength="6" />
+								<input type="hidden" value="" id="txtPeriodoHide"/>
+							</div>
+						</div>
+						</div>
+				</fieldset>
+			</form>
+		</div>
+
+		 
+		<div class="panel espaciado-superior label-name">
+			<div class="col-md-12 col-sm-12 col-xs-12 label-name right-align">
+				<button type="button" class="btn btn-warning btn-pdf-punto" onclick="obtenerReporte();">
+					PDF 
+				</button>
+			</div>
+			<div class="container_12" >
+				
+			</div>
+			
+			<script type="text/javascript" th:src="@{/js/reportesResumen.js}"></script>
+		</div>
+		
+		 
+	
+		
+		
+	</div>
+</body>
+</html>

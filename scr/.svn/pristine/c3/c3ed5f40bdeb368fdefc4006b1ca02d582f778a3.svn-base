@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('analisis.hidrobiologico.titulo')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+			<!-- Modal -->
+		
+		<div class="" id="id-modal-plan-bandeja-inactivar"></div>
+		
+		<div id="modal-registra-planoperativo-bandeja" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+
+			    
+			    <div class="" id="id-modal-plan-bandeja" style="height: 40%;"></div>
+			</div>
+		</div>
+		
+		<h3 class="text-center" th:text="${#messages.msg('analisis.hidrobiologico.titulo')}"></h3>
+		
+		<div class="">
+			<div class="container_12"  th:fragment="tablaAnalisisHidro" id="tablaAnalisisHidro">
+				<div th:replace="analisisHidroBiologico/analisisHidroBiologicoTable :: resultsList" class="grid_10 height800" id="idTablaPoissonTable"></div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:src="@{/js/mantAnalisisHidroBiologico.js}"></script>
+		
+	</div>
+</body>
+</html>

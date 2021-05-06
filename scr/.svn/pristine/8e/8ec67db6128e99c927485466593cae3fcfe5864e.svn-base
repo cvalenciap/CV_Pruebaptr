@@ -1,0 +1,682 @@
+create or replace package body PKC_ALC_FORM222 is
+
+PROCEDURE PRC_LISTADO_HEADER_FORM222(
+    --Parametros de la busqueda
+   P_FECHA_MUESTREO          IN VARCHAR2,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR      
+ )
+ 
+IS
+
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+
+BEGIN
+
+  v_query_count:= ' select count(*) ';
+
+  v_query :=  'SELECT * 
+                 FROM(SELECT a.*, rownum rn 
+                        FROM(SELECT 
+                                    TO_CHAR(A.D_FECMUE, ''DD/MM/YYYY HH:MI:SS AM'')  AS H,
+                                    B.C_DDCATL AS I,  
+                                    C.C_DDCATL AS J,
+                                    D.C_DDCATL AS K,
+                                    E.C_DDCATL AS L,
+                                    F.C_DDCATL AS M,                          
+                                    G.C_DDCATL AS N,
+                                    A.C_OBSERV AS O,
+                                    A.N_COF255 AS P
+                                                     ';
+
+  v_query_from := ' FROM ALC_FORMULARI222 A 
+                                        INNER JOIN ALC_DETCATLG B ON A.N_MUESTR = B.C_VALCAT AND B.N_CCATLG=10
+                                        INNER JOIN ALC_DETCATLG C ON A.N_PARAME = C.C_VALCAT AND C.N_CCATLG=10
+                                        INNER JOIN ALC_DETCATLG D ON A.N_ARMETA = D.C_VALCAT AND D.N_CCATLG=11 
+                                        INNER JOIN ALC_DETCATLG E ON A.N_ARFISI = E.C_VALCAT AND E.N_CCATLG=11 
+                                        INNER JOIN ALC_DETCATLG F ON A.N_ARORGA = F.C_VALCAT AND F.N_CCATLG=11
+                                        INNER JOIN ALC_DETCATLG G ON A.N_ESPECI = G.C_VALCAT AND G.N_CCATLG=14    
+                              WHERE ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := ' 1=1 ';
+  
+  
+   if(LENGTH(TRIM(P_FECHA_MUESTREO))>0) then
+    v_query_where :=  v_query_where || ' AND TO_CHAR(A.D_FECMUE, '''||'DD/MM/YYYY'||''') >= ''' || P_FECHA_MUESTREO ||''' AND ';
+    v_query_where :=  v_query_where || '     TO_CHAR(A.D_FECMUE, '''||'DD/MM/YYYY'||''') <= ''' || P_FECHA_MUESTREO ||'''  ';  
+              
+   end if;
+  
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+  
+  v_query := v_query || ' order by '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' and rn <= ' || (par_pag_desde+par_cantidad_pag);
+    
+  OPEN par_out_cursor FOR v_query;
+  
+  execute immediate v_query_count into par_out_quantity;
+END;
+
+PROCEDURE PRC_GET_HEADER222(
+   --Parametros de la busqueda
+   P_ID_HEADER   IN    ALC_FORMULHEADER.N_CODHFO%TYPE,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+
+BEGIN
+  
+   OPEN PAR_OUT_CURSOR FOR
+   SELECT TO_CHAR(H.D_FECMUE, 'DD/MM/YYYY HH24:MI:SS'),
+          H.N_MUESTR, 
+          H.N_PARAME, 
+          H.N_ARMETA, 
+          H.N_ARFISI, 
+          H.N_ARORGA, 
+          H.N_ESPECI, 
+          H.N_COF255,
+          H.C_OBSERV,
+          H.C_CODMUE1,
+          H.C_CODMUE2,
+          H.C_CODMUE3,
+          H.N_DUP01,
+          H.N_DUP02,
+          H.N_DUP03,
+          H.N_DUP04,
+          H.N_DUP05,
+          H.N_PR01,
+          H.N_PR02,
+          H.N_PR03,
+          H.N_PR04,
+          H.N_PR05,
+          H.N_RDS01,
+          H.N_RDS02,
+          H.N_RDS03,
+          H.N_RDS04,
+          H.N_RDS05
+          
+   FROM ALC_FORMULARI222 H
+   WHERE H.N_COF255 = P_ID_HEADER;
+
+END;
+
+PROCEDURE PRC_INSERT_HEADER222(
+  
+   P_IDMUESTREA1                 ALC_FORMULARI222.N_MUESTR%TYPE,
+   P_IDMUESTREA2                 ALC_FORMULARI222.N_PARAME%TYPE,
+   P_IDRECEPCIONA1               ALC_FORMULARI222.N_ARMETA%TYPE,
+   P_IDRECEPCIONA2               ALC_FORMULARI222.N_ARFISI%TYPE,
+   P_IDRECEPCIONA3               ALC_FORMULARI222.N_ARORGA%TYPE,
+   P_IDANALISTA                  ALC_FORMULARI222.N_ESPECI%TYPE,
+   P_OBSERV                      ALC_FORMULARI222.C_OBSERV%TYPE,
+   P_CODMUESTRA1                 ALC_FORMULARI222.C_CODMUE1%TYPE,
+   P_CODMUESTRA2                 ALC_FORMULARI222.C_CODMUE2%TYPE,
+   P_CODMUESTRA3                 ALC_FORMULARI222.C_CODMUE3%TYPE,
+   P_DUP1                        ALC_FORMULARI222.N_DUP01%TYPE,
+   P_DUP2                        ALC_FORMULARI222.N_DUP02%TYPE,
+   P_DUP3                        ALC_FORMULARI222.N_DUP03%TYPE,
+   P_DUP4                        ALC_FORMULARI222.N_DUP04%TYPE,
+   P_DUP5                        ALC_FORMULARI222.N_DUP05%TYPE,
+   P_PRO1                        ALC_FORMULARI222.N_PR01%TYPE,
+   P_PRO2                        ALC_FORMULARI222.N_PR02%TYPE,
+   P_PRO3                        ALC_FORMULARI222.N_PR03%TYPE,
+   P_PRO4                        ALC_FORMULARI222.N_PR04%TYPE,
+   P_PRO5                        ALC_FORMULARI222.N_PR05%TYPE,
+   P_RDS1                        ALC_FORMULARI222.N_RDS01%TYPE,
+   P_RDS2                        ALC_FORMULARI222.N_RDS02%TYPE,
+   P_RDS3                        ALC_FORMULARI222.N_RDS03%TYPE,
+   P_RDS4                        ALC_FORMULARI222.N_RDS04%TYPE,
+   P_RDS5                        ALC_FORMULARI222.N_RDS05%TYPE,
+   P_FEC_MUESTREO                IN VARCHAR2,
+   --Campos de Auditoria
+   A_PAR_USUARIO_CREACION           ALC_FORMULARI222.A_USUCRE%TYPE,
+   A_PAR_USUARIO_MODIFICACION       ALC_FORMULARI222.A_USUMOD%TYPE,
+   A_PAR_NOMBRE_PROGRAMA            ALC_FORMULARI222.A_NOMPRG%TYPE
+ )
+ 
+ IS
+ BEGIN
+   
+ INSERT INTO ALC_FORMULARI222 H
+      (  
+         H.A_USUCRE,
+         H.A_FECCRE,
+         H.A_USUMOD,
+         H.A_FECMOD,
+         H.A_NOMPRG,
+         H.N_COF255, 
+         H.N_MUESTR, 
+         H.N_PARAME, 
+         H.N_ARMETA, 
+         H.N_ARFISI, 
+         H.N_ARORGA, 
+         H.N_ESPECI, 
+         H.C_OBSERV,
+         H.N_STATUS, 
+         H.N_PR01, 
+         H.N_PR02, 
+         H.N_PR03, 
+         H.N_PR04,
+         H.N_PR05, 
+         H.N_DUP01, 
+         H.N_DUP02, 
+         H.N_DUP03, 
+         H.N_DUP04, 
+         H.N_DUP05,
+         H.N_RDS01, 
+         H.N_RDS02, 
+         H.N_RDS03, 
+         H.N_RDS04, 
+         H.N_RDS05,
+         H.D_FECMUE, 
+         H.C_CODMUE1, 
+         H.C_CODMUE2, 
+         H.C_CODMUE3
+         
+       )
+ VALUES
+      (
+         A_PAR_USUARIO_CREACION,
+         SYSDATE,
+         A_PAR_USUARIO_MODIFICACION,
+         SYSDATE, 
+         A_PAR_NOMBRE_PROGRAMA,
+         SQ_ALC_FORMULARI222.NEXTVAL,
+         P_IDMUESTREA1,
+         P_IDMUESTREA2,
+         P_IDRECEPCIONA1,
+         P_IDRECEPCIONA2,
+         P_IDRECEPCIONA3,
+         P_IDANALISTA,
+         P_OBSERV,
+         1,
+         P_PRO1,
+         P_PRO2,
+         P_PRO3,
+         P_PRO4,
+         P_PRO5,
+         P_DUP1,
+         P_DUP2,
+         P_DUP3,
+         P_DUP4,
+         P_DUP5,
+         P_RDS1,
+         P_RDS2,
+         P_RDS3,
+         P_RDS4,
+         P_RDS5,
+         TO_DATE(P_FEC_MUESTREO, 'DD/MM/YYYY HH24:MI:SS'),
+         P_CODMUESTRA1,
+         P_CODMUESTRA2,
+         P_CODMUESTRA3
+       );
+
+END;
+
+PROCEDURE PRC_INSERT_DETALLE222(
+             
+   P_ID_HEADER                      ALC_MUESTRFRM222.N_COF255%TYPE,            
+   P_FEC_MUESTREO                   IN VARCHAR2,
+   P_NRO_FRASCO                     ALC_MUESTRFRM222.C_NRFRAS%TYPE,
+   P_PUNTO_MUESTREO                 ALC_MUESTRFRM222.C_ESTMUE%TYPE,
+   P_COD_MUESTRA                    ALC_MUESTRFRM222.C_IDENMU%TYPE,
+   P_NRO_ENVASE                     ALC_MUESTRFRM222.C_ENVASE%TYPE,
+   P_TIPO_MUESTRA                   ALC_MUESTRFRM222.C_TIPMUE%TYPE,
+   P_TIPO_PRESERVACION              ALC_MUESTRFRM222.C_PRESER%TYPE,
+   P_OD                             ALC_MUESTRFRM222.N_PARAOD%TYPE,
+   P_PH                             ALC_MUESTRFRM222.N_PARAPH%TYPE, 
+   P_TEMP                           ALC_MUESTRFRM222.N_PARTEM%TYPE,
+   P_COND                           ALC_MUESTRFRM222.N_CONDUS%TYPE,
+   P_TURB                           ALC_MUESTRFRM222.N_TURNTU%TYPE,
+   P_FE                             ALC_MUESTRFRM222.C_FE%TYPE,
+   P_MN                             ALC_MUESTRFRM222.C_MN%TYPE,
+   P_CR                             ALC_MUESTRFRM222.C_CR%TYPE,
+   P_PB                             ALC_MUESTRFRM222.C_PB%TYPE,
+   P_ZN                             ALC_MUESTRFRM222.C_ZN%TYPE,
+   P_AS                             ALC_MUESTRFRM222.C_AS%TYPE,
+   P_CD                             ALC_MUESTRFRM222.C_CD%TYPE,
+   P_BA                             ALC_MUESTRFRM222.C_BA%TYPE,
+   P_SE                             ALC_MUESTRFRM222.C_SE%TYPE,
+   P_AL                             ALC_MUESTRFRM222.C_AL%TYPE,
+   P_NA                             ALC_MUESTRFRM222.C_NA%TYPE,
+   P_SB                             ALC_MUESTRFRM222.C_SB%TYPE,
+   P_CU                             ALC_MUESTRFRM222.C_CU%TYPE,
+   P_K                              ALC_MUESTRFRM222.C_K%TYPE,
+   P_HG                             ALC_MUESTRFRM222.C_HG%TYPE,
+   P_T_ENVASE                       ALC_MUESTRFRM222.C_TENVASE%TYPE,
+   --Campos de Auditoria
+   A_PAR_USUARIO_CREACION           ALC_MUESTRFRM222.A_USUCRE%TYPE,
+   A_PAR_USUARIO_MODIFICACION       ALC_MUESTRFRM222.A_USUMOD%TYPE,
+   A_PAR_NOMBRE_PROGRAMA            ALC_MUESTRFRM222.A_NOMPRG%TYPE
+ )
+ 
+ IS
+ BEGIN
+   
+ INSERT INTO ALC_MUESTRFRM222 D (
+                   D.A_USUCRE, 
+                   D.A_FECCRE, 
+                   D.A_USUMOD, 
+                   D.A_FECMOD, 
+                   D.A_NOMPRG,
+                   D.N_COM222, 
+                   D.N_COF255, 
+                   D.D_FECMUE, 
+                   D.C_NRFRAS, 
+                   D.C_ESTMUE, 
+                   D.C_IDENMU, 
+                   D.C_ENVASE, --NRO DE ENVASE
+                   D.C_TIPMUE, 
+                   D.C_PRESER,
+                   D.N_PARAOD, 
+                   D.N_PARAPH, 
+                   D.N_PARTEM, 
+                   D.N_CONDUS, 
+                   D.N_TURNTU,
+                   D.N_STATUS, 
+                   D.C_FE, 
+                   D.C_MN, 
+                   D.C_CR, 
+                   D.C_PB, 
+                   D.C_ZN, 
+                   D.C_AS,
+                   D.C_CD, 
+                   D.C_BA, 
+                   D.C_SE, 
+                   D.C_AL, 
+                   D.C_NA, 
+                   D.C_SB, 
+                   D.C_CU, 
+                   D.C_K,
+                   D.C_HG, 
+                   D.C_TENVASE
+                   ) 
+  VALUES (
+           A_PAR_USUARIO_CREACION,
+           SYSDATE,
+           A_PAR_USUARIO_MODIFICACION,
+           SYSDATE, 
+           A_PAR_NOMBRE_PROGRAMA,
+           SQ_ALC_MUESTRFRM222.NEXTVAL,
+           P_ID_HEADER,
+           TO_DATE(P_FEC_MUESTREO, 'DD/MM/YYYY HH24:MI:SS'),
+           P_NRO_FRASCO,
+           P_PUNTO_MUESTREO,
+           P_COD_MUESTRA,
+           P_NRO_ENVASE,
+           P_TIPO_MUESTRA,
+           P_TIPO_PRESERVACION,
+           P_OD,
+           P_PH, 
+           P_TEMP,
+           P_COND,
+           P_TURB,
+           1,
+           P_FE , 
+           P_MN ,
+           P_CR ,
+           P_PB ,
+           P_ZN ,
+           P_AS ,
+           P_CD ,
+           P_BA ,
+           P_SE ,
+           P_AL ,
+           P_NA ,
+           P_SB ,
+           P_CU ,
+           P_K ,
+           P_HG,
+           P_T_ENVASE
+         );
+
+END;
+
+PROCEDURE PRC_LISTADO_DETALLE222(
+    --Parametros de la busqueda
+   P_COD_HEADER222         ALC_MUESTRFRM222.N_COF255%TYPE,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR  
+       
+)
+ IS
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+
+
+BEGIN
+
+  v_query_count:= ' select count(*) ';
+ 
+  v_query :=  'SELECT * 
+                 FROM(SELECT a.*, rownum rn 
+                        FROM(
+                               SELECT Z.F, Z.G, Z.H, Z.I, Z.J, Z.K, Z.L, Z.M,
+                                (
+                               
+                               (CASE WHEN Z.N = ''1'' THEN ''Fe'' ELSE '''' END) || ' || ''' ''' || ' || 
+                               (CASE WHEN Z.O = ''1'' THEN ''Mn'' ELSE '''' END) || ' || ''' ''' || ' ||              
+                               (CASE WHEN Z.P = ''1'' THEN ''Cr'' ELSE '''' END) || ' || ''' ''' || ' || 
+                               (CASE WHEN Z.Q = ''1'' THEN ''Pb'' ELSE '''' END) || ' || ''' ''' || ' ||    
+                               (CASE WHEN Z.R = ''1'' THEN ''Zn'' ELSE '''' END) || ' || ''' ''' || ' ||      
+                               (CASE WHEN Z.S = ''1'' THEN ''As'' ELSE '''' END) || ' || ''' ''' || ' ||     
+                               (CASE WHEN Z.T = ''1'' THEN ''Cd'' ELSE '''' END) || ' || ''' ''' || ' ||      
+                               (CASE WHEN Z.U = ''1'' THEN ''Ba'' ELSE '''' END) || ' || ''' ''' || ' ||          
+                               (CASE WHEN Z.V = ''1'' THEN ''Se'' ELSE '''' END) || ' || ''' ''' || ' ||             
+                               (CASE WHEN Z.W = ''1'' THEN ''Al'' ELSE '''' END) || ' || ''' ''' || ' ||          
+                               (CASE WHEN Z.X = ''1'' THEN ''Na'' ELSE '''' END) || ' || ''' ''' || ' ||             
+                               (CASE WHEN Z.Y = ''1'' THEN ''Sb'' ELSE '''' END) || ' || ''' ''' || ' ||            
+                               (CASE WHEN Z.A2 = ''1'' THEN ''Cu'' ELSE '''' END) || ' || ''' ''' || ' ||         
+                               (CASE WHEN Z.B2 = ''1'' THEN ''K'' ELSE '''' END) || ' || ''' ''' || ' ||         
+                               (CASE WHEN Z.C3 = ''1'' THEN ''Hg'' ELSE '''' END)         
+                                ) || ' || ''' ''' || ' 
+                                
+                                AS PARAMETROS, Z.D4
+                                ';
+
+  v_query_from := ' FROM 
+                          (
+              SELECT TO_CHAR(A.D_FECMUE, ''DD/MM/YYYY HH:MI:SS AM'') AS F, 
+                             A.C_NRFRAS AS G, 
+                             B.C_DDCATL AS H,
+                             A.C_IDENMU AS I,  
+                             C.C_DDCATL AS J, 
+                             A.C_ENVASE AS K,
+                             D.C_DDCATL AS L, 
+                             E.C_DDCATL AS M, 
+                             A.C_FE     AS N, 
+                             A.C_MN     AS O,
+                             A.C_CR     AS P,
+                             A.C_PB     AS Q,
+                             A.C_ZN     AS R,
+                             A.C_AS     AS S,
+                             A.C_CD     AS T,
+                             A.C_BA     AS U,
+                             A.C_SE     AS V,
+                             A.C_AL     AS W,
+                             A.C_NA     AS X,
+                             A.C_SB     AS Y,
+                             A.C_CU     AS A2,
+                             A.C_K      AS B2,
+                             A.C_HG     AS C3,
+                             A.N_COM222 AS D4,
+                             A.N_STATUS AS E5,
+                             A.N_COF255 AS F6
+                             
+                             FROM ALC_MUESTRFRM222 A
+                                  INNER JOIN ALC_DETCATLG B ON B.C_VALCAT = A.C_ESTMUE  AND B.N_CCATLG = 6 
+                                  INNER JOIN ALC_DETCATLG C ON C.C_VALCAT = A.C_TENVASE AND C.N_CCATLG = 9
+                                  INNER JOIN ALC_DETCATLG D ON D.C_VALCAT = A.C_TIPMUE  AND D.N_CCATLG = 7
+                                  INNER JOIN ALC_DETCATLG E ON E.C_VALCAT = A.C_PRESER  AND E.N_CCATLG = 15
+   
+                          )   Z
+    
+                    WHERE ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := ' 1=1 ';
+  
+  v_query_where :=  v_query_where || ' AND Z.F6 = ''' || P_COD_HEADER222 ||''' AND Z.E5 = 1 '; 
+  
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+  
+  v_query := v_query || ' order by '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' and rn <= ' || (par_pag_desde+par_cantidad_pag);
+    
+  OPEN par_out_cursor FOR v_query;
+  
+  execute immediate v_query_count into par_out_quantity;
+END;
+
+
+PROCEDURE PRC_UPDATE_HEADER222(
+   
+   P_FEC_MUESTREO                IN VARCHAR2,
+   P_IDMUESTREA1                 ALC_FORMULARI222.N_MUESTR%TYPE,
+   P_IDMUESTREA2                 ALC_FORMULARI222.N_PARAME%TYPE,
+   P_IDRECEPCIONA1               ALC_FORMULARI222.N_ARMETA%TYPE,
+   P_IDRECEPCIONA2               ALC_FORMULARI222.N_ARFISI%TYPE,
+   P_IDRECEPCIONA3               ALC_FORMULARI222.N_ARORGA%TYPE,
+   P_IDANALISTA                  ALC_FORMULARI222.N_ESPECI%TYPE,
+   P_OBSERV                      ALC_FORMULARI222.C_OBSERV%TYPE,
+   P_CODMUESTRA1                 ALC_FORMULARI222.C_CODMUE1%TYPE,
+   P_CODMUESTRA2                 ALC_FORMULARI222.C_CODMUE2%TYPE,
+   P_CODMUESTRA3                 ALC_FORMULARI222.C_CODMUE3%TYPE,
+   P_DUP1                        ALC_FORMULARI222.N_DUP01%TYPE,
+   P_DUP2                        ALC_FORMULARI222.N_DUP02%TYPE,
+   P_DUP3                        ALC_FORMULARI222.N_DUP03%TYPE,
+   P_DUP4                        ALC_FORMULARI222.N_DUP04%TYPE,
+   P_DUP5                        ALC_FORMULARI222.N_DUP05%TYPE,
+   P_PRO1                        ALC_FORMULARI222.N_PR01%TYPE,
+   P_PRO2                        ALC_FORMULARI222.N_PR02%TYPE,
+   P_PRO3                        ALC_FORMULARI222.N_PR03%TYPE,
+   P_PRO4                        ALC_FORMULARI222.N_PR04%TYPE,
+   P_PRO5                        ALC_FORMULARI222.N_PR05%TYPE,
+   P_RDS1                        ALC_FORMULARI222.N_RDS01%TYPE,
+   P_RDS2                        ALC_FORMULARI222.N_RDS02%TYPE,
+   P_RDS3                        ALC_FORMULARI222.N_RDS03%TYPE,
+   P_RDS4                        ALC_FORMULARI222.N_RDS04%TYPE,
+   P_RDS5                        ALC_FORMULARI222.N_RDS05%TYPE,
+   P_ID_HEADER                   ALC_FORMULARI222.N_COF255%TYPE,
+   ---AUDITORIA---
+   P_USUARIO_MODIF               ALC_FORMULARI222.A_USUMOD%TYPE,
+   P_NOMBRE_PROG                 ALC_FORMULARI222.A_NOMPRG%TYPE
+ )
+ IS
+ BEGIN
+   
+  UPDATE ALC_FORMULARI222 H
+  SET  
+        
+         H.A_USUMOD = P_USUARIO_MODIF,
+         H.A_FECMOD = SYSDATE,
+         H.A_NOMPRG = P_NOMBRE_PROG,
+         H.N_MUESTR = P_IDMUESTREA1, 
+         H.N_PARAME = P_IDMUESTREA2, 
+         H.N_ARMETA = P_IDRECEPCIONA1, 
+         H.N_ARFISI = P_IDRECEPCIONA2, 
+         H.N_ARORGA = P_IDRECEPCIONA3, 
+         H.N_ESPECI = P_IDANALISTA, 
+         H.C_OBSERV = P_OBSERV,
+         H.N_STATUS = 1, 
+         H.N_PR01 = P_PRO1, 
+         H.N_PR02 = P_PRO2, 
+         H.N_PR03 = P_PRO3, 
+         H.N_PR04 = P_PRO4,
+         H.N_PR05 = P_PRO5, 
+         H.N_DUP01 = P_DUP1, 
+         H.N_DUP02 = P_DUP2, 
+         H.N_DUP03 = P_DUP3, 
+         H.N_DUP04 = P_DUP4, 
+         H.N_DUP05 = P_DUP5,
+         H.N_RDS01 = P_RDS1, 
+         H.N_RDS02 = P_RDS2, 
+         H.N_RDS03 = P_RDS3, 
+         H.N_RDS04 = P_RDS4, 
+         H.N_RDS05 = P_RDS5,
+         H.D_FECMUE = TO_DATE(P_FEC_MUESTREO, 'DD/MM/YYYY HH24:MI:SS'), 
+         H.C_CODMUE1 = P_CODMUESTRA1, 
+         H.C_CODMUE2 = P_CODMUESTRA2, 
+         H.C_CODMUE3 = P_CODMUESTRA3
+         
+  WHERE H.N_COF255 = P_ID_HEADER;
+  
+END;
+
+
+PROCEDURE PRC_GET_DETALLE222(
+   --Parametros de la busqueda
+   P_ID_DETALLE222   IN    ALC_MUESTRFRM222.N_COM222%TYPE,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+
+BEGIN
+  
+   OPEN PAR_OUT_CURSOR FOR
+   SELECT
+                   D.N_COM222, 
+                   TO_CHAR(D.D_FECMUE, 'DD/MM/YYYY HH24:MI:SS'),
+                   D.C_NRFRAS, 
+                   D.C_ESTMUE, 
+                   D.C_IDENMU, 
+                   D.C_ENVASE, --NRO DE ENVASE
+                   D.C_TIPMUE, 
+                   D.C_PRESER,
+                   D.N_PARAOD, 
+                   D.N_PARAPH, 
+                   D.N_PARTEM, 
+                   D.N_CONDUS, 
+                   D.N_TURNTU,
+              --     D.N_STATUS, 
+                   D.C_FE, 
+                   D.C_MN, 
+                   D.C_CR, 
+                   D.C_PB, 
+                   D.C_ZN, 
+                   D.C_AS,
+                   D.C_CD, 
+                   D.C_BA, 
+                   D.C_SE, 
+                   D.C_AL, 
+                   D.C_NA, 
+                   D.C_SB, 
+                   D.C_CU, 
+                   D.C_K,
+                   D.C_HG, 
+                   D.C_TENVASE
+          
+   FROM ALC_MUESTRFRM222 D
+    
+   WHERE D.N_COM222 = P_ID_DETALLE222;
+
+END;
+
+
+PROCEDURE PRC_UPDATE_DETALLE222(
+   
+   P_ID_DETALLE                     ALC_MUESTRFRM222.N_COM222%TYPE,           
+   P_FEC_MUESTREO                   IN VARCHAR2,
+   P_NRO_FRASCO                     ALC_MUESTRFRM222.C_NRFRAS%TYPE,
+   P_PUNTO_MUESTREO                 ALC_MUESTRFRM222.C_ESTMUE%TYPE,
+   P_COD_MUESTRA                    ALC_MUESTRFRM222.C_IDENMU%TYPE,
+   P_NRO_ENVASE                     ALC_MUESTRFRM222.C_ENVASE%TYPE,
+   P_TIPO_MUESTRA                   ALC_MUESTRFRM222.C_TIPMUE%TYPE,
+   P_TIPO_PRESERVACION              ALC_MUESTRFRM222.C_PRESER%TYPE,
+   P_OD                             ALC_MUESTRFRM222.N_PARAOD%TYPE,
+   P_PH                             ALC_MUESTRFRM222.N_PARAPH%TYPE, 
+   P_TEMP                           ALC_MUESTRFRM222.N_PARTEM%TYPE,
+   P_COND                           ALC_MUESTRFRM222.N_CONDUS%TYPE,
+   P_TURB                           ALC_MUESTRFRM222.N_TURNTU%TYPE,
+   P_FE                             ALC_MUESTRFRM222.C_FE%TYPE,
+   P_MN                             ALC_MUESTRFRM222.C_MN%TYPE,
+   P_CR                             ALC_MUESTRFRM222.C_CR%TYPE,
+   P_PB                             ALC_MUESTRFRM222.C_PB%TYPE,
+   P_ZN                             ALC_MUESTRFRM222.C_ZN%TYPE,
+   P_AS                             ALC_MUESTRFRM222.C_AS%TYPE,
+   P_CD                             ALC_MUESTRFRM222.C_CD%TYPE,
+   P_BA                             ALC_MUESTRFRM222.C_BA%TYPE,
+   P_SE                             ALC_MUESTRFRM222.C_SE%TYPE,
+   P_AL                             ALC_MUESTRFRM222.C_AL%TYPE,
+   P_NA                             ALC_MUESTRFRM222.C_NA%TYPE,
+   P_SB                             ALC_MUESTRFRM222.C_SB%TYPE,
+   P_CU                             ALC_MUESTRFRM222.C_CU%TYPE,
+   P_K                              ALC_MUESTRFRM222.C_K%TYPE,
+   P_HG                             ALC_MUESTRFRM222.C_HG%TYPE,
+   P_T_ENVASE                       ALC_MUESTRFRM222.C_TENVASE%TYPE,
+   ---AUDITORIA---
+   P_USUARIO_MODIF               ALC_FORMULARI222.A_USUMOD%TYPE,
+   P_NOMBRE_PROG                 ALC_FORMULARI222.A_NOMPRG%TYPE
+ )
+ IS
+ BEGIN
+   
+  UPDATE ALC_MUESTRFRM222 D
+  SET  
+        
+                   D.D_FECMUE = TO_DATE(P_FEC_MUESTREO, 'DD/MM/YYYY HH24:MI:SS'), 
+                   D.C_NRFRAS = P_NRO_FRASCO, 
+                   D.C_ESTMUE = P_PUNTO_MUESTREO, 
+                   D.C_IDENMU = P_COD_MUESTRA, 
+                   D.C_ENVASE = P_NRO_ENVASE, --NRO DE ENVASE
+                   D.C_TIPMUE = P_TIPO_MUESTRA, 
+                   D.C_PRESER = P_TIPO_PRESERVACION,
+                   D.N_PARAOD = P_OD, 
+                   D.N_PARAPH = P_PH, 
+                   D.N_PARTEM = P_TEMP, 
+                   D.N_CONDUS = P_COND, 
+                   D.N_TURNTU = P_TURB,
+                --   D.N_STATUS, 
+                   D.C_FE = P_FE, 
+                   D.C_MN = P_MN, 
+                   D.C_CR = P_CR, 
+                   D.C_PB = P_PB, 
+                   D.C_ZN = P_ZN, 
+                   D.C_AS = P_AS,
+                   D.C_CD = P_CD, 
+                   D.C_BA = P_BA, 
+                   D.C_SE = P_SE, 
+                   D.C_AL = P_AL, 
+                   D.C_NA = P_NA, 
+                   D.C_SB = P_SB, 
+                   D.C_CU = P_CU, 
+                   D.C_K =  P_K,
+                   D.C_HG = P_HG, 
+                   D.C_TENVASE = P_T_ENVASE,
+                   D.A_USUMOD = P_USUARIO_MODIF,
+                   D.A_NOMPRG = P_NOMBRE_PROG,
+                   D.A_FECMOD = SYSDATE
+         
+  WHERE D.N_COM222 = P_ID_DETALLE;
+  
+END;
+
+
+PROCEDURE PRC_INACTIVA_DETALLE222(
+   
+   P_ID_DETALLE                 ALC_MUESTRFRM222.N_COM222%TYPE,
+   P_STATUS                     ALC_MUESTRFRM222.N_STATUS%TYPE
+   ---AUDITORIA---
+   /*P_USUARIO_MODIF              ALC_FORMULARI222.A_USUMOD%TYPE,
+   P_NOMBRE_PROG                ALC_FORMULARI222.A_NOMPRG%TYPE*/
+ )
+ IS
+ BEGIN
+   
+  UPDATE ALC_MUESTRFRM222 D
+  SET  
+        /*D.A_USUMOD = P_USUARIO_MODIF,
+        D.A_NOMPRG = P_NOMBRE_PROG,
+        D.A_FECMOD = SYSDATE,*/
+        D.N_STATUS = P_STATUS
+        
+  WHERE D.N_COM222 = P_ID_DETALLE;
+  
+END;
+
+
+end PKC_ALC_FORM222;

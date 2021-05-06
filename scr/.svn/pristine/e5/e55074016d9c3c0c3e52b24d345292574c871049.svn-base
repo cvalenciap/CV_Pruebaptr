@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('ensayo.cloro.planta.title')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+	
+	
+			<!-- Modal -->
+		<div id="modal-registra-parametroplan" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			 	<div class="modal-content" id="id-modal-plan-bandeja">
+			 	</div>
+			 </div>
+		</div>
+		
+	
+	
+		<form name="formInactivaclima" id="form-inactiva-clima" style="display:none;" 
+			  th:action="@{/clima/inactivar}" method="post">
+			<input type="hidden" id="inacIdclima" name="inacIdclima" />
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>	
+		
+		<h3 class="text-center" th:text="${#messages.msg('ensayo.cloro.planta.title')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+
+			<br/>
+			<p class="main_heading">
+				<legend  th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp form-group" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset style="align-text:center;">
+					<div class="col-md-12 col-sm-12 col-xs-12 form-group">
+							
+							<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" th:text="${#messages.msg('analisis.hidrobiologico.fecha.muestreo')}"   >Fecha</label>
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<div class="form-group input-append date" >
+               					 <input type="text" class="form-control "  id="idFechaMuestreoBandeja"/>
+            					</div>
+							</div>
+							<div  class="col-md-7 col-sm-7 col-xs-7"></div>
+							<div  class="col-md-1 col-sm-1 col-xs-1">
+							<button  class="btn btn-info" type="button" id="idBtnAgregarEnsayoCloro" onclick="agregarEnsayoCloro(-1);"><span class="glyphicon glyphicon-plus"></span><label>Agregar</label></button>
+							</div>
+							
+							<div  class="col-md-1 col-sm-1 col-xs-1">
+							<button  class="btn btn-primary" type="button" id="idBtnBuscarEnsayoCloro" onclick="cargarEnsayoCloroXfecha();"><span class="glyphicon glyphicon-search"></span><label>Buscar</label></button>
+							</div>
+							
+					</div>
+				</fieldset>
+			</form>
+			
+			<br/>
+			
+		</div>
+			<div class="container_12" th:fragment="tablaBandeja" id="tablaBandeja">
+				<div th:replace="ensayoCloro/ensayoCloroBandeja :: resultsList" class="grid_10 height800" id="idClimaTable"></div>
+			</div>
+			<script type="text/javascript" th:src="@{/js/ensayoCloro.js}"></script>
+			<script type="text/javascript" th:src="@{/js/ensayoCloroValidator.js}"></script>
+	</div>
+	
+	<script th:inline="javascript">
+			MYAPPL.LOGIC.CADE_CUST.initUpload();
+			MYAPPL.removeInputEnter();
+			MYAPPL.removePasteIntoBody();
+	</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-import-detail">
+	
+		<div class="modal-header">
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('represas.importar.detalle.title')}">title</span> 
+			</h4>
+		</div>
+		
+		<div class="modal-body">
+			
+		  <p id="valid-section" style="display: none;">
+			Todos los datos ser&aacute;n importados, no se han encontrado errores de validaci&oacute;n
+		  </p>	
+			
+		  <div id="invalid-section" style="display: none;">  	
+			  <p>
+				Los siguientes datos no ser&aacute;n importados debido a que presentan errores de validaci&oacute;n. Se muestra
+				el n&uacute;mero de fila, n&uacute;mero de columna, valor de la celda y el mensaje de error de la validaci&oacute;n
+			  </p>	
+				   	
+	          <div id="container-table-errors" class="left-align">       
+					<table class="table table-striped">
+					  <thead>
+					    <tr>
+					      <th class="center-align">#</th>
+					      <th class="center-align">Nro. Fila</th>
+					      <th class="center-align">Nro. Columna</th>
+					      <th class="center-align">Valor Campo</th>
+					      <th class="center-align">Mensaje Validaci&oacute;n</th>
+					    </tr>
+					  </thead>
+					  <tbody id="body-table-errors">
+					  </tbody>
+					</table>
+			  </div>	
+		  </div>  
+		</div>
+		
+		<div class="modal-footer">
+			<fieldset class="col-md-12" th:fragment="buttons">
+				<span></span>
+				<div class="form-group col-sm-12">
+					<div class="wrapper text-center">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-primary btn-sm" onclick="saveDataImport();"
+								id="importButton" th:value="actualizar">Guardar</button>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-sm"
+								data-dismiss="modal">Cancelar</button>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+		
+	</div>
+</body>
+</html>

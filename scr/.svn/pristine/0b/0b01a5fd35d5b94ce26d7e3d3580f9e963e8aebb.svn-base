@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('colaborador.title')}"></title>
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+</head>
+<body>
+	<div layout:fragment="content">
+		
+		<!-- Modal REGISTRO colaborador -->
+		<div id="modal-registra-colaborador" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 70%;">				
+			    <div class="modal-content" id="id-modal-content" th:replace="colaboradorEdit :: form-edit-colaborador"></div>			    			    
+			</div>
+		</div>
+	
+		<!-- Modal BUSQUEDA colaborador -->
+		<div id="modal-busca-trabajador" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 75%;">
+				<div class="modal-content" id="id-modal-content" th:replace="trabajadorSearch :: form-search-trabajador"></div>
+			</div>
+		</div>
+		
+		<form name="formInactivacolaborador" id="form-inactiva-colaborador" style="display:none;" 
+			  th:action="@{/colaborador/inactivar}" method="post">
+			<input type="hidden" id="inacIdColaborador" name="inacIdColaborador" />  
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>	
+		
+		<h3 class="text-center" th:text="${#messages.msg('home.colaborador')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group" >
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('colaborador.nombre')}"></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<input 	type="text" 
+										id="cpDesc" 
+										onkeypress="return MYAPPL.soloLetrasEspacio(event)" 
+										name="cpDesc" 
+										class="form-control" 
+										th:placeholder="${#messages.msg('colaborador.nombre')}"
+										style="text-transform: uppercase;" />
+							</div>
+							
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('colaborador.estado')}"></label>
+							<div class="col-md-4">
+								<select id="cpEstado" name="cpEstado" class="form-control">
+								    <option value="">-TODOS-</option>
+									<option value="1">ACTIVO</option>
+									<option value="2">INACTIVO</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group" >
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('colaborador.nombre.empresa')}"></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<input 	type="text" 
+										id="cpNomEmp" 
+										onkeypress="return MYAPPL.soloLetrasNumerosEspacio(event)" 
+										name="cpNomEmp" 
+										class="form-control" 
+										th:placeholder="${#messages.msg('colaborador.nombre.empresa')}"
+										style="text-transform: uppercase;" />
+							</div>
+							
+						  <label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('colaborador.tipo.trabajador')}"></label>
+							<div class="col-md-4">
+								<select id="cpTipoTrabajador" name="cpTipoTrabajador" class="form-control">
+								    <option value="">-TODOS-</option>
+									<option value="1">INTERNO</option>
+									<option value="2">EXTERNO</option>
+								</select>
+							</div>
+							
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+					
+				</div>
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-right">
+				<button type="button" class="btn btn-info btn-create-colaborador" data-toggle="modal" data-target="#modal-registra-colaborador"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('colaborador.agregar')}"></label></button>
+			    <button type="button" id="idBtnFormBuscarColaborador" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span><label th:text="${#messages.msg('colaborador.buscar')}"></label></button>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="container_12">
+				<div th:replace="colaboradorTable :: resultsList" class="grid_10 height800" id="idColaboradorTable"></div>
+			</div>
+			<script type="text/javascript" th:src="@{/js/colaborador.js}"></script>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>sedmail-ws-cliente</groupId>
+  <artifactId>sedmail-ws-cliente</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>sedmail-ws-cliente</name>
+  
+  <properties>
+  	<spring.version>4.2.7.RELEASE</spring.version>
+  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<maven.test.failure.ignore>true</maven.test.failure.ignore>
+  </properties>
+  
+  <dependencies>
+  	
+<!--   	futura creacion de capa transversal -->
+<!--   	<dependency> -->
+<!--   		<groupId>pe.com.sedmail.core.bean</groupId> -->
+<!--   		<artifactId>sedmail-core-beans</artifactId> -->
+<!--   		<version>1.0.0.0</version> -->
+<!--   	</dependency> -->
+  	
+<!--   	springframework init-->
+  	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-context-support</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-test</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-context</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-core</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.springframework.ws</groupId>
+		<artifactId>spring-ws-core</artifactId>
+		<version>2.4.0.RELEASE</version>
+	</dependency>
+<!-- 	springframework end -->
+	
+<!-- 	jersey init -->
+	<dependency>
+	    <groupId>org.glassfish.jersey.core</groupId>
+	    <artifactId>jersey-client</artifactId>
+	    <version>2.25.1</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.glassfish.jersey.media</groupId>
+	    <artifactId>jersey-media-json-jackson</artifactId>
+	    <version>2.25.1</version>
+	</dependency>
+<!-- 	jersey end -->
+
+<!-- 	GSON init -->
+	<dependency>
+		<groupId>com.google.code.gson</groupId>
+		<artifactId>gson</artifactId>
+		<version>2.3.1</version>
+	</dependency>
+	<dependency>		
+		<groupId>org.codehaus.jackson</groupId>
+		<artifactId>jackson-mapper-asl</artifactId>
+		<version>1.9.12</version>
+	</dependency>
+<!-- 	multipart -->
+	<dependency>
+	    <groupId>org.glassfish.jersey.media</groupId>
+	    <artifactId>jersey-media-multipart</artifactId>
+	    <version>2.19</version>
+	</dependency>
+<!-- GSON end -->
+
+<!-- 	REST Template -->
+	<dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpclient</artifactId>
+		<version>4.3.4</version>
+	</dependency>	
+
+<!-- 	HTTP Authorization -->
+	<dependency>
+	   <groupId>commons-codec</groupId>
+	   <artifactId>commons-codec</artifactId>
+	   <version>1.10</version>
+	</dependency>
+	
+<!--  Libreria GMD -->
+	<dependency> 
+		<groupId>pe.com.gmd.componentes</groupId>
+		<artifactId>GmdUtil</artifactId>
+		<version>4.0</version>
+	</dependency>
+
+<!-- Para nuestros tests -->
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.10</version>
+		<scope>test</scope>
+	</dependency>
+  	
+  </dependencies>
+  
+  <build>
+  		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+  
+</project>

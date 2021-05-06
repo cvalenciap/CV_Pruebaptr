@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('403.title')}"></title>
+</head>
+<body>
+
+	<div layout:fragment="content">
+
+		<h3 class="text-center" th:text="#{403.title}"></h3>
+		
+		<div class="panel panel-default">
+			<div class="panel-title">
+				<h4 class="panel-title text-center" th:text="#{403.subtitle}" />
+			</div>
+			<div class="panel-body">
+
+				<div class="alert alert-danger" th:if="${errorMessage}">
+					<span th:text="${errorMessage}" />
+				</div>
+
+				<div class="alert alert-info" th:if="${remoteAddress}">
+					<span th:text="${remoteAddress}" />
+				</div>
+				
+			</div>
+
+			<!-- div class="panel-footer">
+				<span th:text="#{403.footer}">
+			</div-->
+		</div>
+
+		<!--div class="well well-sm text-center">
+			<span th:text="#{exception.thanks}" />
+		</div-->
+
+
+
+	</div>
+</body>
+</html>

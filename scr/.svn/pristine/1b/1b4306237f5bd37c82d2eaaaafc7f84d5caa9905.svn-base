@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title>GPFO153: Control de Registro de Muestras</title>
+<link th:href="@{/css/jquery.fileupload.css}" rel="stylesheet" />
+<link th:href="@{/css/jquery.fileupload-ui.css}" rel="stylesheet" />
+<link th:href="@{/css/subidaArchivo.css}" rel="stylesheet" />
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	var mensajeTipo = /*[[${mensajeTipo}]]*/'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+		<div id="container-msg-record-existing-153"></div>
+		<!-- Modal -->
+		<div id="modal-registra-clima" class="modal fade" role="dialog"
+			data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+
+				<!-- Modal content-->
+				<div class="modal-content" id="id-modal-content"></div>
+
+			</div>
+		</div>
+
+		<div id="modal-previsualizar-pdf" class="modal fade" role="dialog"
+			data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+				<!-- Modal content-->
+				<div class="modal-content" id="id-modal-content"
+					th:replace="fragments/genericDialogPDF :: previsualizar-pdf">
+				</div>
+			</div>
+		</div>
+
+		<form name="formInactivaclima" id="form-inactiva-muestra"
+			style="display: none;" th:action="@{/muestra/eliminar}" method="post">
+			<input type="hidden" id="inacIdmuestra" name="inacIdmuestra" />
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>
+
+		<h3 class="text-center" th:text="${#messages.msg('home.muestra')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp" id="form-search-tp" action="#"
+				method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+
+						<div class="form-group">
+
+							<label class="control-label col-md-1 col-sm-2 col-xs-2 text-right no-padding">Fecha</label>
+
+							<div class="col-md-2 col-sm-4 col-xs-4">
+								<input type="text" id="txtPeriodo" name="periodo" class="form-control" 
+									th:placeholder="${#messages.msg('muestra.seleccion')}"
+									title="Ingrese una Fecha" style="text-align: center;"
+									maxlength="20" />
+									
+									<input type="hidden" id="txtPeriodoHidden" />
+							</div>
+
+							<label
+								class="control-label col-md-4 col-sm-2 col-xs-2 text-right no-padding"></label>
+							<div class="col-md-4 col-sm-2 col-xs-2">
+								<input type="hidden" id="" name="" />
+							</div>
+
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+			     <div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left"></div>
+				 <div class="col-md-6 col-sm-6 col-xs-12 no-padding text-right">
+					  <button type="button" class="btn btn-info btn-create-clima" data-toggle="modal" onclick="modificarFormulario(-1)"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('tipoProceso.agregar')}"></label></button>
+					  &nbsp;
+					  <button type="button" id="idBtnFormBuscarClima" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span><label th:text="${#messages.msg('tipoProceso.buscar')}"></label></button>
+					
+<!--                     &nbsp; -->
+<!--                     <button type="button" class="btn btn-warning btn-pdf-punto" -->
+<!-- 					data-toggle="modal" data-target="#modal-previsualizar-pdf" -->
+<!--  					onclick="MYAPPL.LOGIC.PUNTODIST.cargandoReportePDF();">  -->
+<!-- 					PDF (Todas las Fuentes)</button> -->
+				 </div>
+				 <div class="clearfix"></div>
+				
+			</div>
+			<div class="container_12">
+				<div th:replace="formulario153/muestraTable :: resultsList" class="grid_10 height800" id="idClimaTable"></div>
+			</div>
+		</div>
+		<script type="text/javascript" th:src="@{/js/jquery.iframe-transport.js}"></script>
+		<script type="text/javascript" th:src="@{/js/jquery.fileupload.js}"></script>
+		<script type="text/javascript" th:src="@{/js/subidaArchivos.js}"></script>
+		<script type="text/javascript" th:src="@{/js/registroMuestras.js}"></script>
+		
+	</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsList" class="grid_10 height800" id="idTipoProcesoTable">
+		
+		<table  class="fancyTable" id="myTableHistorialCargas" style="width: 100%!important">
+			<thead>
+				<tr>
+					<th th:text="${#messages.msg('estatus.carga.table.col1')}" style="width: 20px;"></th>
+					<th th:text="${#messages.msg('estatus.carga.table.col2')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('estatus.carga.table.col3')}" style="width: 80px;"></th>
+					<th th:text="${#messages.msg('estatus.carga.table.col4')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('estatus.carga.table.col5')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('estatus.carga.table.col6')}" style="width: 50px;"></th>
+				</tr>
+			</thead>
+			
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTableHistorialCargas').DataTable({
+					"bProcessing": true,
+					"serverSide": true,
+					"searching": false,
+					"lengthChange":   false,
+					"bJQueryUI": true,
+					"scrollX": true,
+					"ajax":{
+						url :"historialCargas/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTableHistorialCargas_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            }
+					},
+					"order": [ 2, 'desc' ],
+					"columnDefs": [ 
+						{ targets: '_all', visible: true},
+						{"width": "30px",
+			        		className: "dt-body-center",
+			                "targets": 0,                 
+			            },
+			            {"width": "200px",
+		        		  	className: "dt-body-center",
+		                  	"targets": 4,
+		                  
+		              	},
+		              	{"width": "60px",
+		        		  	className: "dt-body-center",
+		                  	"targets": [1,2,3,5],
+		                  
+		              	},
+		              	{"width": "95px",
+		              		className: "dt-body-center",
+		              		"orderable": false,
+		              		"targets": 0,
+		              		visible: true,
+		              		"data": 1,
+		              		"render": function ( data, type, row ) {
+		              			return (row[7]=='1')?'': '<button class="btn btn-warning btn-modif-punto" title="Ver Detalle" onclick="showErrorDetail(\''+row[8]+'\')"><span class="glyphicon glyphicon-eye-open"></span></button>';
+		              		}
+		              	}
+					]
+				});
+			}); 
+		</script>	
+	</div>
+</body>
+</html>

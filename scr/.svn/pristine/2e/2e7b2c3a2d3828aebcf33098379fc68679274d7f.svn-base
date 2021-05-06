@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="fileUpload">
+		<div class="divSubidaArchivo">
+			<div class="form-horizontal form-custom-table">
+				<div class="form-group">
+					<div class="col-sm-10 left-align">
+						<label class="control-label" th:text="${#messages.msg('documentosAdjuntos.edit.table.doc.title')}"></label>
+					</div>
+					<div class="col-sm-1">
+						<div class="fileupload-buttonbar">
+							<span class="btn btn-info fileinput-button"> 
+								<i class="glyphicon glyphicon-upload"></i> 
+								<span th:text="${#messages.msg('form.botonera.adjuntarDocumento')}"></span>
+								<input type="file" name="files[]" />
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-horizontal">
+				<div class="form-group">
+					<div class="col-sm-12">
+						<table class="display fancyTable" cellspacing="0">
+							<thead>
+								<tr>
+									<th th:text="${#messages.msg('table.cabecera.numero')}" class="thIndex"></th>
+									<th th:text="${#messages.msg('documentosAdjuntos.table.cabecera.nombreArchivo')}" class="thNombre"></th>
+									<th th:text="${#messages.msg('documentosAdjuntos.table.cabecera.tipo')}" class="thTipo"></th>
+									<th th:text="${#messages.msg('documentosAdjuntos.table.cabecera.tamano')}" class="thTamanho"></th>
+									<th th:text="${#messages.msg('table.cabecera.acciones')}" class="thAcciones"></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		<div class="col-sm-12 msjErrArchivos help-block"></div>
+	</div>
+</div>
+</body>
+</html>

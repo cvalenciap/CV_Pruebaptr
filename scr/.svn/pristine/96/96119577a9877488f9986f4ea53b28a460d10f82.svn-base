@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsListSecond" class="grid_10 height800" id="idMuestraSecondTable">
+		
+		<table  class="fancyTable" id="myTableMuestraSecond" cellpadding="0" cellspacing="0" style="width: 180%">
+			<thead>
+				<tr>		
+					<th th:text="${#messages.msg('muestraSecond.table.vacio')}"  colspan="8" style="height: 30px"></th>			
+
+					<th th:text="${#messages.msg('muestraSecond.table.col7')}" colspan="2" style=""></th>
+					
+					<th th:text="${#messages.msg('muestraSecond.table.vacio')}" ></th>	
+					<th th:text="${#messages.msg('muestraSecond.table.vacio')}"  ></th>	
+					<th th:text="${#messages.msg('muestraSecond.table.vacio')}"  ></th>
+					<th th:text="${#messages.msg('muestraSecond.table.vacio')}" ></th>							
+				</tr>
+				<tr>		
+					<th th:text="${#messages.msg('muestraSecond.table.col0')}"  style="height: 30px;"></th>			
+					<th th:text="${#messages.msg('muestraSecond.table.col1')}" style=""></th>
+					<th th:text="${#messages.msg('muestraSecond.table.col1.5')}" style=""></th>
+					<th th:text="${#messages.msg('muestraSecond.table.col2')}" style=""></th>
+					<th th:text="${#messages.msg('muestraSecond.table.col3')}" style=""></th>
+					<th th:text="${#messages.msg('muestraSecond.table.col4')}" style=""></th>	
+					<th th:text="${#messages.msg('muestraSecond.table.col5')}" style=""></th>
+					<th th:text="${#messages.msg('muestraSecond.table.col6')}" style=""></th>
+					<th th:text="${#messages.msg('muestraSecond.table.col7')}" style=""></th>
+					<th th:text="${#messages.msg('muestraSecond.table.col8')}" style=""></th>	
+					<th th:text="${#messages.msg('muestraSecond.table.col9')}" style=""></th>	
+					<th th:text="${#messages.msg('muestraSecond.table.id')}" style=""></th>	
+					<th th:text="${#messages.msg('muestraSecond.table.duplicado')}" style=""></th>
+					<th th:text="DUPLICADO" style=""></th>							
+				</tr>
+			</thead>
+		</table>
+		
+		<script type="text/javascript">
+
+			$( document ).ready(function() {
+				$('#myTableMuestraSecond').DataTable({
+					"bProcessing": true,
+					"serverSide": false,
+					"searching": false,
+					"lengthChange":   false,
+					"bPaginate": false,
+					"bInfo": false,		
+					"scrollX": true,
+					"bJQueryUI": true,
+					"ajax":{
+						url :"muestraSecond/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTableMuestraSecond_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	
+			            	d.idCabecera = $('#intIdHide').val();
+			            }
+					},
+					"order": [ 11, 'asc' ],
+					"columnDefs": [ 
+						{	
+			        		className: "dt-body-center dt-body-width-200",
+			                "targets": [2,3,4,5,6,7,8,9,10]                
+			            },
+			            {	
+		        			className: "dt-body-left dt-body-width-10",
+		                	"targets": 1                
+		            	},			            
+			            {  
+		            		className: "dt-body-center dt-body-width-30",
+			            	
+			            	visible: true,	
+			                "targets": 12 ,
+			                render: 
+				            	function(data, type, row){  
+				            	var retorno='';
+					            	if(row[12] != 0 ){
+					            		retorno = row[1]=='DUPLICADO'? 'DUPLICADO':'';
+					            	}									
+									return retorno;	 
+				            	}
+			            },
+			            {  
+			            	className: "dt-body-center dt-body-width-30",
+			            	visible: true,	
+			                "targets": 11                
+			            },
+			            { targets: 13, orderable: false, data: 1, className: "dt-body-center dt-body-width-10", render: 
+			            	function(data, type, row){  
+			            	var retorno1;
+
+			            		if(row[12] != 0){
+			            			retorno1 = '<input type="checkbox" onclick="addDuplicadoMuestraSecond('+row[11]+')" checked="checked" disabled="disabled"/>';
+			            			
+			            		}else{
+			            			retorno1 = '<input type="checkbox" onclick="addDuplicadoMuestraSecond('+row[11]+')" />';
+			            		}
+			            		if(row[1] == 'BLANCO'){
+									retorno='';
+								}else{
+									var retorno = row[1] != 'DUPLICADO'? retorno1 : '<button class="btn btn-danger btn-delete-punto" title="Eliminar" onclick="deleteDuplicadoMuestraSecond('+row[11]+')"><span class="glyphicon glyphicon-erase"></span></button>';
+								}
+			            		
+			            		if(row[1] == 'DUPLICADO'){
+			            			if( (row[3] == '' || row[3] == undefined)){
+			            				retorno = '';
+			            			}
+			            			
+			            		}
+								
+								return retorno;	 
+			            	}
+			            },
+		              	{
+		              		"className": "dt-body-center dt-body-width-50",
+		              		"targets": 0,
+		              		"render": function ( data, type, row) {
+		              			return row[1] != 'DUPLICADO'? '<button class="btn btn-info btn-modif-punto" title="Editar Equipo" onclick="modificarMuestraSecond('+row[11]+')"><span class="glyphicon glyphicon-pencil"></span></button>':'';
+		              		}
+		              	}
+					]
+				});
+			}); 
+			
+			
+		</script>	
+	</div>
+</body>
+</html>

@@ -1,0 +1,931 @@
+package pe.com.sedapal.scr.web.controllers;
+
+import static java.text.MessageFormat.format;
+
+import java.io.File;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.gson.reflect.TypeToken;
+
+import net.sf.jasperreports.engine.util.FileResolver;
+import pe.com.gmd.util.exception.GmdException;
+import pe.com.gmd.util.exception.MensajeExceptionUtil;
+import pe.com.gmd.util.properties.PropiedadesUtil;
+import pe.com.sedapal.scr.core.beans.AnalistaBean;
+import pe.com.sedapal.scr.core.beans.DetalleGeneralBean;
+import pe.com.sedapal.scr.core.beans.PlantaTratamientoBean;
+import pe.com.sedapal.scr.core.beans.PuntoMuestraPtarSectorBean;
+import pe.com.sedapal.scr.core.beans.RegistroDirectoBean;
+import pe.com.sedapal.scr.core.beans.RegistroLabReporteBean;
+import pe.com.sedapal.scr.core.beans.RegistroLaboratorioBean;
+import pe.com.sedapal.scr.core.beans.SubParametroPtarSectorBean;
+import pe.com.sedapal.scr.core.common.ConstantesUtil;
+import pe.com.sedapal.scr.core.services.IAlertasNotificacionService;
+import pe.com.sedapal.scr.core.services.IDetalleGeneralService;
+import pe.com.sedapal.scr.core.services.IParametroPtarSectorService;
+import pe.com.sedapal.scr.core.services.IPlantaTratamientoService;
+import pe.com.sedapal.scr.core.services.IPtarxSectorService;
+import pe.com.sedapal.scr.core.services.IPuntoMuestraPtarSectorService;
+import pe.com.sedapal.scr.core.services.IRegistroAceiteService;
+import pe.com.sedapal.scr.core.services.IRegistroDBOService;
+import pe.com.sedapal.scr.core.services.IRegistroDirectoService;
+import pe.com.sedapal.scr.core.services.IRegistroHidrobiologicoService;
+import pe.com.sedapal.scr.core.services.IRegistroLabReporteService;
+import pe.com.sedapal.scr.core.services.IRegistroLaboratorioService;
+import pe.com.sedapal.scr.core.services.IRegistroMicrobiologicoService;
+import pe.com.sedapal.scr.core.services.IRegistroParasitologicoService;
+import pe.com.sedapal.scr.core.services.IRegistroSolidoService;
+import pe.com.sedapal.scr.core.services.ISubParametroPtarSectorService;
+import pe.com.sedapal.scr.core.util.ParametrosUtil;
+import pe.com.sedapal.scr.web.common.BRespuestaBean;
+import pe.com.sedapal.scr.web.common.ConstanteServices;
+import pe.com.sedapal.scr.web.common.Util;
+import pe.com.sedapal.scr.web.util.BPdf;
+import pe.com.sedapal.scr.web.util.ExportWebUtil;
+import pe.com.sedapal.scr.web.util.JsonUtil;
+
+/**
+ * @author GMD
+ * Controlador de Reportes y dashboard PTAR
+ */
+@Controller
+@RequestMapping(value = "/reporteSptar")
+public class ReporteController {
+
+	private static final Logger LOGGER = Logger.getLogger(MantenimientoController.class);
+	
+	private BRespuestaBean respuestaBean = new BRespuestaBean();
+	
+	@Autowired
+	private GeneralController generalController;
+	
+	@Autowired
+	private IPtarxSectorService ptarxSectorService;
+	
+	@Autowired
+	private IPuntoMuestraPtarSectorService puntoMuestraPtarSectorService;
+	
+	@Autowired
+	private ISubParametroPtarSectorService subParametroPtarSectorService;
+	
+	@Autowired
+	private IParametroPtarSectorService parametroPtarSectorService;
+	
+	@Autowired
+	private IRegistroLaboratorioService registroLaboratorioService;
+	
+	@Autowired
+	private IRegistroLabReporteService registroLabReporteService;
+	
+	@Autowired
+	IDetalleGeneralService detalleGeneralService;
+	
+	@Autowired
+	private IRegistroSolidoService registroSolidoService;
+	
+	@Autowired
+	private IRegistroDBOService registroDBOService;
+	
+	@Autowired
+	private IRegistroParasitologicoService registroParasitologicoService;
+	
+	@Autowired
+	private IRegistroHidrobiologicoService registroHidrobiologicoService;
+	
+	@Autowired
+	private IRegistroMicrobiologicoService registroMicrobiologicoService;
+	
+	@Autowired
+	private IRegistroDirectoService registroDirectoService;
+	
+	@Autowired
+	private IRegistroAceiteService registroAceiteService;
+	
+	@Autowired
+	private IPlantaTratamientoService plantaTratamientoService;
+	
+	@Autowired
+	IAlertasNotificacionService alertasNotificacionService;
+	
+	public ReporteController() {
+		
+	}
+	
+	/**
+	 * Método que carga la vista de los reportes de gestión
+	 * 
+	 * @param request
+	 * @param model
+	 * @return Objeto tipo string con la ruta de la vista de reportes de gestión
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/cargarVentanaReporteGestionPTAR", method = { RequestMethod.POST, RequestMethod.GET })
+	public String cargarVentanaReporteGestionPTAR(HttpServletRequest request, Model model) throws GmdException {
+		try {
+			AnalistaBean analistaBean = Util.obtenerAnalistaBeanLogin();
+			String fechaActual = ParametrosUtil.getFechaActual();
+			model.addAttribute("ltaPtarxSector", ptarxSectorService.obtenerPtarxSector());
+			model.addAttribute("ltaEstado", detalleGeneralService.obtenerDetalleGeneral(ConstantesUtil.ID_ESTADO));
+			model.addAttribute("mensajeRespuesta", request.getParameter("mensajeRespuesta"));
+			model.addAttribute("estadoRespuesta", request.getParameter("estadoRespuesta"));
+			model.addAttribute("fechaActual",fechaActual);
+			model.addAttribute("filtro", request.getParameter("filtro"));
+			if(analistaBean.getIdFlagTipo() != null) {
+				model.addAttribute("flagAnalistaValidador", analistaBean.getIdFlagTipo());
+			}else {
+				model.addAttribute("flagAnalistaValidador","0");
+			}
+		} catch (Exception excepcion) {
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+		return "/sptar/reporte/bandejaReporte";
+	}
+	
+	
+	/**
+	 * Método que genera datos y reporte de gestión de laboratorio
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/reporteRegistroLaboratorioPTAR", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody void reporteRegistroLaboratorioPTAR(HttpServletRequest request, HttpServletResponse response, Model model) throws GmdException {
+		try {
+			String fechaInicio = request.getParameter("fechaInicio");
+			String fechaFin = request.getParameter("fechaFin");
+			String idPtarxSector = request.getParameter("idPtarxSector");
+			String descripcionPtar = request.getParameter("descripcionPtar");
+			String descripcionSector = request.getParameter("descripcionSector");
+			String idRegistroLaboratorio = request.getParameter("idRegistroLaboratorio");
+			String arrayParametros = request.getParameter("arrayParametros");
+			String rutaJasper = this.getClass().getResource("/reportes/").getPath()+PropiedadesUtil.obtenerPropiedad(ConstanteServices.ARCHIVO_CONFIGURACION, "ruta.reporteGestionLab");
+			String nombreArchivo = PropiedadesUtil.obtenerPropiedad(ConstanteServices.ARCHIVO_CONFIGURACION, "nombre.reporteGestionLab");
+			Type listType = new TypeToken<List<String>>() {}.getType();
+			List<String> parametros = JsonUtil.convertirCadenaJsonALista(arrayParametros, listType);
+			List<RegistroLabReporteBean> listaObtenida = new ArrayList<RegistroLabReporteBean>();
+			listaObtenida = registroLabReporteService.obtenerListaReporte(null, Integer.parseInt(idRegistroLaboratorio), null, null, parametros);
+			RegistroLaboratorioBean RegistroLaboratorio = registroLaboratorioService.obtenerRegistroLaboratorio(Integer.parseInt(idRegistroLaboratorio));
+			List<PuntoMuestraPtarSectorBean> listaPtoMuestra = puntoMuestraPtarSectorService.obtenerltaPuntoMuestraSecEnlace(RegistroLaboratorio.getIdPtarxSector());
+			if(!CollectionUtils.isEmpty(listaObtenida)) {	
+				List<BPdf> listaPDFBean = new ArrayList<BPdf>();
+				final Map<String,Object> parametrosGeneral = new HashMap<String,Object>();
+				List<RegistroLabReporteBean> listaDirecto = new ArrayList<RegistroLabReporteBean>();
+				List<RegistroLabReporteBean> listaFisicoQuimico = new ArrayList<RegistroLabReporteBean>();
+				List<RegistroLabReporteBean> listaMicroHidro = new ArrayList<RegistroLabReporteBean>();
+				List<RegistroLabReporteBean> listaPara = new ArrayList<RegistroLabReporteBean>();
+				DecimalFormat format = new DecimalFormat("0.#");
+				for(RegistroLabReporteBean RegistroReporte : listaObtenida) {
+					switch (RegistroReporte.descripcionTipoRegistro) {
+						case ConstanteServices.TIPO_DIRECTO:
+							RegistroReporte.numValor = ParametrosUtil.formatearDecimales(RegistroReporte.numValor,2);
+							RegistroReporte.setDescripcionNumValor(String.valueOf(RegistroReporte.numValor));
+							listaDirecto.add(RegistroReporte);
+							break;
+						case ConstanteServices.TIPO_FISICO_QUIMICO:
+							RegistroReporte.numValor = ParametrosUtil.formatearDecimales(RegistroReporte.numValor,0);
+							RegistroReporte.setDescripcionNumValor(format.format(RegistroReporte.numValor));
+							if(!StringUtils.isEmpty(RegistroReporte.getTipoSemilla()) && !RegistroReporte.getTipoSemilla().equals(" ")) {
+								for(PuntoMuestraPtarSectorBean puntoMuestra : listaPtoMuestra) {
+									if(String.valueOf(RegistroReporte.getIdPtoMuestra()).equals(puntoMuestra.getPtoEnlace())) {
+										RegistroReporte.setDescripcionPtoMuestra(puntoMuestra.getDescripcionPunto());
+										RegistroReporte.setSecuencia(puntoMuestra.getSecuencia());
+										break;
+									}
+								}
+							}
+							listaFisicoQuimico.add(RegistroReporte);
+							break;
+						case ConstanteServices.TIPO_MICRO_HIDRO:
+							if(RegistroReporte.getDescripcionNumValor().equals(ConstanteServices.CAMPO_SIN_VALOR)) {
+								RegistroReporte.numValor = ParametrosUtil.formatearDecimales(RegistroReporte.numValor,0);
+								RegistroReporte.setDescripcionNumValor(format.format(RegistroReporte.numValor).trim());
+							}else {
+								RegistroReporte.setDescripcionNumValor(RegistroReporte.getDescripcionNumValor().trim());
+							}
+							listaMicroHidro.add(RegistroReporte);
+							break;
+						case ConstanteServices.TIPO_PARA:
+							RegistroReporte.numValor = ParametrosUtil.formatearDecimales(RegistroReporte.numValor,0);
+							RegistroReporte.setDescripcionNumValor(format.format(RegistroReporte.numValor));
+							listaPara.add(RegistroReporte);
+							break;
+					}
+				}
+				List<Map<String, String>> listaDirectoMap = JsonUtil.convertirObjetoaMapString(listaDirecto);
+				List<Map<String, String>> listaFisicoQuimicoMap = JsonUtil.convertirObjetoaMapString(listaFisicoQuimico);
+				List<Map<String, String>> listaMicroHidroMap = JsonUtil.convertirObjetoaMapString(listaMicroHidro);
+				List<Map<String, String>> listaParaMap = JsonUtil.convertirObjetoaMapString(listaPara);
+				
+				parametrosGeneral.put("ltaDirectoMap", listaDirectoMap);
+				parametrosGeneral.put("ltaFisicoQuimicoMap", listaFisicoQuimicoMap);
+				parametrosGeneral.put("ltaMicroHidroMap", listaMicroHidroMap);
+				parametrosGeneral.put("ltaParaMap", listaParaMap);
+				parametrosGeneral.put("descripcionPtar", RegistroLaboratorio.getDescripcionPtar());
+				parametrosGeneral.put("descripcionSector", RegistroLaboratorio.getDescripcionSector());
+				parametrosGeneral.put("fechaRegistro", RegistroLaboratorio.getFechaRegistroString());
+				parametrosGeneral.put("estado", RegistroLaboratorio.getDescripcionEstadoAprob());
+				parametrosGeneral.put("idRegistro", idRegistroLaboratorio);
+				String logo = this.getClass().getResource("/reportes/reportesImg/").getPath()+"logo"+String.valueOf(RegistroLaboratorio.getIdPtarxSector())+".jpg";
+				File reportImage = new File(logo);
+				if(!reportImage.exists()) {
+					parametrosGeneral.put("logo", "default");
+				}else {
+					parametrosGeneral.put("logo", logo);
+				}
+				BPdf bPdfBean = new BPdf();
+				bPdfBean.setParametro(parametrosGeneral);
+				bPdfBean.setRutaJasper(rutaJasper);
+				bPdfBean.setListaDataSource(null);
+				listaPDFBean.add(bPdfBean);
+				ExportWebUtil.exportToExcel(response, listaPDFBean, nombreArchivo);
+			}
+		} catch(Exception excepcion){
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+	}
+	
+	
+	/**
+	 * Método que encuentra la URI de un archivo
+	 * 
+	 * @param fileName nombre del archivo
+	 * @return URI de archivo
+	 */
+	public File resolveFile(String fileName) {
+		URI uri;
+		try {
+			uri = new URI(this.getClass().getResource(fileName).getPath());
+			return new File(uri.getPath());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	/**
+	 * Método que realiza la búsqueda de los datos del reporte de gestión de laboratorio
+	 * 
+	 * @param request
+	 * @param model
+	 * @return Lista de objetos tipo regsitro de laboratorio reporte
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/buscarRegistroReporte" , method = {RequestMethod.POST, RequestMethod.GET})
+	public @ResponseBody String buscarRegistroReporte(HttpServletRequest request, Model model) throws GmdException{
+		Map<String, Object> mapResultado = new HashMap<String, Object>();
+		try {
+			String fechaInicio = request.getParameter("fechaInicio");
+			String fechaFin = request.getParameter("fechaFin");
+			String idPtarxSector = request.getParameter("idPtarxSector");
+			String idRegistroLaboratorio = request.getParameter("idRegistroLaboratorio");
+			String arrayParametros = request.getParameter("arrayParametros");
+			Type listType = new TypeToken<List<String>>() {}.getType();
+			List<String> parametros = JsonUtil.convertirCadenaJsonALista(arrayParametros, listType);
+			List<RegistroLabReporteBean> listaObtenida = new ArrayList<RegistroLabReporteBean>();
+			listaObtenida = registroLabReporteService.obtenerListaReporte(null, Integer.parseInt(idRegistroLaboratorio), null, null, parametros);
+//			listaObtenida = registroLabReporteService.obtenerListaReporte(null, Integer.parseInt(idRegistroLaboratorio), null, null);
+			respuestaBean.setEstadoRespuesta(ConstanteServices.OK);
+			respuestaBean.setMensajeRespuesta("Se encontraron Registros.");
+			mapResultado.put("ListaResultado", listaObtenida);
+			respuestaBean.setParametros(mapResultado);
+		} catch(Exception excepcion){
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+		return JsonUtil.convertirObjetoACadenaJson(respuestaBean);		
+	}
+	
+	
+	/**
+	 * Método que carga la vista del dashboard
+	 * 
+	 * @param request
+	 * @param model
+	 * @return Objeto tipo string con la ruta de la vista dashboard
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/cargarVentanaDashBoard", method = { RequestMethod.POST, RequestMethod.GET })
+	public String cargarVentanaDashBoard(HttpServletRequest request, Model model) throws GmdException {
+		try {			
+			AnalistaBean analistaBean = Util.obtenerAnalistaBeanLogin();
+			List<PlantaTratamientoBean> ltaPlantaTratamiento = plantaTratamientoService.obtenerPlantaTratamiento();
+			String fechaActual = ParametrosUtil.getFechaActual();
+			model.addAttribute("objRegistroLaboratorio", new RegistroLaboratorioBean());
+			model.addAttribute("ltaPlantaTratamiento",ltaPlantaTratamiento);
+			model.addAttribute("idParametroInicial",null);
+			model.addAttribute("nombrePlantaInicial","");
+			model.addAttribute("fechaActual",fechaActual);
+			if(analistaBean.getIdFlagTipo() != null) {
+				model.addAttribute("flagAnalistaValidador",analistaBean.getIdFlagTipo());
+			}else {
+				model.addAttribute("flagAnalistaValidador","0");
+			}
+			model.addAttribute("idAnalistaSelect",analistaBean.getIdAnalista());
+			model.addAttribute("mensajeRespuesta", request.getParameter("mensajeRespuesta"));
+			model.addAttribute("estadoRespuesta", request.getParameter("estadoRespuesta"));
+			model.addAttribute("filtro", request.getParameter("filtro"));
+		} catch (Exception excepcion) {
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+		return "/sptar/reporte/dashBoard";
+	}
+	
+	/**
+	 * Método que carga la vista del reporte histórico
+	 * 
+	 * @param request
+	 * @param model
+	 * @return objeto tipo string con la ruta de la vista del reporte histórico
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/cargarVentanaReporteHistorico", method = { RequestMethod.POST, RequestMethod.GET })
+	public String cargarVentanaReporteHistorico(HttpServletRequest request, Model model) throws GmdException {
+		try {
+			AnalistaBean analistaBean = Util.obtenerAnalistaBeanLogin();
+			String fechaActual = ParametrosUtil.getFechaActual();
+			model.addAttribute("ltaPtarxSector", ptarxSectorService.obtenerPtarxSector());
+			model.addAttribute("ltaEstado", detalleGeneralService.obtenerDetalleGeneral(ConstantesUtil.ID_ESTADO));
+			model.addAttribute("mensajeRespuesta", request.getParameter("mensajeRespuesta"));
+			model.addAttribute("estadoRespuesta", request.getParameter("estadoRespuesta"));
+			model.addAttribute("fechaActual",fechaActual);
+			model.addAttribute("filtro", request.getParameter("filtro"));
+			if(analistaBean.getIdFlagTipo() != null) {
+				model.addAttribute("flagAnalistaValidador", analistaBean.getIdFlagTipo());
+			}else {
+				model.addAttribute("flagAnalistaValidador","0");
+			}
+		} catch (Exception excepcion) {
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+		return "/sptar/reporte/bandejaReporteHistorico";
+	}
+	
+	/**
+	 * Método que realiza la búsqueda de los registros del reporte histórico
+	 * 
+	 * @param request
+	 * @param model
+	 * @return Lista de objetos de tipo registro de laboratorio reporte
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/buscarRegistroReporteHistorico" , method = {RequestMethod.POST, RequestMethod.GET})
+	public @ResponseBody String buscarRegistroReporteHistorico(HttpServletRequest request, Model model) throws GmdException{
+		Map<String, Object> mapResultado = new HashMap<String, Object>();
+		try {
+			String fechaInicio = request.getParameter("fechaInicio");
+			String fechaFin = request.getParameter("fechaFin");
+			String idPtarxSector = request.getParameter("idPtarxSector");
+			List<RegistroLabReporteBean> listaHistorico = registroLabReporteService.obtenerListaReporteHistorico(Integer.parseInt(idPtarxSector), fechaInicio, fechaFin);
+			respuestaBean.setEstadoRespuesta(ConstanteServices.OK);
+			respuestaBean.setMensajeRespuesta("Se encontraron Registros.");
+			mapResultado.put("ListaResultado", listaHistorico);
+			respuestaBean.setParametros(mapResultado);
+		} catch(Exception excepcion){
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+		return JsonUtil.convertirObjetoACadenaJson(respuestaBean);		
+	}
+	
+	/**
+	 * Método que genera los datos y reporte histórico
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/reporteRegistroLaboratorioHistorico", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody void reporteRegistroLaboratorioHistorico(HttpServletRequest request, HttpServletResponse response, Model model) throws GmdException {
+		try {
+			String fechaInicio = request.getParameter("fechaInicio");
+			String fechaFin = request.getParameter("fechaFin");
+			String idPtarxSector = request.getParameter("idPtarxSector");
+			String descripcionPtar = request.getParameter("descripcionPtar");
+			String descripcionSector = request.getParameter("descripcionSector");
+			String rutaJasper = this.getClass().getResource("/reportes/").getPath()+PropiedadesUtil.obtenerPropiedad(ConstanteServices.ARCHIVO_CONFIGURACION, "ruta.reporteHistoricoLab");
+			String nombreArchivo = PropiedadesUtil.obtenerPropiedad(ConstanteServices.ARCHIVO_CONFIGURACION, "nombre.reporteHistoricoLab");
+			List<RegistroLabReporteBean> listaHistorico = registroLabReporteService.obtenerListaReporteHistorico(Integer.parseInt(idPtarxSector), fechaInicio, fechaFin);
+			List<PuntoMuestraPtarSectorBean> listaPtoMuestra = puntoMuestraPtarSectorService.obtenerltaPuntoMuestraSecEnlace(Integer.parseInt(idPtarxSector));
+			DecimalFormat format = new DecimalFormat("0.#");
+			if(!CollectionUtils.isEmpty(listaHistorico)) {
+				for(RegistroLabReporteBean RegistroReporte : listaHistorico) {
+					switch (RegistroReporte.descripcionTipoRegistro) {
+							case ConstanteServices.TIPO_FISICO_QUIMICO:
+								RegistroReporte.numValor = ParametrosUtil.formatearDecimales(RegistroReporte.numValor,2);
+								RegistroReporte.setDescripcionNumValor(String.valueOf(RegistroReporte.numValor));
+								if(!StringUtils.isEmpty(RegistroReporte.getTipoSemilla()) && !RegistroReporte.getTipoSemilla().equals(" ")) {
+									for(PuntoMuestraPtarSectorBean puntoMuestra : listaPtoMuestra) {
+										if(String.valueOf(RegistroReporte.getIdPtoMuestra()).equals(puntoMuestra.getPtoEnlace())) {
+											RegistroReporte.setDescripcionPtoMuestra(puntoMuestra.getDescripcionPunto());
+											RegistroReporte.setSecuencia(puntoMuestra.getSecuencia());
+											break;
+										}
+									}
+								}
+							case ConstanteServices.TIPO_MICRO_HIDRO:
+								if(RegistroReporte.getDescripcionNumValor().equals(ConstanteServices.CAMPO_SIN_VALOR)) {
+									RegistroReporte.numValor = ParametrosUtil.formatearDecimales(RegistroReporte.numValor,2);
+									RegistroReporte.setDescripcionNumValor(String.valueOf(RegistroReporte.numValor));
+								}else {
+									RegistroReporte.setDescripcionNumValor(RegistroReporte.getDescripcionNumValor());
+								}
+								break;
+							default : 
+								RegistroReporte.numValor = ParametrosUtil.formatearDecimales(RegistroReporte.numValor,2);
+								RegistroReporte.setDescripcionNumValor(String.valueOf(RegistroReporte.numValor));
+								break;
+						}
+					
+				}
+				List<BPdf> listaPDFBean = new ArrayList<BPdf>();
+				final Map<String,Object> parametrosGeneral = new HashMap<String,Object>();
+				List<Map<String, String>> listaHistoricoMap = JsonUtil.convertirObjetoaMapString(listaHistorico);
+				parametrosGeneral.put("ltaHistoricoMap", listaHistoricoMap);
+				parametrosGeneral.put("descripcionPtar", descripcionPtar);
+				parametrosGeneral.put("descripcionSector", descripcionSector);
+				parametrosGeneral.put("fechaInicio", fechaInicio);
+				parametrosGeneral.put("fechaFin", fechaFin);
+				BPdf bPdfBean = new BPdf();
+				bPdfBean.setParametro(parametrosGeneral);
+				bPdfBean.setRutaJasper(rutaJasper);
+				bPdfBean.setListaDataSource(null);
+				listaPDFBean.add(bPdfBean);
+				ExportWebUtil.exportToExcel(response, listaPDFBean, nombreArchivo);
+			}
+		} catch(Exception excepcion){
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+	}
+		
+	/**
+	 * Método que carga la vista de reporte acumulado
+	 * 
+	 * @param request
+	 * @param model
+	 * @return Objeto tipo string que contiene la ruta de la vista de reporte acumulado
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/cargarVentanaReporteAcumulado", method = { RequestMethod.POST, RequestMethod.GET })
+	public String cargarVentanaReporteAcumulado(HttpServletRequest request, Model model) throws GmdException {
+		try {
+			AnalistaBean analistaBean = Util.obtenerAnalistaBeanLogin();
+			String fechaActual = ParametrosUtil.getFechaActual();
+			model.addAttribute("mensajeRespuesta", request.getParameter("mensajeRespuesta"));
+			model.addAttribute("estadoRespuesta", request.getParameter("estadoRespuesta"));
+			model.addAttribute("fechaActual",fechaActual);
+			model.addAttribute("filtro", request.getParameter("filtro"));
+			if(analistaBean.getIdFlagTipo() != null) {
+				model.addAttribute("flagAnalistaValidador", analistaBean.getIdFlagTipo());
+			}else {
+				model.addAttribute("flagAnalistaValidador","0");
+			}
+		} catch (Exception excepcion) {
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+		return "/sptar/reporte/bandejaReporteAcumulado";
+	}
+		
+	/**
+	 * Método que realiza la búsqueda de registros de reporte acumulado
+	 * 
+	 * @param request
+	 * @param model
+	 * @return Lista de objetos de tipo registro laboratorio reporte
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/buscarRegistroReporteAcumulado" , method = {RequestMethod.POST, RequestMethod.GET})
+	public @ResponseBody String buscarRegistroReporteAcumulado(HttpServletRequest request, Model model) throws GmdException{
+		Map<String, Object> mapResultado = new HashMap<String, Object>();
+		try {
+			String fechaInicio = request.getParameter("fechaInicio");
+			String fechaFin = request.getParameter("fechaFin");
+			List<RegistroLabReporteBean> listaAcumulado = registroLabReporteService.obtenerListaReporteAcumulado(fechaInicio, fechaFin);
+			respuestaBean.setEstadoRespuesta(ConstanteServices.OK);
+			respuestaBean.setMensajeRespuesta("Se encontraron Registros.");
+			mapResultado.put("ListaResultado", listaAcumulado);
+			respuestaBean.setParametros(mapResultado);
+		} catch(Exception excepcion){
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+		return JsonUtil.convertirObjetoACadenaJson(respuestaBean);		
+	}
+	
+	/**
+	 * Método que genera datos y reporte registros de laboratorio acumulado
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/reporteRegistroLaboratorioAcumulado", method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody void reporteRegistroLaboratorioAcumulado(HttpServletRequest request, HttpServletResponse response, Model model) throws GmdException {
+		try {
+			String fechaInicio = request.getParameter("fechaInicio");
+			String fechaFin = request.getParameter("fechaFin");
+			String rutaJasper = this.getClass().getResource("/reportes/").getPath()+PropiedadesUtil.obtenerPropiedad(ConstanteServices.ARCHIVO_CONFIGURACION, "ruta.reporteAcumuladoLab");
+			String nombreArchivo = PropiedadesUtil.obtenerPropiedad(ConstanteServices.ARCHIVO_CONFIGURACION, "nombre.reporteAcumuladoLab");
+			List<RegistroLabReporteBean> listaAcumulado = registroLabReporteService.obtenerListaReporteAcumulado(fechaInicio, fechaFin);
+			
+			if(!CollectionUtils.isEmpty(listaAcumulado)) {
+				for(RegistroLabReporteBean RegistroReporte : listaAcumulado) {
+					switch (RegistroReporte.descripcionTipoRegistro) {
+					case ConstanteServices.TIPO_FISICO_QUIMICO:
+						RegistroReporte.numValor = ParametrosUtil.formatearDecimales(RegistroReporte.numValor,2);
+						RegistroReporte.setDescripcionNumValor(String.valueOf(RegistroReporte.numValor));
+						if(!StringUtils.isEmpty(RegistroReporte.getTipoSemilla()) && !RegistroReporte.getTipoSemilla().equals(" ")) {
+							List<PuntoMuestraPtarSectorBean> listaPtoMuestra = puntoMuestraPtarSectorService.obtenerltaPuntoMuestraSecEnlace(RegistroReporte.getIdPtarxSector());
+							for(PuntoMuestraPtarSectorBean puntoMuestra : listaPtoMuestra) {
+								if(String.valueOf(RegistroReporte.getIdPtoMuestra()).equals(puntoMuestra.getPtoEnlace())) {
+									RegistroReporte.setDescripcionPtoMuestra(puntoMuestra.getDescripcionPunto());
+									RegistroReporte.setSecuencia(puntoMuestra.getSecuencia());
+									break;
+								}
+							}
+						}
+						break;
+					case ConstanteServices.TIPO_MICRO_HIDRO:
+						if(RegistroReporte.getDescripcionNumValor().equals(ConstanteServices.CAMPO_SIN_VALOR)) {
+							RegistroReporte.numValor = ParametrosUtil.formatearDecimales(RegistroReporte.numValor,2);
+							RegistroReporte.setDescripcionNumValor(String.valueOf(RegistroReporte.numValor));
+						}else {
+							RegistroReporte.setDescripcionNumValor(RegistroReporte.getDescripcionNumValor());
+						}
+						break;
+					default:
+						RegistroReporte.numValor = ParametrosUtil.formatearDecimales(RegistroReporte.numValor,2);
+						RegistroReporte.setDescripcionNumValor(String.valueOf(RegistroReporte.numValor));
+						break;
+					}
+				}
+				List<BPdf> listaPDFBean = new ArrayList<BPdf>();
+				final Map<String,Object> parametrosGeneral = new HashMap<String,Object>();
+				List<Map<String, String>> listaAcumuladoMap = JsonUtil.convertirObjetoaMapString(listaAcumulado);
+				parametrosGeneral.put("ltaAcumuladoMap", listaAcumuladoMap);
+				parametrosGeneral.put("fechaInicio", fechaInicio);
+				parametrosGeneral.put("fechaFin", fechaFin);
+				BPdf bPdfBean = new BPdf();
+				bPdfBean.setParametro(parametrosGeneral);
+				bPdfBean.setRutaJasper(rutaJasper);
+				bPdfBean.setListaDataSource(null);
+				listaPDFBean.add(bPdfBean);
+				ExportWebUtil.exportToExcel(response, listaPDFBean, nombreArchivo);
+			}
+		} catch(Exception excepcion){
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+	}
+	
+	/**
+	 * Método que carga la vista del resultado dashboard
+	 * 
+	 * @param request
+	 * @param model
+	 * @return Objeto de tipo string con la ruta de la vista del resultado dashboard
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/cargarVentanaDashboard", method = { RequestMethod.POST, RequestMethod.GET })
+	public String cargarVentanaDashboard(HttpServletRequest request, Model model) throws GmdException {
+		try {
+			String listaPuntos = request.getParameter("listaPuntos");
+			String listaPtar  = request.getParameter("listaPtar");
+			String fechaInicio = request.getParameter("fechaInicio");
+			String fechaFin = request.getParameter("fechaFin");
+			Integer[] arrayPuntos = JsonUtil.convertirCadenaJsonAObjeto(listaPuntos, Integer[].class);
+			List<RegistroLabReporteBean> listaDashboardEP = new ArrayList<RegistroLabReporteBean>();
+			List<RegistroLabReporteBean> listaDashboardSP = new ArrayList<RegistroLabReporteBean>();
+			List<RegistroLabReporteBean> listaDashboard = registroLabReporteService.obtenerListaDashboard(fechaInicio, fechaFin, arrayPuntos);
+			for (RegistroLabReporteBean registro : listaDashboard) {
+				if (!StringUtils.isEmpty(registro.getTipoSemilla()) && !registro.getTipoSemilla().equals(" ")) {
+					List<PuntoMuestraPtarSectorBean> listaPtoMuestra = puntoMuestraPtarSectorService.obtenerltaPuntoMuestraSecEnlace(registro.getIdPtarxSector());
+					for (PuntoMuestraPtarSectorBean puntoMuestra : listaPtoMuestra) {
+						if (String.valueOf(registro.getIdPtoMuestra()).equals(puntoMuestra.getPtoEnlace())) {
+							registro.setDescripcionPtoMuestra(puntoMuestra.getDescripcionPunto());
+							registro.setIdPtoMuestra(puntoMuestra.getIdPuntoMuestra());
+							break;
+						}
+					}
+				}
+			}
+			for(RegistroLabReporteBean RegistroDashboard : listaDashboard) {
+				RegistroDashboard.numValor = ParametrosUtil.formatearDecimales(RegistroDashboard.numValor,2);
+				if(RegistroDashboard.getIdPtoMuestra() == ConstantesUtil.ID_SUBPARA_EP) {
+					listaDashboardEP.add(RegistroDashboard);
+				}else if(RegistroDashboard.getIdPtoMuestra() == ConstantesUtil.ID_SUBPARA_SP){
+					listaDashboardSP.add(RegistroDashboard);
+				}
+			}
+			model.addAttribute("listaPuntos", listaPuntos);
+			model.addAttribute("listaPtar", listaPtar);
+			model.addAttribute("listaDashboardEP", listaDashboardEP);
+			model.addAttribute("listaDashboardSP", listaDashboardSP);
+			model.addAttribute("mensajeRespuesta", request.getParameter("mensajeRespuesta"));
+			model.addAttribute("estadoRespuesta", request.getParameter("estadoRespuesta"));
+		} catch (Exception excepcion) {
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}
+		return "/sptar/reporte/resultadoDashboard";
+	}
+	
+	/**
+	 * Método que realiza la búsqueda de registros para el dashboard lineal
+	 * 
+	 * @param idRutaProg
+	 * @param request
+	 * @param model
+	 * @return Listas de objetos con el resultado de búsqueda dashboard
+	 * @throws GmdException
+	 */
+	@RequestMapping(value = "/obtenerListaLineDashboard" , method = {RequestMethod.POST, RequestMethod.GET})
+	public @ResponseBody String  obtenerListaLineDashboard(String idRutaProg, HttpServletRequest request, Model model) throws GmdException{
+		Map<String, Object> mapResultado = new HashMap<String, Object>();
+		try {		
+			String idPtarxSector = request.getParameter("idPtarxSector");
+			String fechaInicio = request.getParameter("fechaInicio");
+			String fechaFin = request.getParameter("fechaFin");
+			List<RegistroLabReporteBean> listaDashboard = registroLabReporteService.obtenerListaLineDashboard(fechaInicio, fechaFin, Integer.parseInt(idPtarxSector));
+			List<Double> ltaDBOEP = new ArrayList<Double>();
+			List<Double> ltaSSTEP = new ArrayList<Double>();
+			List<Double> ltaCTTEP = new ArrayList<Double>();
+			List<Double> ltaPHEP = new ArrayList<Double>();
+			List<Double> ltaTEP = new ArrayList<Double>();
+			List<Double> ltaAYGEP = new ArrayList<Double>();
+			List<Double> ltaDQOEP = new ArrayList<Double>();
+			List<Double> ltaDBOSP = new ArrayList<Double>();
+			List<Double> ltaSSTSP = new ArrayList<Double>();
+			List<Double> ltaCTTSP = new ArrayList<Double>();
+			List<Double> ltaPHSP = new ArrayList<Double>();
+			List<Double> ltaTSP = new ArrayList<Double>();
+			List<Double> ltaAYGSP = new ArrayList<Double>();
+			List<Double> ltaDQOSP = new ArrayList<Double>();
+			List<String> listaFechas = new ArrayList<String>();
+			//CREACION LISTA FECHA UNICA
+			for(RegistroLabReporteBean registro : listaDashboard) {
+				if(listaFechas.size() == 0) {
+					listaFechas.add(registro.getFechaRegistroString());
+				}else {
+					Integer flag = 0;
+					for(String fecha : listaFechas) {
+						if(fecha.equals(registro.getFechaRegistroString())) {
+							flag = 1;
+							break;
+						}
+					}
+					if(flag == 0) {
+						listaFechas.add(registro.getFechaRegistroString());
+					}
+				}
+			}
+			//CAMBIO EN CASO EXISTAN SEMILLAS
+			List<PuntoMuestraPtarSectorBean> listaPtoMuestra = puntoMuestraPtarSectorService.obtenerltaPuntoMuestraSecEnlace(Integer.parseInt(idPtarxSector));
+			for (RegistroLabReporteBean registro : listaDashboard) {
+				if (!StringUtils.isEmpty(registro.getTipoSemilla()) && !registro.getTipoSemilla().equals(" ")) {
+					for (PuntoMuestraPtarSectorBean puntoMuestra : listaPtoMuestra) {
+						if (String.valueOf(registro.getIdPtoMuestra()).equals(puntoMuestra.getPtoEnlace())) {
+							registro.setDescripcionPtoMuestra(puntoMuestra.getDescripcionPunto());
+							registro.setIdPtoMuestra(puntoMuestra.getIdPuntoMuestra());
+							break;
+						}
+					}
+				}
+			}
+			//CREACION DE LISTAS
+			Integer indice = 0;
+			for(String fecha : listaFechas) {
+				for(RegistroLabReporteBean registro :listaDashboard) {
+					//LLENADO DE LISTAS EP
+					if(registro.getIdPtoMuestra() == ConstantesUtil.ID_SUBPARA_EP && registro.getFechaRegistroString().equals(fecha)) {
+						switch (registro.getIdSubParametro()) {
+							case 83: ltaDBOEP.add(registro.getNumValor());
+								break;
+							case 100: ltaSSTEP.add(registro.getNumValor());
+								break;
+							case 26: ltaCTTEP.add(registro.getNumValor());
+								break;
+							case 90: ltaPHEP.add(registro.getNumValor());
+								break;
+							case 105: ltaTEP.add(registro.getNumValor());
+								break;
+							case 28: ltaAYGEP.add(registro.getNumValor());
+								break;
+							case 84: ltaDQOEP.add(registro.getNumValor());
+								break;
+						}
+					//LLENADO DE LISTAS SP
+					}else if(registro.getIdPtoMuestra() == ConstantesUtil.ID_SUBPARA_SP && registro.getFechaRegistroString().equals(fecha)) {
+						switch (registro.getIdSubParametro()) {
+							case 83: ltaDBOSP.add(registro.getNumValor());
+								break;
+							case 100: ltaSSTSP.add(registro.getNumValor());
+								break;
+							case 26: ltaCTTSP.add(registro.getNumValor());
+								break;
+							case 90: ltaPHSP.add(registro.getNumValor());
+								break;
+							case 105: ltaTSP.add(registro.getNumValor());
+								break;
+							case 28: ltaAYGSP.add(registro.getNumValor());
+								break;
+							case 84: ltaDQOSP.add(registro.getNumValor());
+								break;
+						}
+					}
+				}
+				if(ltaDBOEP.size() == indice) {
+					ltaDBOEP.add((double) 0);
+				}
+				if(ltaSSTEP.size() == indice) {
+					ltaSSTEP.add((double) 0);
+				}
+				if(ltaCTTEP.size() == indice) {
+					ltaCTTEP.add((double) 0);
+				}
+				if(ltaPHEP.size() == indice) {
+					ltaPHEP.add((double) 0);
+				}
+				if(ltaTEP.size() == indice) {
+					ltaTEP.add((double) 0);
+				}
+				if(ltaAYGEP.size() == indice) {
+					ltaAYGEP.add((double) 0);
+				}
+				if(ltaDQOEP.size() == indice) {
+					ltaDQOEP.add((double) 0);
+				}
+				if(ltaDBOSP.size() == indice) {
+					ltaDBOSP.add((double) 0);
+				}
+				if(ltaSSTSP.size() == indice) {
+					ltaSSTSP.add((double) 0);
+				}
+				if(ltaCTTSP.size() == indice) {
+					ltaCTTSP.add((double) 0);
+				}
+				if(ltaPHSP.size() == indice) {
+					ltaPHSP.add((double) 0);
+				}
+				if(ltaTSP.size() == indice) {
+					ltaTSP.add((double) 0);
+				}
+				if(ltaAYGSP.size() == indice) {
+					ltaAYGSP.add((double) 0);
+				}
+				if(ltaDQOSP.size() == indice) {
+					ltaDQOSP.add((double) 0);
+				}
+				indice ++;
+			}
+			mapResultado.put("ltaDBOEP", JsonUtil.convertirObjetoACadenaJson(ltaDBOEP));
+			mapResultado.put("ltaSSTEP", JsonUtil.convertirObjetoACadenaJson(ltaSSTEP));
+			mapResultado.put("ltaCTTEP", JsonUtil.convertirObjetoACadenaJson(ltaCTTEP));
+			mapResultado.put("ltaPHEP", JsonUtil.convertirObjetoACadenaJson(ltaPHEP));
+			mapResultado.put("ltaTEP", JsonUtil.convertirObjetoACadenaJson(ltaTEP));
+			mapResultado.put("ltaAYGEP", JsonUtil.convertirObjetoACadenaJson(ltaAYGEP));
+			mapResultado.put("ltaDQOEP", JsonUtil.convertirObjetoACadenaJson(ltaDQOEP));
+			mapResultado.put("ltaDBOSP", JsonUtil.convertirObjetoACadenaJson(ltaDBOSP));
+			mapResultado.put("ltaSSTSP", JsonUtil.convertirObjetoACadenaJson(ltaSSTSP));
+			mapResultado.put("ltaCTTSP", JsonUtil.convertirObjetoACadenaJson(ltaCTTSP));
+			mapResultado.put("ltaPHSP", JsonUtil.convertirObjetoACadenaJson(ltaPHSP));
+			mapResultado.put("ltaTSP", JsonUtil.convertirObjetoACadenaJson(ltaTSP));
+			mapResultado.put("ltaAYGSP", JsonUtil.convertirObjetoACadenaJson(ltaAYGSP));
+			mapResultado.put("ltaDQOSP", JsonUtil.convertirObjetoACadenaJson(ltaDQOSP));
+			mapResultado.put("ltaFechas", JsonUtil.convertirObjetoACadenaJson(listaFechas));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.OK);
+			respuestaBean.setParametros(mapResultado);
+		} catch(Exception excepcion){
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}	
+		return JsonUtil.convertirObjetoACadenaJson(respuestaBean);
+	}
+	
+	public boolean validarListaNoRepeat(List<String> lista, String valorCompare) {
+		boolean retorno = true;
+		for(String descripcionSubParametro : lista) {
+			if(descripcionSubParametro.equals(valorCompare)) {
+				retorno = false;
+				break;
+			}
+		}
+		return retorno;
+	}	
+	
+	@RequestMapping(value = "/obtenerListaLineNewAlterDashboard" , method = {RequestMethod.POST, RequestMethod.GET})
+	public @ResponseBody String  obtenerListaLineNewAlterDashboard(String idRutaProg, HttpServletRequest request, Model model) throws GmdException{
+		Map<String, Object> mapResultado = new HashMap<String, Object>();
+		try {		
+			String idPtarxSector = request.getParameter("idPtarxSector");
+			String fechaInicio = request.getParameter("fechaInicio");
+			String fechaFin = request.getParameter("fechaFin");
+			List<RegistroLabReporteBean> listaDashboard = registroLabReporteService.obtenerListaLineNewAlterDashboard(fechaInicio, fechaFin, Integer.parseInt(idPtarxSector));
+			List<String> listaSubParametros = new ArrayList<String>();
+			List<String> listaEjeX = new ArrayList<String>();
+			List<Double> listaValores = null;
+			for(RegistroLabReporteBean registro : listaDashboard) {
+				if(validarListaNoRepeat(listaSubParametros, registro.getDescripcionSubParametro())) {
+					listaSubParametros.add(registro.getDescripcionSubParametro());
+				}
+			}
+			for(RegistroLabReporteBean registro : listaDashboard) {
+				if(validarListaNoRepeat(listaEjeX, registro.getDescripcionPtoMuestra())) {
+					listaEjeX.add(registro.getDescripcionPtoMuestra());
+				}
+			}
+			
+//			for(String descripcionSubParametro : listaSubParametros) {
+//				listaValores = new ArrayList<Double>();
+//				for(String descripcionPto : listaEjeX) {
+//					for(RegistroLabReporteBean registro : listaDashboard) {
+//						if(registro.getDescripcionSubParametro().equals(descripcionSubParametro) && registro.getDescripcionPtoMuestra().equals(descripcionPto)) {
+//							listaValores.add(registro.getNumValor());
+//						}
+//					}
+//				}
+//			}
+			
+			mapResultado.put("listaSubParametros", JsonUtil.convertirObjetoACadenaJson(listaSubParametros));
+			mapResultado.put("listaDashboard", JsonUtil.convertirObjetoACadenaJson(listaDashboard));
+//			mapResultado.put("listaValores", JsonUtil.convertirObjetoACadenaJson(listaValores));
+			mapResultado.put("listaEjeX", JsonUtil.convertirObjetoACadenaJson(listaEjeX));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.OK);
+			respuestaBean.setParametros(mapResultado);
+		} catch(Exception excepcion){
+			String[] error = MensajeExceptionUtil.obtenerMensajeError(excepcion);
+			respuestaBean.setMensajeRespuesta(format(ConstanteServices.MENSAJE_ERROR, error[0]));
+			respuestaBean.setEstadoRespuesta(ConstanteServices.ERROR);
+			model.addAttribute("respuesta", respuestaBean);
+			LOGGER.error(error[1], excepcion);
+		}	
+		return JsonUtil.convertirObjetoACadenaJson(respuestaBean);
+	}
+}

@@ -1,0 +1,8 @@
+#PRODUCCION
+
+#DESARROLLLO
+jdbc.driverClassName=oracle.jdbc.driver.OracleDriver
+jdbc.url=jdbc:oracle:thin:@192.168.151.116:1610/DBAPLIC
+jdbc.username=AGLC
+jdbc.password=DESARROLLO
+oracle.schema.procedures=AGLC

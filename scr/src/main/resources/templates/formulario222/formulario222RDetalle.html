@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content-detalle-edit" th:fragment="form-edit-RDetalleEdit">
+	
+		
+	
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalEditTitle" th:text="${#messages.msg('')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalDetalleTitle"  style="display:none;" th:text="${#messages.msg('formulario222.RDetalle.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalDetalleTitle" style="display:none;" th:text="${#messages.msg('formulario222.RDetalle.registrar')}">Crear texto html</span>
+		</div>
+		
+		
+		<div class="modal-footer">
+		
+			<form name="form-edit-form" id="form-edit-registrarDetalle222" method="post" 
+				  th:action="@{/formularioDetalleSave222}" th:object="${formularioDetalle222}"
+				  role="form">
+				  											
+				
+				<fieldset class="col-md-12 col-sm-12 col-xs-12">
+				<div class="row">	
+				        <label class="control-label col-md-2 col-sm-2 col-xs-2 " th:text="${#messages.msg('formulario222.RDetalle.Fecha')}"></label>
+						<div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+							 <input type="text" id="strfechaHora" name="strFechaHora" class="form-control letraMayuscula" style="text-align: center;"
+							        maxlength="19" th:value="*{strfechaHora}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)" />	
+							 <input type="hidden" id="strfechaHoraHidden" name="strfechaHora" />	   	                    	 	   			                    	 
+			            </div>
+			            
+ 			            <label class="control-label col-md-2 col-sm-2 col-xs-2 " th:text="${#messages.msg('formulario222.RDetalle.Hora')}"></label> 
+                        <div class="form-group col-md-2 col-sm-1 col-xs-1 ">
+									<input type="text" id="hora" name="hora"
+								           th:field="*{hora}" class="form-control letraMayuscula"
+								           placeholder="Hora" title="Ingrese la hora"
+								           style="text-align: center;" maxlength="5" />
+							        <ul th:if="${#fields.hasErrors('hora')}" class="errorList">
+								    <li th:each="error : ${#fields.errors('hora')}"
+									    th:text="${error}" class="alert alert-danger">Error de entrada</li>
+							        </ul>		                    	 	   			                    	 
+			            </div>
+			            
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.RDetalle.Frasco')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<input type="text"  class="form-control letraMayuscula" id="nfrasco"
+							       maxlength="8"  th:field="*{nfrasco}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>   			                    	 		                    	 	   			                    	               
+						</div>
+							
+				</div>
+				<div class="row">
+						
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.RDetalle.PuntoMuestreo')}"></label>
+						</div>
+						
+						<div class="col-md-6 col-sm-6 col-xs-6 form-group">
+							<select class="form-control" id="cboPuntos"  th:field="*{puntoMuestreo}" style="height: 33px;"></select>
+						    <input type="hidden" id="cboMuestreoHidden" th:value="*{puntoMuestreo}" />
+						</div>
+						
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							    <label class="control-label" th:text="${#messages.msg('formulario222.RDetalle.CodigoMuestra')}"></label>
+						</div>
+						
+						<div class="col-md-2 col-sm-2 col-xs-2 form-group">
+							    <input type="text"  class="form-control letraMayuscula" id="codMuestra"
+							       maxlength="8" th:field="*{codMuestra}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"  />	
+							       
+							    <input type="hidden" id="idDetalleHidden" th:field="*{idDetalle}" />
+						        <input type="hidden" id="idheaderHidden" th:field="*{idHeader}" />	  
+						        <input type="hidden" id="accionHidden" name="accion" />	                  	 		                    	 	   			                    	               
+						</div>
+												
+				</div>
+				</fieldset>
+				
+			
+				
+				<fieldset class="col-md-12">
+						
+						<div class="col-md-12 espaciado-superior">
+						
+							<div class="col-md-8">
+								<div class="col-md-12" style="padding: 0px;">
+									<div class="panel panel-success">
+										<div class="panel-heading texto-left" >
+											<label class="control-label " th:text="${#messages.msg('formulario222.Detalle.informacion')}"></label>
+										</div>
+										<div class="panel-body">
+												
+												<div class="col-md-6" style="padding: 0px;">
+										 			<label class="control-label col-md-6 col-sm-6 col-xs-6 text-left" for="nombre"><span th:text="${#messages.msg('formulario222.Detale.envase')}"></span></label>
+													<div class="form-group col-md-6 col-sm-6 col-xs-6  ">
+														  <select class="form-control" id="cboTipoEnvase" th:field="*{tipoEnvase}"  style="height: 33px;"></select>
+							                              <input type="hidden" id="cboTipoEnvaseHidden" th:value="*{tipoEnvase}" />			                    	 		                    	 	   			                    	 
+								                    </div>	
+								                    
+								                    <label class="control-label col-md-6 col-sm-6 col-xs-6 text-left" for="nombre"><span th:text="${#messages.msg('formulario222.Detale.nenvase')}"></span></label>
+													<div class="form-group col-md-6 col-sm-6 col-xs-6">
+														<input type="text"  class="form-control letraMayuscula" id="nroEnvases"
+														       maxlength="8" th:field="*{nroEnvases}" onkeypress="return MYAPPL.soloNumerosSinPunto(event)"/>			                    	 		                    	 	   			                    	 
+								                    </div>
+									                    
+										 			<label class="control-label col-md-6 col-sm-6 col-xs-6 text-left" for="nombre"><span th:text="${#messages.msg('formulario222.Detalle.tipo')}"></span></label>
+													<div class="form-group col-md-6 col-sm-6 col-xs-6 ">
+														 <select class="form-control" id="cboTipoMuestra" th:field="*{tipoMuestra}"  style="height: 33px;"></select>
+							                             <input type="hidden" id="cboTipoMuestraHidden" th:value="*{tipoMuestra}" />			                    	 		                    	 	   			                    	 
+								                    </div>
+									                    
+										 			<label class="control-label col-md-6 col-sm-6 col-xs-6 text-left" for="nombre"><span th:text="${#messages.msg('formulario222.Detalle.preserv')}"></span></label>
+													<div class="form-group col-md-6 col-sm-6 col-xs-6">
+														 <select class="form-control" id="cboPreservacion" th:field="*{Preservacion}"  style="height: 33px;"></select>
+							                             <input type="hidden" id="cboPreservacionHidden" th:value="*{Preservacion}" />			                    	 		                    	 	   			                    	 
+								                    </div>	
+										 		</div>
+											
+
+												
+												<div class="col-md-6" style="padding: 0px;">
+													<div class="panel panel-success">
+														<div class="panel-heading texto-left">
+															<label class="control-label" th:text="${#messages.msg('formulario222.metales')}"></label>
+														</div>										
+														<div class="panel-body">
+															
+															<div class="col-md-12" style="padding: 0px;">
+																
+																	<div class="row">										                    
+													                   
+													                    <div class="alineacionCentral col-md-12 col-sm-12 col-xs-12 ">
+																			<input type="checkbox" id="todos" value=""/> Todos		                    	 		                    	 	   			                    	 
+													                    </div>														                 
+													                 										                    			                    
+														 			</div>
+																	
+																	<div class="row alineacionCentral">										                    
+													                    
+													                    <div class="form-group col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk01" th:field="*{fe}" value="" /> Fe	
+																		    <input type="hidden" id="intFeHide" th:field="*{fe2}" />                   	 		                    	 	   			                    	 
+													                    </div>	
+													                    <div class="form-group col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk02" th:field="*{mn}" value=""/> Mn	
+																			<input type="hidden" id="intMnHide" th:field="*{mn2}" /> 		                    	 		                    	 	   			                    	 
+													                    </div>	
+													                    <div class="form-group col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk03" th:field="*{cr}" value=""/> Cr	
+																			<input type="hidden" id="intCrHide" th:field="*{cr2}" /> 			                    	 		                    	 	   			                    	 
+													                    </div>	
+													                    
+													                 										                    			                    
+														 			</div>
+														 			<div class="row alineacionCentral">										                    
+	
+													                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk04" th:field="*{pb}" value=""/> Pb	
+																			<input type="hidden" id="intPbHide" th:field="*{pb2}" /> 			                    	 		                    	 	   			                    	 
+													                    </div>	
+													                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk05" th:field="*{zn}" value=""/> Zn	
+																			<input type="hidden" id="intZnHide" th:field="*{zn2}" /> 		                    	 		                    	 	   			                    	 
+													                    </div>	
+													                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk06" th:field="*{as}" value=""/> As	
+																			<input type="hidden" id="intAsHide" th:field="*{as2}" /> 		                    	 		                    	 	   			                    	 
+													                    </div>	
+													                  
+													                 												                    			                    
+														 			</div>
+														 			<div class="row alineacionCentral">										                    
+													                    
+													                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk07" th:field="*{cd}" value=""/> Cd	
+																			<input type="hidden" id="intCdHide" th:field="*{cd2}" /> 		                    	 		                    	 	   			                    	 
+													                    </div>	
+													                     <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk08" th:field="*{ba}" value=""/> Ba	
+																			<input type="hidden" id="intBaHide" th:field="*{ba2}" /> 	                    	 		                    	 	   			                    	 
+													                    </div>	
+													                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk09" th:field="*{se}" value=""/> Se
+																			<input type="hidden" id="intSeHide" th:field="*{se2}" /> 		                    	 		                    	 	   			                    	 
+													                    </div>	
+													                    
+													                    											                    			                    
+														 			</div>
+														 			
+														 			<div class="row alineacionCentral">										                    
+													                    
+													                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk10" th:field="*{cu}" value=""/> Cu	
+																			<input type="hidden" id="intCuHide" th:field="*{cu2}" /> 	                    	 		                    	 	   			                    	 
+													                    </div>	
+													                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk11" th:field="*{na}" value=""/> Na	
+																			<input type="hidden" id="intNaHide" th:field="*{na2}" /> 		                    	 		                    	 	   			                    	 
+													                    </div>	
+													                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk12" th:field="*{sb}" value=""/> Sb
+																			<input type="hidden" id="intSbHide" th:field="*{sb2}" /> 			                    	 		                    	 	   			                    	 
+													                    </div>
+													                   											                    			                    
+														 			</div>
+														 			
+														 			<div class="row alineacionCentral">										                    
+													                    
+													                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk13" th:field="*{hg}" value=""/> Hg	
+																			<input type="hidden" id="intHgHide" th:field="*{hg2}" />	                    	 		                    	 	   			                    	 
+													                    </div>	
+													                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk14" th:field="*{al}" value=""/> AL	
+																			<input type="hidden" id="intAlHide" th:field="*{al2}" />	                    	 		                    	 	   			                    	 
+													                    </div>	
+													                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																			<input type="checkbox" id="id_chk15" th:field="*{k}" value=""/> K &nbsp;	
+																			<input type="hidden" id="intKHide" th:field="*{k2}" />		                    	 		                    	 	   			                    	 
+													                    </div>
+													                 										                    			                    
+														 			</div>
+														 		
+													 		</div>
+													 		
+												 		</div>
+												 	</div>
+												 </div>
+												 
+												 <div class="col-md-12" style="padding: 0px;">
+													<div class="col-md-6" style="padding-left: 5px;">
+														<div class="panel panel-success">
+															<div class="panel-heading texto-left">
+																<label class="control-label" th:text="${#messages.msg('formulario222.organicos')}"></label>
+															</div>										
+															<div class="panel-body">
+																
+																<div class="col-md-12" style="padding: 0px;">
+																		
+																		<div class="row alineacionCentral">										                    
+														                    
+														                    <div class="form-group col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_thm" th:field="*{thm}" value="" /> THM	
+																			    <input type="hidden" id="thmHide" th:field="*{thm2}" />                   	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class="form-group col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_toc" th:field="*{toc}" value=""/> TOC	
+																				<input type="hidden" id="tocHide" th:field="*{toc2}" /> 		                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class="form-group col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_dqo" th:field="*{dqo}" value=""/> DQO	
+																				<input type="hidden" id="dqoHide" th:field="*{dqo2}" /> 			                    	 		                    	 	   			                    	 
+														                    </div>
+														                    														                 										                    			                    
+															 			</div>
+															 			<div class="row alineacionCentral">										                    
+				
+														                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_deterg" th:field="*{deterg}" value=""/> Deterg	
+																				<input type="hidden" id="detergHide" th:field="*{deterg2}" /> 			                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class="col-md-8 col-sm-8 col-xs-8 text-left">
+																				<input type="checkbox" id="id_fenoles" th:field="*{fenoles}" value=""/> Fenoles	
+																				<input type="hidden" id="fenolesHide" th:field="*{fenoles2}" /> 		                    	 		                    	 	   			                    	 
+														                    </div>	
+														                   									                    			                    
+															 			</div>
+															 			
+														 		</div>
+														 		
+													 		</div>
+													 	</div>
+													</div>
+													
+													
+													<div class="col-md-6" style="padding: 0px;">
+														<div class="panel panel-success">
+															<div class="panel-heading texto-left">
+																<label class="control-label" th:text="${#messages.msg('formulario222.fisicoQuimico')}"></label>
+															</div>										
+															<div class="panel-body">
+																
+																<div class="col-md-12" style="padding: 0px;">
+																		
+																		<div class="row alineacionCentral">										                    
+														                    
+														                    <div class="form-group col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_no2" th:field="*{no2}" value="" /> NO2	
+																			    <input type="hidden" id="no2Hide" th:field="*{no22}" />                   	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class="form-group col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_no3" th:field="*{no3}" value=""/> NO3	
+																				<input type="hidden" id="no3Hide" th:field="*{no32}" /> 		                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class="form-group col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_po4" th:field="*{po4}" value=""/> PO4	
+																				<input type="hidden" id="po4Hide" th:field="*{po42}" /> 			                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    
+														                 										                    			                    
+															 			</div>
+															 			<div class="row alineacionCentral">										                    
+				
+														                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_sdt" th:field="*{sdt}" value=""/> SDT	
+																				<input type="hidden" id="sdtHide" th:field="*{sdt2}" /> 			                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_st" th:field="*{st}" value=""/> ST	
+																				<input type="hidden" id="stHide" th:field="*{st2}" /> 		                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_sst" th:field="*{sst}" value=""/> SST	
+																				<input type="hidden" id="sstHide" th:field="*{sst2}" /> 		                    	 		                    	 	   			                    	 
+														                    </div>	
+														                  
+														                 												                    			                    
+															 			</div>
+															 			<div class="row alineacionCentral">										                    
+														                    
+														                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_dt" th:field="*{dt}" value=""/> DT	
+																				<input type="hidden" id="dtHide" th:field="*{dt2}" /> 		                    	 		                    	 	   			                    	 
+														                    </div>	
+														                     <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_ca" th:field="*{ca}" value=""/> Ca	
+																				<input type="hidden" id="caHide" th:field="*{ca2}" /> 	                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_mg" th:field="*{mg}" value=""/> Mg
+																				<input type="hidden" id="mgHide" th:field="*{mg2}" /> 		                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    
+														                    											                    			                    
+															 			</div>
+															 			
+															 			<div class="row alineacionCentral">										                    
+														                    
+														                    <div class="col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_alc" th:field="*{alc}" value=""/> Alc	
+																				<input type="hidden" id="alcHide" th:field="*{alc2}" /> 	                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_cl" th:field="*{cl}" value=""/> Cl	
+																				<input type="hidden" id="clHide" th:field="*{cl2}" /> 		                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_so4" th:field="*{so4}" value=""/> SO4
+																				<input type="hidden" id="so4Hide" th:field="*{so42}" /> 			                    	 		                    	 	   			                    	 
+														                    </div>
+														                   											                    			                    
+															 			</div>
+															 			
+															 			<div class="row alineacionCentral">										                    
+														                    
+														                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_color" th:field="*{color}" value=""/> Color	
+																				<input type="hidden" id="colorHide" th:field="*{color2}" />	                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_f" th:field="*{f}" value=""/> F	
+																				<input type="hidden" id="fHide" th:field="*{f2}" />	                    	 		                    	 	   			                    	 
+														                    </div>	
+														                    <div class=" col-md-4 col-sm-4 col-xs-4 text-left">
+																				<input type="checkbox" id="id_cn" th:field="*{cn}" value=""/> cn &nbsp;	
+																				<input type="hidden" id="cnHide" th:field="*{cn2}" />		                    	 		                    	 	   			                    	 
+														                    </div>
+														                 										                    			                    
+															 			</div>
+															 		
+														 		</div>
+														 		
+													 		</div>
+													 	</div>
+													</div>
+									
+											</div>												
+																				
+										</div>
+									
+									</div>
+								
+								</div>	
+								
+								
+								
+							</div>
+							
+							<div class="col-md-4">
+								<div class="col-md-12" style="padding: 0px;">
+									<div class="panel panel-success">
+										<div class="panel-heading texto-left">
+											<label class="control-label" th:text="${#messages.msg('formulario222.Detalle.parametros')}"></label>
+										</div>
+										<div class="panel-body">
+											<div class="row">	
+											    <label class="control-label col-md-4 col-sm-4 col-xs-4 text-left">OD(mg/L)</label>
+											    <div class="form-group col-md-8 col-sm-8 col-xs-8">
+													<input type="text"  class="form-control letraMayuscula" id="od"
+													       maxlength="8" name="od" th:value="${formularioDetalle222.strOd}" onkeypress="return MYAPPL.soloNumerosPunto(event)"/>			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                </div>     
+							                <div class="row">	    
+							                    <label class="control-label col-md-4 col-sm-4 col-xs-4 text-left">pH(Unid)</label>									                    
+							                    <div class="form-group col-md-8 col-sm-8 col-xs-8  ">
+													<input type="text"  class="form-control letraMayuscula" id="ph"
+													       maxlength="8" name="ph" th:value="${formularioDetalle222.strPh}" onkeypress="return MYAPPL.soloNumerosPunto(event)"/>		                    	 		                    	 	   			                    	 
+							                    </div>										                    						                    			                    
+								 			</div>
+								 			
+								 			<div class="row">										                    
+							                    <label class="control-label col-md-4 col-sm-4 col-xs-4 text-left" th:text="${#messages.msg('formulario.campo.temperatura')}">Temp(C)</label>									                    
+							                    <div class="form-group col-md-8 col-sm-8 col-xs-8  ">
+													<input type="text"  class="form-control letraMayuscula" id="temp"
+													       maxlength="8" name="temp" th:value="${formularioDetalle222.strTemp}" onkeypress="return MYAPPL.soloNumerosPunto(event)"/>				                    	 		                    	 	   			                    	 
+							                    </div>	
+							                 </div>	   
+							                 <div class="row">	   
+							                    <label class="control-label col-md-4 col-sm-4 col-xs-4 text-left">Cond.(uS/cm)</label>									                    
+							                    <div class="form-group col-md-8 col-sm-8 col-xs-8  ">
+													<input type="text"  class="form-control letraMayuscula" id="cond"
+													       maxlength="8" name="cond" th:value="${formularioDetalle222.strCond}" onkeypress="return MYAPPL.soloNumerosPunto(event)"/>				                    	 		                    	 	   			                    	 
+							                    </div>										                    										                    			                    
+								 			</div>	
+								 			
+								 			<div class="row">										                    
+							                    <label class="control-label col-md-4 col-sm-4 col-xs-4 text-left">Turb(NTU)</label>									                    
+							                    <div class="form-group col-md-8 col-sm-8 col-xs-8  ">
+													<input type="text"  class="form-control letraMayuscula" id="turb"
+													       maxlength="8" name="turb" th:value="${formularioDetalle222.strTurb}" onkeypress="return MYAPPL.soloNumerosPunto(event)"/>				                    	 		                    	 	   			                    	 
+							                    </div>	
+							                  									                    										                    			                    
+								 			</div>																		
+										</div>
+									</div>
+								</div>	
+							</div>
+							
+						</div>
+					</fieldset>   
+					
+					<fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset> 
+					    				
+			</form>
+
+<!-- 			 <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons"> -->
+<!-- 				<div id="idTableVerificacion"> -->
+<!-- 					<div class="container_12">					  -->
+<!-- 					 	<button type="button" class="btn btn-info btn-crear-mant-correo" data-toggle="modal" onclick="modificarDetalle()"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('tipoProceso.agregar')}"></label></button> -->
+<!-- 					</div> -->
+<!-- 					<div class="container_12"> -->
+<!-- 						<div th:replace="formulario222/formulario222TableDetalle :: resultsListDetalle" class="grid_10 height800" id="idFormularioTableDetalle"></div> -->
+<!-- 					</div>	 -->
+<!-- 				</div>	 -->
+<!-- 			</fieldset> -->
+			
+			
+		</div>
+	</div>
+</body>
+</html>

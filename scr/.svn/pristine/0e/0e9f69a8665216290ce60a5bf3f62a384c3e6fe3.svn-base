@@ -1,0 +1,1210 @@
+$(document).ready(function() {
+	inicializarVariablesDirecto();
+	cargarComponentesDirecto();
+});
+var accion = false;
+var flagDirecto = 0;
+var flagVerAnalistaDirecto = 0;
+var nombreAnalistaDirecto = "nombreAnalistaDirecto";
+function inicializarVariablesDirecto() {
+	console.log("resultadoDashboard");
+	listaPuntos = JSON.parse(listaPuntos);
+	listaPtar = JSON.parse(listaPtar);
+	var lineChart = null;
+	var cboPtarxSector = null;
+	var lineChart = null;
+	var lineChartCTT = null;
+	var lineChartDonaEP = null;
+	var lineChartDonaSP = null;
+	var lineChartPolar = null;
+	var divGraficosGenerados = null;
+	var tblResultadoDashboardEP = null;
+	var tblResultadoDashboardSP = null;
+}
+
+function cargarComponentesDirecto() {
+	accordion();
+	cboPtarxSector = $("#cboPtarxSector");
+	lineChart = $('#lineChart');
+	lineChartSP = $('#lineChartSP');
+	lineChartCTT = $('#lineChartCTT');
+//	lineChartDonaEP = $('#lineChartDonaEP');
+//	lineChartDonaSP = $('#lineChartDonaSP');
+	line = $('#line');
+	lineNewAlter = $("#lineNewAlter");
+	divGraficosGenerados = $('#divGraficosGenerados');
+//	tblResultadoDashboardEP = $('#tblResultadoDashboardEP');
+//	tblResultadoDashboardSP = $('#tblResultadoDashboardSP');
+	var listaComboPtar = []
+	for(var i=0; i<listaPuntos.length; i++){
+		var objPtar = {
+				idPtarxSector : listaPuntos[i],
+				descripcionPtarxSector : listaPtar[i]
+		};
+		listaComboPtar.push(objPtar);
+	}
+	agregarListaItem(cboPtarxSector, listaComboPtar, "idPtarxSector", "descripcionPtarxSector");
+	
+	var ltaDBO = [];
+	var ltaSST = [];
+	var ltaCTT = [];
+	var ltaPH = [];
+	var ltaT = [];
+	var ltaAYG = [];
+	var ltaDQO = [];
+	var ltaDBOSP = [];
+	var ltaSSTSP = [];
+	var ltaCTTSP = [];
+	var ltaPHSP = [];
+	var ltaTSP = [];
+	var ltaAYGSP = [];
+	var ltaDQOSP = [];
+	
+	for(var i=0; i< listaPuntos.length; i++){
+		for(var j=0; j<listaDashboardEP.length; j++){
+			if(listaPuntos[i] == listaDashboardEP[j].idPtarxSector){
+				switch (listaDashboardEP[j].idSubParametro) {
+					case 83: ltaDBO.push(listaDashboardEP[j].numValor);
+						break;
+					case 100: ltaSST.push(listaDashboardEP[j].numValor);
+						break;
+					case 26: ltaCTT.push(listaDashboardEP[j].numValor);
+						break;
+					case 90: ltaPH.push(listaDashboardEP[j].numValor);
+						break;
+					case 105: ltaT.push(listaDashboardEP[j].numValor);
+						break;
+					case 28: ltaAYG.push(listaDashboardEP[j].numValor);
+						break;
+					case 84: ltaDQO.push(listaDashboardEP[j].numValor);
+						break;
+				}
+			}
+		}
+		completarListas(i, ltaDBO, ltaSST, ltaCTT, ltaPH, ltaT, ltaAYG, ltaDQO);
+	}
+	
+	for(var i=0; i< listaPuntos.length; i++){
+		for(var j=0; j<listaDashboardSP.length; j++){
+			if(listaPuntos[i] == listaDashboardSP[j].idPtarxSector){
+				switch (listaDashboardSP[j].idSubParametro) {
+					case 83: ltaDBOSP.push(listaDashboardSP[j].numValor);
+						break;
+					case 100: ltaSSTSP.push(listaDashboardSP[j].numValor);
+						break;
+					case 26: ltaCTTSP.push(listaDashboardSP[j].numValor);
+						break;
+					case 90: ltaPHSP.push(listaDashboardSP[j].numValor);
+						break;
+					case 105: ltaTSP.push(listaDashboardSP[j].numValor);
+						break;
+					case 28: ltaAYGSP.push(listaDashboardSP[j].numValor);
+						break;
+					case 84: ltaDQOSP.push(listaDashboardSP[j].numValor);
+						break;
+				}
+			}
+		}
+		completarListasSP(i, ltaDBOSP, ltaSSTSP, ltaCTTSP, ltaPHSP, ltaTSP, ltaAYGSP, ltaDQOSP);
+	}
+	
+	lineChart = new Chart(lineChart, {
+		type: 'bar',
+	    data: {
+	        labels: listaPtar,
+	        datasets: [{
+	            label: 'DBO',
+	            yAxisID: 'A',
+	            data: ltaDBO,
+	            backgroundColor: 'rgba(51, 233, 203, 0.6)',
+	            borderColor: 'rgba(51, 233, 203, 1)',
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'SST',
+	            yAxisID: 'A',
+	            data: ltaSST,
+	            backgroundColor: 'rgba(51, 215, 233, 0.6)',
+	            borderColor: 'rgba(51, 215, 233, 1)',
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'CTT',
+	            yAxisID: 'B',
+	            data: ltaCTT,
+	            backgroundColor: 'rgba(51, 188, 233, 0.6)',
+	            borderColor: 'rgba(51, 188, 233, 1)',
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'PH',
+	            yAxisID: 'A',
+	            data: ltaPH,
+	            backgroundColor:'rgba(51, 148, 233, 0.6)',
+	            borderColor: 'rgba(51, 148, 233, 1)',
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'T°',
+	            yAxisID: 'A',
+	            data: ltaT,
+	            backgroundColor: 'rgba(51, 103, 233, 0.6)',
+	            borderColor: 'rgba(51, 103, 233, 1)',
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'A&G',
+	            yAxisID: 'A',
+	            data: ltaAYG,
+	            backgroundColor: 'rgba(24, 41, 230, 0.6)',
+	            borderColor: 'rgba(24, 41, 230, 1)',	
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'DQO',
+	            yAxisID: 'A',
+	            data: ltaDQO,
+	            backgroundColor: 'rgba(29, 44, 138, 0.6)',
+	            borderColor: 'rgba(29, 44, 138, 1)',
+	            borderWidth: 1
+	        }]
+	    },
+	    options: {
+	        scales: {
+	            yAxes: [{
+	            	id: 'A',
+					type: 'linear',
+					position: 'left',
+					scalePositionLeft: true,
+					ticks: {
+						beginAtZero:true
+			            	}
+	            	},{
+	            	id: 'B',
+	            	type: 'linear',
+	            	position: 'right',
+	            	scalePositionLeft: false,
+	            	ticks: {
+	            		beginAtZero:true
+	            	}
+	            }],
+	            xAxes: [{
+	                ticks: {
+	                    autoSkip: false,
+	                    maxRotation: 90,
+	                    minRotation: 90
+	                }
+	            }]
+	        },
+		    title: {
+	            display: true,
+	            text: 'Gráfico de Barras Entrada de Planta - EP',
+	            fontColor: '#1587c6',
+	            fontSize : 15,
+	            fontFamily: 'Arial',
+	            fontStyle: 'normal'
+	        },
+	    }
+	});
+	
+	lineChartSP = new Chart(lineChartSP, {
+		type: 'bar',
+	    data: {
+	        labels: listaPtar,
+	        datasets: [{
+	            label: 'DBO',
+	            yAxisID: 'A',
+	            data: ltaDBOSP,
+	            backgroundColor: 'rgba(51, 233, 203, 0.6)',
+	            borderColor: 'rgba(51, 233, 203, 1)',
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'SST',
+	            yAxisID: 'A',
+	            data: ltaSSTSP,
+	            backgroundColor: 'rgba(51, 215, 233, 0.6)',
+	            borderColor: 'rgba(51, 215, 233, 1)',
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'CTT',
+	            yAxisID: 'B',
+	            data: ltaCTTSP,
+	            backgroundColor: 'rgba(51, 188, 233, 0.6)',
+	            borderColor: 'rgba(51, 188, 233, 1)',
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'PH',
+	            yAxisID: 'A',
+	            data: ltaPHSP,
+	            backgroundColor:'rgba(51, 148, 233, 0.6)',
+	            borderColor: 'rgba(51, 148, 233, 1)',
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'T°',
+	            yAxisID: 'A',
+	            data: ltaTSP,
+	            backgroundColor: 'rgba(51, 103, 233, 0.6)',
+	            borderColor: 'rgba(51, 103, 233, 1)',
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'A&G',
+	            yAxisID: 'A',
+	            data: ltaAYGSP,
+	            backgroundColor: 'rgba(24, 41, 230, 0.6)',
+	            borderColor: 'rgba(24, 41, 230, 1)',	
+	            borderWidth: 1
+	        },
+	        {
+	            label: 'DQO',
+	            yAxisID: 'A',
+	            data: ltaDQOSP,
+	            backgroundColor: 'rgba(29, 44, 138, 0.6)',
+	            borderColor: 'rgba(29, 44, 138, 1)',
+	            borderWidth: 1
+	        }]
+	    },
+	    options: {
+	        scales: {
+	            yAxes: [{
+	            	id: 'A',
+					type: 'linear',
+					position: 'left',
+					scalePositionLeft: true,
+					ticks: {
+						beginAtZero:true
+			            	}
+	            	},{
+	            	id: 'B',
+	            	type: 'linear',
+	            	position: 'right',
+	            	scalePositionLeft: false,
+	            	ticks: {
+	            		beginAtZero:true
+	            	}
+	            }],
+	            xAxes: [{
+	                ticks: {
+	                    autoSkip: false,
+	                    maxRotation: 90,
+	                    minRotation: 90
+	                }
+	            }]
+	        },
+		    title: {
+	            display: true,
+	            text: 'Gráfico de Barras Salida de Planta - SP',
+	            fontColor: '#1587c6',
+	            fontSize : 15,
+	            fontFamily: 'Arial',
+	            fontStyle: 'normal'
+	        },
+	    }
+	});
+	
+//	cargarGrillaResultado();
+	generarTablaDashboard();
+	cboPtarxSector.change(function(event){
+//		generarGraficosUnitarios(ltaDBO, ltaSST, ltaCTT, ltaPH, ltaT, ltaAYG, ltaDQO);
+//		generarGraficosUnitariosSP(ltaDBOSP, ltaSSTSP, ltaCTTSP, ltaPHSP, ltaTSP, ltaAYGSP, ltaDQOSP);
+		generarTablaDashboard();
+    });
+	
+//	generarGraficosUnitarios(ltaDBO, ltaSST, ltaCTT, ltaPH, ltaT, ltaAYG, ltaDQO);
+//	generarGraficosUnitariosSP(ltaDBOSP, ltaSSTSP, ltaCTTSP, ltaPHSP, ltaTSP, ltaAYGSP, ltaDQOSP);
+	$('#defaultAcordion').slideDown();
+	$('#defaultAcordion').parents('.panel').find('.panel-heading span.clickable').removeClass('panel-collapsed');
+	$('#defaultAcordion').parents('.panel').find('.panel-heading').find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+}
+
+function completarListas(i, ltaDBO, ltaSST, ltaCTT, ltaPH, ltaT, ltaAYG, ltaDQO){
+	if(ltaDBO[i] == null){
+		ltaDBO[i] = 0;
+	}
+	if(ltaSST[i] == null){
+		ltaSST[i] = 0;
+	}
+	if(ltaCTT[i] == null){
+		ltaCTT[i] = 0;
+	}
+	if(ltaPH[i] == null){
+		ltaPH[i] = 0;
+	}
+	if(ltaT[i] == null){
+		ltaT[i] = 0;
+	}
+	if(ltaAYG[i] == null){
+		ltaAYG[i] = 0;
+	}
+	if(ltaDQO[i] == null){
+		ltaDQO[i] = 0;
+	}
+}
+
+function completarListasSP(i, ltaDBOSP, ltaSSTSP, ltaCTTSP, ltaPHSP, ltaTSP, ltaAYGSP, ltaDQOSP){
+	if(ltaDBOSP[i] == null){
+		ltaDBOSP[i] = 0;
+	}
+	if(ltaSSTSP[i] == null){
+		ltaSSTSP[i] = 0;
+	}
+	if(ltaCTTSP[i] == null){
+		ltaCTTSP[i] = 0;
+	}
+	if(ltaPHSP[i] == null){
+		ltaPHSP[i] = 0;
+	}
+	if(ltaTSP[i] == null){
+		ltaTSP[i] = 0;
+	}
+	if(ltaAYGSP[i] == null){
+		ltaAYGSP[i] = 0;
+	}
+	if(ltaDQOSP[i] == null){
+		ltaDQOSP[i] = 0;
+	}
+}
+
+//function generarGraficosUnitarios(ltaDBO, ltaSST, ltaCTT, ltaPH, ltaT, ltaAYG, ltaDQO){
+//	var ltaGraficosUnitarios = [];
+//	for(var i=0; i<listaPuntos.length; i++){
+//		if(cboPtarxSector.val() == listaPuntos[i]){
+//			var flag = i;
+//			break;
+//		}
+//	}
+//	ltaGraficosUnitarios.push(ltaDBO[flag]);
+//	ltaGraficosUnitarios.push(ltaSST[flag]);
+//	ltaGraficosUnitarios.push(ltaPH[flag]);
+//	ltaGraficosUnitarios.push(ltaT[flag]);
+//	ltaGraficosUnitarios.push(ltaAYG[flag]);
+//	ltaGraficosUnitarios.push(ltaDQO[flag]);
+//	
+//	divGraficosGenerados[0].style.display = 'inherit';	
+//	
+//	if(lineChartDonaEP.data.datasets != undefined){
+//		lineChartDonaEP.data.datasets[0].data = ltaGraficosUnitarios;
+//		lineChartDonaEP.update();
+//	}else{
+//		lineChartDonaEP = new Chart(lineChartDonaEP,{
+//		    type: 'doughnut',
+//		    data: {
+//		    	labels: [
+//			        "DBO",
+//			        "SST",
+//			        "PH",
+//			        "T°",
+//			        "A&G",
+//			        "DQO"
+//			    ],
+//			    datasets: [
+//			        {
+//			            data: ltaGraficosUnitarios,
+//			            backgroundColor: [
+//			                "rgba(51, 233, 203, 0.6)",
+//			                "rgba(51, 215, 233, 0.6)",
+//			                "rgba(51, 148, 233, 0.6)",
+//			                "rgba(51, 103, 233, 0.6)",
+//			                "rgba(24, 41, 230, 0.6)",
+//			                "rgba(29, 44, 138, 0.6)"
+//			                
+//			            ],
+//			        	borderColor: [
+//			        		"rgba(51, 233, 203, 1)",
+//			                "rgba(51, 215, 233, 1)",
+//			                "rgba(51, 148, 233, 1)",
+//			                "rgba(51, 103, 233, 1)",
+//			                "rgba(24, 41, 230, 1)",
+//			                "rgba(29, 44, 138, 1)"
+//			        	]
+//			        }]
+//		    },
+//			options: {
+//			    title: {
+//		            display: true,
+//		            text: 'Dona Entradas de Planta - EP',
+//		            fontColor: '#1587c6',
+//		            fontSize : 15,
+//		            fontFamily: 'Arial',
+//		            fontStyle: 'normal'
+//		        }
+//		    }
+//		});
+//	}
+//}
+//
+//function generarGraficosUnitariosSP(ltaDBOSP, ltaSSTSP, ltaCTTSP, ltaPHSP, ltaTSP, ltaAYGSP, ltaDQOSP){
+//	var ltaGraficosUnitariosSP = [];
+//	for(var i=0; i<listaPuntos.length; i++){
+//		if(cboPtarxSector.val() == listaPuntos[i]){
+//			var flag = i;
+//			break;
+//		}
+//	}
+//	ltaGraficosUnitariosSP.push(ltaDBOSP[flag]);
+//	ltaGraficosUnitariosSP.push(ltaSSTSP[flag]);
+//	ltaGraficosUnitariosSP.push(ltaPHSP[flag]);
+//	ltaGraficosUnitariosSP.push(ltaTSP[flag]);
+//	ltaGraficosUnitariosSP.push(ltaAYGSP[flag]);
+//	ltaGraficosUnitariosSP.push(ltaDQOSP[flag]);
+//	
+//	if(lineChartDonaSP.data.datasets != undefined){
+//		lineChartDonaSP.data.datasets[0].data = ltaGraficosUnitariosSP;
+//		lineChartDonaSP.update();
+//	}else{
+//		lineChartDonaSP = new Chart(lineChartDonaSP,{
+//		    type: 'doughnut',
+//		    data: {
+//		    	labels: [
+//			        "DBO",
+//			        "SST",
+//			        "PH",
+//			        "T°",
+//			        "A&G",
+//			        "DQO"
+//			    ],
+//			    datasets: [
+//			        {
+//			            data: ltaGraficosUnitariosSP,
+//			            backgroundColor: [
+//			                "rgba(51, 233, 203, 0.6)",
+//			                "rgba(51, 215, 233, 0.6)",
+//			                "rgba(51, 148, 233, 0.6)",
+//			                "rgba(51, 103, 233, 0.6)",
+//			                "rgba(24, 41, 230, 0.6)",
+//			                "rgba(29, 44, 138, 0.6)"
+//			                
+//			            ],
+//			        	borderColor: [
+//			        		"rgba(51, 233, 203, 1)",
+//			                "rgba(51, 215, 233, 1)",
+//			                "rgba(51, 148, 233, 1)",
+//			                "rgba(51, 103, 233, 1)",
+//			                "rgba(24, 41, 230, 1)",
+//			                "rgba(29, 44, 138, 1)"
+//			        	]
+//			        }]
+//		    },
+//			options: {
+//			    title: {
+//		            display: true,
+//		            text: 'Dona Salidas de Planta - SP',
+//		            fontColor: '#1587c6',
+//		            fontSize : 15,
+//		            fontFamily: 'Arial',
+//		            fontStyle: 'normal'
+//		        }
+//		    }
+//		});
+//	}
+//}
+
+function cargarGrillaLinea(ltaFechas, ltaDBOEP, ltaSSTEP, ltaCTTEP, ltaPHEP, ltaTEP, ltaAYGEP, ltaDQOEP, ltaDBOSP, ltaSSTSP, ltaCTTSP, ltaPHSP, ltaTSP, ltaAYGSP, ltaDQOSP){
+	if(line.data.datasets != undefined){
+		line.data.labels = JSON.parse(ltaFechas);
+		line.data.datasets[0].data = JSON.parse(ltaDBOEP);
+		line.data.datasets[1].data = JSON.parse(ltaDBOSP);
+		line.data.datasets[2].data = JSON.parse(ltaSSTEP);
+		line.data.datasets[3].data = JSON.parse(ltaSSTSP);
+		line.data.datasets[4].data = JSON.parse(ltaCTTEP);
+		line.data.datasets[5].data = JSON.parse(ltaCTTSP);
+		line.data.datasets[6].data = JSON.parse(ltaPHEP);
+		line.data.datasets[7].data = JSON.parse(ltaPHSP);
+		line.data.datasets[8].data = JSON.parse(ltaTEP);
+		line.data.datasets[9].data = JSON.parse(ltaTSP);
+		line.data.datasets[10].data = JSON.parse(ltaAYGEP);
+		line.data.datasets[11].data = JSON.parse(ltaAYGSP);
+		line.data.datasets[12].data = JSON.parse(ltaDQOEP);
+		line.data.datasets[13].data = JSON.parse(ltaDQOSP);
+		line.update();
+	}else{
+		line = new Chart(line, {
+			  type: 'line',
+			  data: {
+				  labels: JSON.parse(ltaFechas),
+				  datasets: [{
+				      label: "EP - DBO",
+				      yAxisID: 'A',
+				      fill: false,
+				      lineTension: 0.1,
+				      backgroundColor: "rgba(225,0,0,0.4)",
+				      borderColor: "red", // The main line color
+				      borderCapStyle: 'round',
+				      borderDash: [], // try [5, 15] for instance
+				      borderDashOffset: 0.0,
+				      borderJoinStyle: 'miter',
+				      pointBorderColor: "black",
+				      pointBackgroundColor: "white",
+				      pointBorderWidth: 1,
+				      pointHoverRadius: 8,
+				      pointHoverBackgroundColor: "red",
+				      pointHoverBorderColor: "brown",
+				      pointHoverBorderWidth: 2,
+				      pointRadius: 4,
+				      pointHitRadius: 10,
+				      // notice the gap in the data and the spanGaps: true
+				      data: JSON.parse(ltaDBOEP),
+				      spanGaps: true,
+				    }, {
+				      label: "SP - DBO",
+				      yAxisID: 'A',
+				      fill: false,
+				      lineTension: 0.1,
+				      backgroundColor: "rgba(225,0,0,0.4)",
+				      borderColor: "red",
+				      borderCapStyle: 'round',
+				      borderDash: [10, 5],
+				      borderDashOffset: 0.0,
+				      borderJoinStyle: 'miter',
+				      pointBorderColor: "black",
+				      pointBackgroundColor: "white",
+				      pointBorderWidth: 1,
+				      pointHoverRadius: 8,
+				      pointHoverBackgroundColor: "red",
+				      pointHoverBorderColor: "brown",
+				      pointHoverBorderWidth: 2,
+				      pointRadius: 4,
+				      pointHitRadius: 10,
+				      // notice the gap in the data and the spanGaps: false
+				      data: JSON.parse(ltaDBOSP),
+				      spanGaps: false,
+				    }, {
+					      label: "EP - SST",
+					      yAxisID: 'A',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(0,255,0,0.4)",
+					      borderColor: "green",
+					      borderCapStyle: 'round',
+					      borderDash: [],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "black",
+					      pointBackgroundColor: "white",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "green",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaSSTEP),
+					      spanGaps: false,
+				    }, {
+					      label: "SP - SST",
+					      yAxisID: 'A',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(0,255,0,0.4)",
+					      borderColor: "green",
+					      borderCapStyle: 'round',
+					      borderDash: [10, 5],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "black",
+					      pointBackgroundColor: "white",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "red",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaSSTSP),
+					      spanGaps: false,
+				    }, {
+					      label: "EP - CTT",
+					      yAxisID: 'B',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(0,0,255,0.4)",
+					      borderColor: "blue",
+					      borderCapStyle: 'round',
+					      borderDash: [],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "black",
+					      pointBackgroundColor: "white",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "brown",
+					      pointHoverBorderColor: "yellow",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaCTTEP),
+					      spanGaps: false,
+				    }, {
+					      label: "SP - CTT",
+					      yAxisID: 'B',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(0,0,255,0.4)",
+					      borderColor: "blue",
+					      borderCapStyle: 'round',
+					      borderDash: [10, 5],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "black",
+					      pointBackgroundColor: "white",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "blue",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaCTTSP),
+					      spanGaps: false,
+				    }, {
+					      label: "EP - PH",
+					      yAxisID: 'A',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(255,255,0,0.4)",
+					      borderColor: "yellow",
+					      borderCapStyle: 'round',
+					      borderDash: [],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "black",
+					      pointBackgroundColor: "white",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "yellow",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaPHEP),
+					      spanGaps: false,
+				    }, {
+					      label: "SP - PH",
+					      yAxisID: 'A',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(255,255,0,0.4)",
+					      borderColor: "yellow",
+					      borderCapStyle: 'round',
+					      borderDash: [10, 5],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "black",
+					      pointBackgroundColor: "white",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "yellow",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaPHSP),
+					      spanGaps: false,
+				    }, {
+					      label: "EP - T",
+					      yAxisID: 'A',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(121, 51, 1,0.4)",
+					      borderColor: "rgb(121, 51, 1)",
+					      borderCapStyle: 'round',
+					      borderDash: [],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "white",
+					      pointBackgroundColor: "black",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "rgb(121, 51, 1)",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaTEP),
+					      spanGaps: false,
+				    }, {
+					      label: "SP - T",
+					      fill: false,
+					      yAxisID: 'A',
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(121, 51, 1,0.4)",
+					      borderColor: "rgb(121, 51, 1)",
+					      borderCapStyle: 'round',
+					      borderDash: [10, 5],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "white",
+					      pointBackgroundColor: "black",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "rgb(121, 51, 1)",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaTSP),
+					      spanGaps: false,
+				    }, {
+					      label: "EP - AYG",
+					      yAxisID: 'A',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(255, 99, 15,0.4)",
+					      borderColor: "rgb(255, 99, 15)",
+					      borderCapStyle: 'round',
+					      borderDash: [],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "black",
+					      pointBackgroundColor: "white",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "rgb(255, 99, 15)",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaAYGEP),
+					      spanGaps: false,
+				    }, {
+					      label: "SP - AYG",
+					      yAxisID: 'A',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(255, 99, 15,0.4)",
+					      borderColor: "rgb(255, 99, 15)",
+					      borderCapStyle: 'round',
+					      borderDash: [10, 5],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "black",
+					      pointBackgroundColor: "white",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "rgb(255, 99, 15)",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaAYGSP),
+					      spanGaps: false,
+				    }, {
+					      label: "EP - DQO",
+					      yAxisID: 'A',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(0, 244, 208,0.4)",
+					      borderColor: "rgb(0, 244, 208)",
+					      borderCapStyle: 'round',
+					      borderDash: [],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "black",
+					      pointBackgroundColor: "white",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "rgb(0, 244, 208)",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaDQOEP),
+					      spanGaps: false,
+				    }, {
+					      label: "SP - DQO",
+					      yAxisID: 'A',
+					      fill: false,
+					      lineTension: 0.1,
+					      backgroundColor: "rgba(0, 244, 208,0.4)",
+					      borderColor: "rgb(0, 244, 208)",
+					      borderCapStyle: 'round',
+					      borderDash: [10, 5],
+					      borderDashOffset: 0.0,
+					      borderJoinStyle: 'miter',
+					      pointBorderColor: "black",
+					      pointBackgroundColor: "white",
+					      pointBorderWidth: 1,
+					      pointHoverRadius: 8,
+					      pointHoverBackgroundColor: "rgb(0, 244, 208)",
+					      pointHoverBorderColor: "brown",
+					      pointHoverBorderWidth: 2,
+					      pointRadius: 4,
+					      pointHitRadius: 10,
+					      // notice the gap in the data and the spanGaps: false
+					      data: JSON.parse(ltaDQOSP),
+					      spanGaps: false,
+				    }
+				  ]
+				},
+			  options: {
+				  scales: {
+					  yAxes: [
+					      {
+					        id: 'A',
+					        type: 'linear',
+					        position: 'left',
+					        scalePositionLeft: true,
+					        ticks: {
+			                    beginAtZero:true
+			                }
+					      },
+					      {
+					        id: 'B',
+					        type: 'linear',
+					        position: 'right',
+					        scalePositionLeft: false,
+					        ticks: {
+			                    beginAtZero:true
+			                }
+					      }
+					    ]          
+			        },
+				title: {
+		            display: true,
+		            text: 'Gráfico Diario Lineal',
+		            fontColor: '#1587c6',
+		            fontSize : 15,
+		            fontFamily: 'Arial',
+		            fontStyle: 'normal'
+		        }
+			},
+			
+		});
+	}
+}
+
+//function cargarGrillaResultado(){
+//	tblResultadoDashboardEP.bootstrapTable({
+//		data : [],
+//		exportDataType : 'all',
+//		pagination : true,
+//		pageSize : 10,
+//		buttonsAlign : 'left',
+//		exportOptions: {
+//             fileName: 'Resultado Dashboard'
+//        },
+//		formatShowingRows : function(pageFrom, pageTo, totalRows) {
+//			return '';
+//		},
+//		formatRecordsPerPage : function(pageNumber) {
+//			return '';
+//		},			
+//		columns : [{
+//			field : 'nro',
+//			title : 'Nro',
+//			align : 'center',
+//			valign : 'bottom',
+//			sortable : false,
+//			formatter: 'formatoNro'
+//		},{	
+//			field : 'descripcionSubParametro',
+//			title : 'Sub Parametro',
+//			align : 'center',
+//			valign : 'bottom',
+//			sortable : false
+//		},{	
+//			field : 'numValor',
+//			title : 'Promedio',
+//			align : 'center',
+//			valign : 'bottom',
+//			sortable : false
+//		}]
+//	});
+//	
+//	tblResultadoDashboardSP.bootstrapTable({
+//		data : [],
+//		exportDataType : 'all',
+//		pagination : true,
+//		pageSize : 10,
+//		buttonsAlign : 'left',
+//		exportOptions: {
+//             fileName: 'Resultado Dashboard'
+//        },
+//		formatShowingRows : function(pageFrom, pageTo, totalRows) {
+//			return '';
+//		},
+//		formatRecordsPerPage : function(pageNumber) {
+//			return '';
+//		},			
+//		columns : [{
+//			field : 'nro',
+//			title : 'Nro',
+//			align : 'center',
+//			valign : 'bottom',
+//			sortable : false,
+//			formatter: 'formatoNro'
+//		},{	
+//			field : 'descripcionSubParametro',
+//			title : 'Sub Parametro',
+//			align : 'center',
+//			valign : 'bottom',
+//			sortable : false
+//		},{	
+//			field : 'numValor',
+//			title : 'Promedio',
+//			align : 'center',
+//			valign : 'bottom',
+//			sortable : false
+//		}]
+//	});
+//}
+
+//function formatoNro(value, row, index) {
+//	return [
+//		(index + 1) + ''
+//    ].join('');			
+//}
+
+function generarTablaDashboard(){
+	listaGenerada = generarListaComboEP();
+	listaGeneradaSP = generarListaComboSP();
+//	tblResultadoDashboardEP.bootstrapTable('load', listaGenerada);
+//	tblResultadoDashboardSP.bootstrapTable('load', listaGeneradaSP);
+	generarListasLine();
+	generarListaslineNewAlter();
+}
+
+function generarListaComboEP(){
+	var listaGenerada = [];
+	for(var i=0; i<listaDashboardEP.length; i++ ){
+		if(listaDashboardEP[i].idPtarxSector == cboPtarxSector.val() && listaDashboardEP[i].idSubParametro != ConstanteServices.ID_COLIFORME_TERMOTOLERANTES){
+			listaGenerada.push(listaDashboardEP[i]);
+		}
+	}
+	return listaGenerada;
+}
+
+function generarListaComboSP(){
+	var listaGenerada = [];
+	for(var i=0; i<listaDashboardSP.length; i++ ){
+		if(listaDashboardSP[i].idPtarxSector == cboPtarxSector.val() && listaDashboardSP[i].idSubParametro != ConstanteServices.ID_COLIFORME_TERMOTOLERANTES){
+			listaGenerada.push(listaDashboardSP[i]);
+		}
+	}
+	return listaGenerada;
+}
+
+function generarListasLine(){
+	$.ajax({
+        url : "./obtenerListaLineDashboard",
+        type : "POST",
+        dataType : "json",
+        async:false,
+        data : {
+        	idPtarxSector: (!IsEmpty(cboPtarxSector.val()) ? cboPtarxSector.val() : null),
+        	fechaInicio: (!IsEmpty(dtpInicio.val()) ? dtpInicio.val() : null),
+        	fechaFin: (!IsEmpty(dtpFin.val()) ? dtpFin.val() : null)
+        }
+    }).done(function(respuestaBean) {
+    	if(respuestaBean.estadoRespuesta ==  ConstanteServices.OK ){	
+    		cargarGrillaLinea(respuestaBean.parametros.ltaFechas, respuestaBean.parametros.ltaDBOEP, respuestaBean.parametros.ltaSSTEP, respuestaBean.parametros.ltaCTTEP, respuestaBean.parametros.ltaPHEP, respuestaBean.parametros.ltaTEP, respuestaBean.parametros.ltaAYGEP, respuestaBean.parametros.ltaDQOEP, 
+    				respuestaBean.parametros.ltaDBOSP, respuestaBean.parametros.ltaSSTSP, respuestaBean.parametros.ltaCTTSP, respuestaBean.parametros.ltaPHSP, respuestaBean.parametros.ltaTSP, respuestaBean.parametros.ltaAYGSP, respuestaBean.parametros.ltaDQOSP);
+        } else {
+        	mostrarMensaje(respuestaBean.mensajeRespuesta, ConstanteServices.IMAGEN_DANGER);
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+    	validarFinDeSesion(jqXHR, textStatus, errorThrown, ConstanteServices.MENSAJE_SESION_EXPIRADA);
+    });
+}
+
+function generarListaslineNewAlter(){
+	$.ajax({
+        url : "./obtenerListaLineNewAlterDashboard",
+        type : "POST",
+        dataType : "json",
+        async:false,
+        data : {
+        	idPtarxSector: (!IsEmpty(cboPtarxSector.val()) ? cboPtarxSector.val() : null),
+        	fechaInicio: (!IsEmpty(dtpInicio.val()) ? dtpInicio.val() : null),
+        	fechaFin: (!IsEmpty(dtpFin.val()) ? dtpFin.val() : null)
+        }
+    }).done(function(respuestaBean) {
+    	if(respuestaBean.estadoRespuesta ==  ConstanteServices.OK ){
+    		cargarGrillaLineaNewAlter(JSON.parse(respuestaBean.parametros.listaEjeX), JSON.parse(respuestaBean.parametros.listaDashboard), JSON.parse(respuestaBean.parametros.listaSubParametros));
+        } else {
+        	mostrarMensaje(respuestaBean.mensajeRespuesta, ConstanteServices.IMAGEN_DANGER);
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+    	validarFinDeSesion(jqXHR, textStatus, errorThrown, ConstanteServices.MENSAJE_SESION_EXPIRADA);
+    });
+}
+
+function construirListaData(listaEjeX, listaDashboard, descripcionSubParametro){
+	var listaValores = [];
+	for(var i=0; i<listaEjeX.length; i++){
+		var flagUtil = null;
+		for(var j=0; j<listaDashboard.length; j++){
+			if(listaDashboard[j].descripcionSubParametro == descripcionSubParametro && listaDashboard[j].descripcionPtoMuestra == listaEjeX[i]){
+				flagUtil = listaDashboard[j].numValor;
+			}
+		}
+		listaValores.push(flagUtil);
+	}
+	return listaValores;
+}
+
+function cargarGrillaLineaNewAlter(listaEjeX, listaDashboard, listaSubParametros){
+	if(lineNewAlter.data.datasets != undefined){
+		lineNewAlter.data.labels = listaEjeX;
+		for(var i=0; i<listaSubParametros.length; i++){
+			lineNewAlter.data.datasets[i].data = construirListaData(listaEjeX, listaDashboard, listaSubParametros[i]);
+		}
+		lineNewAlter.update();
+
+//		lineNewAlter.data.datasets[0].data = JSON.parse(ltaValores);
+//		lineNewAlter.data.labels = JSON.parse(listaEjeX);
+//		lineNewAlter.update();
+	}else{
+		var datasetsFormat = construirArrayDataNewLine(listaDashboard, listaEjeX, listaSubParametros);
+		lineNewAlter = new Chart(lineNewAlter, {
+			  type: 'line',
+			  data: {
+				  labels: listaEjeX,
+				  datasets: datasetsFormat
+				},
+			  options: {
+				  scales: {
+					  yAxes: [
+					      {
+					        id: 'A',
+					        type: 'linear',
+					        position: 'left',
+					        scalePositionLeft: true,
+					        ticks: {
+			                    beginAtZero:true
+			                }
+					      },
+					      {
+					        id: 'B',
+					        type: 'linear',
+					        position: 'right',
+					        scalePositionLeft: false,
+					        ticks: {
+			                    beginAtZero:true
+			                }
+					      }
+					    ],
+						xAxes: [{
+			                ticks: {
+			                    autoSkip: false,
+			                    maxRotation: 90,
+			                    minRotation: 90
+			                }
+			            }]
+			        },
+				title: {
+		            display: true,
+		            text: 'Gráfico Diario Lineal',
+		            fontColor: '#1587c6',
+		            fontSize : 15,
+		            fontFamily: 'Arial',
+		            fontStyle: 'normal'
+		        }
+			},
+			
+		});
+	}
+}
+
+function construirArrayDataNewLine(listaDashboard, listaEjeX, listaSubParametros){
+	var arrayDS = [];
+	for(var i=0; i<listaSubParametros.length; i++){
+		var dataUtil = construirListaData(listaEjeX, listaDashboard, listaSubParametros[i]);
+		var randomColor1 = generateRandomColor();
+		var value = {
+			      label: listaSubParametros[i],
+			      yAxisID: 'A',
+			      fill: false,
+			      lineTension: 0.1,
+			      backgroundColor: randomColor1,
+			      borderColor: randomColor1, // The main line color
+			      borderCapStyle: 'round',
+			      borderDash: [], // try [5, 15] for instance
+			      borderDashOffset: 0.0,
+			      borderJoinStyle: 'miter',
+			      pointBorderColor: "black",
+			      pointBackgroundColor: "white",
+			      pointBorderWidth: 1,
+			      pointHoverRadius: 8,
+			      pointHoverBackgroundColor: randomColor1,
+			      pointHoverBorderColor: "brown",
+			      pointHoverBorderWidth: 2,
+			      pointRadius: 4,
+			      pointHitRadius: 10,
+			      // notice the gap in the data and the spanGaps: true
+			      data: dataUtil,
+			      spanGaps: true,
+			    };
+		arrayDS.push(value);
+	}
+	return arrayDS;
+}
+
+function generateRandomColor() {
+    var x = Math.floor(Math.random() * 256);
+    var y = Math.floor(Math.random() * 256);
+    var z = Math.floor(Math.random() * 256);
+    var bgColor = "rgb(" + x + "," + y + "," + z + ")";
+    console.log(bgColor);
+    return bgColor;
+}
+
+function personalizado(e) {
+    switch (e.key) {
+      case 'ArrowRight':
+        var el = document.activeElement;
+        var rowNo = el.id.substring(el.id.indexOf("_")+1);
+        var fieldId = el.id.substring(0, el.id.indexOf("_"));
+        if(fieldId == 'divValor'){
+        	var newId = "divProfundida_"+rowNo;
+	        var newEl = document.getElementById(newId);
+	        if (newEl != null) {
+	          newEl.focus();
+	        }
+        }
+        if(fieldId == 'divProfundida'){
+        	var newId = "divFactor_"+rowNo;
+	        var newEl = document.getElementById(newId);
+	        if (newEl != null) {
+	          newEl.focus();
+	        }
+        }
+        break;
+      case 'ArrowLeft':
+        var el = document.activeElement;
+        var rowNo = el.id.substring(el.id.indexOf("_")+1);
+        var fieldId = el.id.substring(0, el.id.indexOf("_"));
+		if(fieldId == 'divProfundida'){
+			var newId = "divValor_"+rowNo;
+	        var newEl = document.getElementById(newId);
+	        if (newEl != null) {
+	          newEl.focus();
+	        }        	
+		}
+		if(fieldId == 'divFactor'){
+			var newId = "divProfundida_"+rowNo;
+	        var newEl = document.getElementById(newId);
+	        if (newEl != null) {
+	          newEl.focus();
+	        }        	
+		}
+        break;
+    }
+  }
+
+

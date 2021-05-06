@@ -1,0 +1,125 @@
+create or replace package PCK_RIO is
+
+-- ******************************************************************************
+-- Descripcion:
+-- Metodo que permite obtener el listado de Rios
+--
+-- Input Parameters:
+-- PAR_VNOMBRE_RIO  Descripcion del nombre del rio
+-- PAR_ABREVIATURA  Abreviatura que identifica el nombre corto del rio
+-- PAR_ESTADO       Estado del resgistro
+
+-- par_col_Order_By Campo de ordenamiento
+-- par_col_Order_By_Dir Direccion de ordenamiento
+-- par_pag_Desde    Intervalo inicial de registros
+-- par_cantidad_Pag Intervalo final de registros
+--
+-- Output Parameters:
+-- par_out_quantity   Cantidad de Registros coincidentes
+-- PAR_OUT_CURSOR     Listado de registros
+--
+-- Author:      ATAMAYO
+-- Proyecto:    SCR
+-- Responsable  T-Gestiona
+--
+-- Revisiones
+-- Fecha            Autor         Motivo del cambio
+-- ----------------------------------------------------------------
+-- 28/06/2017     ATAMAYO      Creacion Inicial.
+-- ******************************************************************************
+
+
+ procedure PRC_BUSCA_RIO(
+   --Parametros de la busqueda
+   PAR_VNOMBRE_RIO      IN SCR_MANT_RIO.C_NOMRIO%TYPE,
+   PAR_VABREVIATURA     IN SCR_MANT_RIO.C_ABREVI%TYPE,
+   PAR_VESTADO          IN SCR_MANT_RIO.C_ESTADO%TYPE,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR  
+);
+
+procedure PRC_LISTA_RIO(
+  --Parametro de listado
+  PAR_V_ESTADO           IN SCR_MANT_RIO.C_ESTADO%TYPE,
+  --Parametro de retorno
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+);
+
+procedure PRC_LISTA_RIO2(
+  --Parametro de listado
+  PAR_V_ESTADO           IN SCR_MANT_RIO.C_ESTADO%TYPE,
+  --Parametro de retorno
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+);
+
+ procedure PRC_GET_RIO(
+   --Parametros de la busqueda
+   PAR_CODIGO IN SCR_MANT_RIO.N_CODIGO%type,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+);
+
+  -- Se crea este store procedure para el mantenimiento de rio
+  
+  
+  -- Author  : Mampower
+  -- Proyecto : SISTEMA DE CAUDALES DE RIO
+  -- Responsable . Alexis Tamayo T.
+  -- Created : 14/06/2017 11:21:30 p.m.
+  -- Purpose : 
+ 
+-- INSERTAR RIO
+ 
+
+
+PROCEDURE PRC_INSERT_RIO(
+   PAR_VNOMBRE_RIO                  SCR_MANT_RIO.C_NOMRIO%TYPE,
+   PAR_VNOMBRE_LARGO                SCR_MANT_RIO.C_NOMLAR%TYPE,
+   PAR_VABREVIATURA                 SCR_MANT_RIO.C_ABREVI%TYPE,
+   PAR_VESTADO                      SCR_MANT_RIO.C_ESTADO%TYPE,
+   --Campos de Auditoria
+   PAR_AUSUARIO_CREACION            SCR_MANT_RIO.A_USUCRE%TYPE,
+   PAR_AUSUARIO_MODIFICACION        SCR_MANT_RIO.A_USUMOD%TYPE,
+   PAR_APROGRAMA                    SCR_MANT_RIO.A_NOMPRG%TYPE,
+   PAR_ACODIGO_AREA                 SCR_MANT_RIO.N_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA              SCR_MANT_RIO.N_CODSIS%TYPE
+ );
+ 
+
+
+
+ -- UPDATE RIO
+ 
+ 
+ PROCEDURE PRC_UPDATE_RIO(
+   PAR_NCODIGO                      SCR_MANT_RIO.N_CODIGO%TYPE,
+   PAR_VNOMBRE_RIO                  SCR_MANT_RIO.C_NOMRIO%TYPE,
+   PAR_VNOMBRE_RIO_LARGO            SCR_MANT_RIO.C_NOMLAR%TYPE,
+   PAR_VABREVIATURA                 SCR_MANT_RIO.C_ABREVI%TYPE,
+   PAR_VESTADO                      SCR_MANT_RIO.C_ESTADO%TYPE,
+   --Campos de Auditoria
+   PAR_AUSUARIO_MODIFICACION        SCR_MANT_RIO.A_USUMOD%TYPE,
+   PAR_APROGRAMA                    SCR_MANT_RIO.A_NOMPRG%TYPE,
+   PAR_ACODIGO_AREA                 SCR_MANT_RIO.N_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA              SCR_MANT_RIO.N_CODSIS%TYPE  
+ );
+ 
+ 
+
+PROCEDURE PRC_INACTIVA_RIO(
+   PAR_NCODIGO                      SCR_MANT_RIO.N_CODIGO%TYPE,
+   PAR_AUSUARIO_MODIFICACION        SCR_MANT_RIO.A_USUMOD%TYPE, 
+   PAR_APROGRAMA                    SCR_MANT_RIO.A_NOMPRG%TYPE,
+   PAR_ACODIGO_AREA                 SCR_MANT_RIO.N_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA              SCR_MANT_RIO.N_CODSIS%TYPE  
+ ) ;
+ 
+
+
+end PCK_RIO;

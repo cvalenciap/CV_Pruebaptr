@@ -1,0 +1,204 @@
+create or replace package body PCK_REPRESA is
+
+  
+ PROCEDURE PRC_BUSCA_REPRESA(
+   --Parametros de la busqueda
+   PAR_VNOMBRE_REPRESA             IN SCR_MANT_REPRESA.V_NOMREP%TYPE,
+   PAR_VABREVIATURA_REPRESA             IN SCR_MANT_REPRESA.V_ABREVI%TYPE,
+   PAR_VESTADO_REPRESA             IN SCR_MANT_REPRESA.V_ESTADO%TYPE,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+
+BEGIN
+
+  v_query_count:= ' select count(*) ';
+    
+  v_query :=  'SELECT * FROM(SELECT a.*, rownum rn FROM( select  c.N_CODIGO,c.V_NOMREP,DECODE (c.V_ESTADO, 1, ''ACTIVO'', 2, ''INACTIVO'', '' '')V_ESTADO, ' ||
+  ' c.A_USUINS, to_char(c.A_FECINS, ''DD/MM/YYYY''), c.A_USUMOD, to_char(c.A_FECMOD,''DD/MM/YYYY'')';
+
+  v_query_from := ' from scr_mant_represa c where ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := ' 1=1 ';
+  
+  
+   if(LENGTH(TRIM(PAR_VNOMBRE_REPRESA))>0) then
+     v_query_where :=  v_query_where || ' and  UPPER(c.V_NOMREP) LIKE UPPER(''%' ||   PAR_VNOMBRE_REPRESA || '%'')';
+   end if;
+  
+  if(LENGTH(TRIM(PAR_VABREVIATURA_REPRESA))>0) then
+    v_query_where :=  v_query_where || ' and UPPER(c.V_ABREVI) LIKE UPPER(''%' ||  PAR_VABREVIATURA_REPRESA || '%'')';
+  end if;
+  
+  if(LENGTH(TRIM(PAR_VESTADO_REPRESA))>0) then
+    v_query_where :=  v_query_where || ' and c.V_ESTADO = ''' ||  PAR_VESTADO_REPRESA || '''';
+  end if;
+  
+
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+  
+  v_query := v_query || ' order by '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' and rn <= ' || (par_pag_desde+par_cantidad_pag);
+    
+  OPEN par_out_cursor FOR v_query;
+  
+  execute immediate v_query_count into par_out_quantity;
+
+END;
+
+
+ PROCEDURE PRC_GET_REPRESA(
+   --Parametros de la busqueda
+   PAR_NCODIGO_REPRESA IN SCR_MANT_REPRESA.N_CODIGO%type,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+BEGIN
+  v_query := ' SELECT t.N_CODIGO, t.V_NOMREP, t.V_ABREVI, t.V_ESTADO, ' ||
+             ' t.A_PROGRA, t.A_CODARE, t.A_CODSIS ' ||
+             ' FROM SCR_MANT_REPRESA t '   ||
+             ' WHERE t.N_CODIGO = ' || PAR_NCODIGO_REPRESA;
+  OPEN par_out_cursor FOR v_query;
+  
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+
+PROCEDURE PRC_INSERT_REPRESA(
+   PAR_VNOMBRE_REPRESA                 SCR_MANT_REPRESA.V_NOMREP%TYPE,
+   PAR_VABREVIATURA_REPRESA                 SCR_MANT_REPRESA.V_ABREVI%TYPE,
+   
+   PAR_VESTADO_REPRESA                 SCR_MANT_REPRESA.V_ESTADO%TYPE,
+   --Campos de Auditoria
+   PAR_AUSUAREPRESA_CREACION           SCR_MANT_REPRESA.A_USUINS%TYPE,
+   PAR_AUSUAREPRESA_MODIFICACION       SCR_MANT_REPRESA.A_USUMOD%TYPE,
+   PAR_APROGRAMA_REPRESA               SCR_MANT_REPRESA.A_PROGRA%TYPE,
+   PAR_ACODIGO_AREA_REPRESA            SCR_MANT_REPRESA.A_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA_REPRESA         SCR_MANT_REPRESA.A_CODSIS%TYPE
+ )
+ IS
+ BEGIN
+ INSERT INTO SCR_MANT_REPRESA
+      (A_USUINS,
+       A_FECINS,
+       A_USUMOD,
+       A_FECMOD,
+       A_PROGRA,
+       A_CODARE,
+       A_CODSIS,
+       N_CODIGO,
+       V_NOMREP,
+       V_ABREVI,
+       V_ESTADO)
+    VALUES
+      (PAR_AUSUAREPRESA_CREACION,
+       SYSDATE,
+       PAR_AUSUAREPRESA_MODIFICACION,
+       SYSDATE,
+       PAR_APROGRAMA_REPRESA,
+       PAR_ACODIGO_AREA_REPRESA,
+       PAR_ACODIGO_SISTEMA_REPRESA,
+       SQ_CDL_MANT_REPRESA.NEXTVAL,
+       PAR_VNOMBRE_REPRESA,
+       PAR_VABREVIATURA_REPRESA,
+       PAR_VESTADO_REPRESA);
+       
+  EXCEPTION
+     WHEN OTHERS THEN
+          dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+PROCEDURE PRC_UPDATE_REPRESA(
+   PAR_NCODIGO_REPRESA                      SCR_MANT_REPRESA.N_CODIGO%TYPE,
+   PAR_VNOMBRE_REPRESA                      SCR_MANT_REPRESA.V_NOMREP%TYPE,
+   PAR_VABREVIATURA_REPRESA                      SCR_MANT_REPRESA.V_ABREVI%TYPE,
+   PAR_VESTADO_REPRESA                      SCR_MANT_REPRESA.V_ESTADO%TYPE,
+   --Campos de Auditoria
+   PAR_AUSUAREPRESA_MODIFICACION            SCR_MANT_REPRESA.A_USUMOD%TYPE,
+   PAR_APROGRAMA_REPRESA                    SCR_MANT_REPRESA.A_PROGRA%TYPE,
+   PAR_ACODIGO_AREA_REPRESA                 SCR_MANT_REPRESA.A_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA_REPRESA              SCR_MANT_REPRESA.A_CODSIS%TYPE  
+ )
+ IS
+ BEGIN
+   
+  UPDATE SCR_MANT_REPRESA
+  SET A_USUMOD = PAR_AUSUAREPRESA_MODIFICACION,
+       A_FECMOD  = SYSDATE,
+       A_PROGRA  = PAR_APROGRAMA_REPRESA,
+       A_CODARE  = PAR_ACODIGO_AREA_REPRESA ,
+       A_CODSIS  = PAR_ACODIGO_SISTEMA_REPRESA,
+       V_NOMREP  = PAR_VNOMBRE_REPRESA,
+       V_ABREVI  = PAR_VABREVIATURA_REPRESA ,
+       V_ESTADO  = PAR_VESTADO_REPRESA
+  WHERE N_CODIGO = PAR_NCODIGO_REPRESA;
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+
+END;
+
+PROCEDURE PRC_INACTIVA_REPRESA(
+   PAR_NCODIGO_REPRESA                      SCR_MANT_REPRESA.N_CODIGO%TYPE,
+   PAR_AUSUAREPRESA_MODIFICACION            SCR_MANT_REPRESA.A_USUMOD%TYPE, 
+   PAR_APROGRAMA_REPRESA                    SCR_MANT_REPRESA.A_PROGRA%TYPE,
+   PAR_ACODIGO_AREA_REPRESA                 SCR_MANT_REPRESA.A_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA_REPRESA              SCR_MANT_REPRESA.A_CODSIS%TYPE  
+ ) 
+ IS
+ BEGIN
+  UPDATE SCR_MANT_REPRESA
+    SET V_ESTADO=2,
+        A_USUMOD = PAR_AUSUAREPRESA_MODIFICACION,
+        A_FECMOD  = SYSDATE,       
+        A_PROGRA           = PAR_APROGRAMA_REPRESA,
+        A_CODARE         = PAR_ACODIGO_AREA_REPRESA ,
+        A_CODSIS      = PAR_ACODIGO_SISTEMA_REPRESA
+    WHERE N_CODIGO = PAR_NCODIGO_REPRESA;
+
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+
+  END;
+  
+  
+PROCEDURE PRC_LISTA_REPRESA(
+  --Parametro de listado
+  PAR_V_ESTADO           IN SCR_MANT_REPRESA.V_ESTADO%TYPE,
+  --Parametro de retorno
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR 
+  	SELECT N_CODIGO, 
+  	       V_NOMREP, 
+  	       V_ABREVI,
+  	       V_ESTADO 
+  	FROM SCR_MANT_REPRESA WHERE V_ESTADO = PAR_V_ESTADO;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      dbms_output.put_line('Se ha producido el siguiente error: ' || sqlerrm);
+END;
+  
+end PCK_REPRESA;

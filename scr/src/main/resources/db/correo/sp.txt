@@ -1,0 +1,86 @@
+create or replace package PCK_CORREO is
+ 
+ PROCEDURE PRC_INSERT_MANT_CORREO (
+   par_ausuins          scr_mant_correo.a_usucrea%TYPE,
+   par_aprograma        scr_mant_correo.a_nomprg%TYPE,
+   par_acodarea         scr_mant_correo.n_codare%TYPE,
+   par_acodsist         scr_mant_correo.n_codsis%TYPE,
+   par_vtipooperacion   scr_mant_correo.c_tipope%TYPE,
+   par_vpara            scr_mant_correo.c_para%TYPE,
+   par_vcc              scr_mant_correo.c_cc%TYPE,
+   par_vasunto          scr_mant_correo.c_asunto%TYPE,
+   par_vcuerpo          scr_mant_correo.c_cuerpo%TYPE,
+   par_vorigen          scr_mant_correo.c_origen%TYPE,
+   par_vnomadj          scr_mant_correo.c_nomadj%TYPE,
+   par_vrutaservcorreo  scr_mant_correo.c_rserco%TYPE,
+   par_vusucorreo       scr_mant_correo.c_usucor%TYPE,
+   par_vpasscorreo      scr_mant_correo.c_pascor%TYPE,
+   par_vrutaservfile    scr_mant_correo.c_rserfile%TYPE,
+   par_vusufile         scr_mant_correo.c_usufile%TYPE,
+   par_vpassfile        scr_mant_correo.c_passfile%TYPE,
+   par_npuerto          scr_mant_correo.n_puerto%TYPE
+ );
+ 
+ PROCEDURE PRC_UPDATE_MANT_CORREO (
+   par_ncodigo          scr_mant_correo.n_codigo%TYPE,
+   par_ausuupd          scr_mant_correo.a_usumod%TYPE,
+   par_aprograma        scr_mant_correo.a_nomprg%TYPE,
+   par_acodarea         scr_mant_correo.n_codare%TYPE,
+   par_acodsist         scr_mant_correo.n_codsis%TYPE,
+   par_vestado          scr_mant_correo.c_estado%TYPE,
+   par_vpara            scr_mant_correo.c_para%TYPE,
+   par_vcc              scr_mant_correo.c_cc%TYPE,
+   par_vasunto          scr_mant_correo.c_asunto%TYPE,
+   par_vcuerpo          scr_mant_correo.c_cuerpo%TYPE,
+   par_vorigen          scr_mant_correo.c_origen%TYPE,
+   par_vnomadj          scr_mant_correo.c_nomadj%TYPE,
+   par_vrutaservcorreo  scr_mant_correo.c_rserco%TYPE,
+   par_vusucorreo       scr_mant_correo.c_usucor%TYPE,
+   par_vpasscorreo      scr_mant_correo.c_pascor%TYPE,
+   par_vrutaservfile    scr_mant_correo.c_rserfile%TYPE,
+   par_vusufile         scr_mant_correo.c_usufile%TYPE,
+   par_vpassfile        scr_mant_correo.c_passfile%TYPE,
+   par_npuerto          scr_mant_correo.n_puerto%TYPE
+ );
+ 
+ procedure PRC_GET_MANT_CORREO(
+   --Parametros de la busqueda
+   PAR_CODIGO IN SCR_MANT_CORREO.N_CODIGO%type,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+);
+ 
+ procedure PRC_BUSCA_MANT_CORREO (
+   --Parametros de la busqueda
+   par_tipo_operacion IN varchar2,
+   --Parametros de la paginacion
+   par_col_order_by IN integer, par_col_order_by_dir IN varchar2 , 
+   par_pag_desde IN integer, par_cantidad_pag IN integer,
+   --Parametros de retorno
+   par_out_quantity OUT integer,
+   par_out_cursor OUT SYS_REFCURSOR  
+);
+ 
+ procedure PRC_INACTIVA_CORREO(
+   par_codigo scr_mant_correo.n_codigo%TYPE,
+   par_vuser_update    scr_mant_correo.a_usumod%TYPE, 
+   par_vprogram_update scr_mant_correo.a_nomprg%TYPE,
+   par_acodarea        scr_mant_correo.n_codare%TYPE,
+   par_acodsist        scr_mant_correo.n_codsis%TYPE
+ );
+ 
+ PROCEDURE PRC_GET_CONFIG_CORREO(
+	   --Parametro de busqueda
+	   PAR_V_TIPOPR  IN SCR_MANT_CORREO.C_TIPOPE%TYPE,
+	   PAR_V_ESTADO  		IN SCR_MANT_CORREO.C_ESTADO%TYPE,
+	   --Parametro de retorno
+	   PAR_OUT_CURSOR OUT SYS_REFCURSOR
+);
+
+PROCEDURE PRC_GET_VALIDATION_INFO(
+    --Parametro de retorno
+    PAR_OUT_QUANTITY_RESUMEN OUT integer,
+    PAR_OUT_QUANTITY_AUTOMATICO OUT integer
+);
+
+end PCK_CORREO;

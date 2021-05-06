@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+	<body>
+		<div class="container_save">
+			
+			<script th:fragment="genericSave" th:inline="javascript" >
+			/*<![CDATA[*/			
+			    mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+			    mensajeMostrar = /*[[${mensajeMostrar}]]*/ '';
+			    mensajeError = /*[[${mensajeError}]]*/ '';		
+			    	
+			/*]]>*/
+			
+			showToastPlanOperativo(mensajeTipo,mensajeMostrar, mensajeError);
+			
+
+			
+			</script>
+		</div>
+	</body>
+</html>

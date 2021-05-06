@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">	
+<head></head>
+<body>
+	<div th:fragment="resultsList" class="grid_10 height800" id="idManiobrasTable">		
+		<table  class="fancyTable" id="myManiobras">
+			<thead>
+				<tr>
+					<th th:text="${#messages.msg('maniobras.data.col1')}" style="width: 90px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col2')}" style="width: 60px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col3')}" style="width: 180px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col4')}" style="width: 60px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col5')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col6')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col7')}" style="width: 120px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col8')}" style="width: 6px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col9')}" style="width: 120px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col10')}" style="width: 120px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col11')}" style="width: 120px;"></th>
+					<th th:text="${#messages.msg('maniobras.data.col12')}" style="width: 120px;"></th>					
+				</tr>
+			</thead>			
+		</table>
+	</div>
+</body>
+</html>

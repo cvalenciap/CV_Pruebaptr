@@ -1,0 +1,53 @@
+create or replace PACKAGE PCK_ALC_MANTPOI AS 
+
+  /* TODO enter package declarations (types, exceptions, methods etc) here */ 
+    PROCEDURE PRC_BUSCA_TABLA_POISSON(
+       --Parametros de la busqueda
+       PAR_NCODIGO_LAMBDA             IN ALC_POISSON.N_CODLAM%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER,
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    );
+    
+    PROCEDURE PRC_INSERT_TABLA_POISSON( 
+       PAR_NCODIGO_LAMBDA             IN ALC_POISSON.N_CODLAM%TYPE,
+       PAR_CCODIGO_X             IN ALC_POISSON.C_CODIGX%TYPE,
+       PAR_CVALOR             IN ALC_POISSON.C_VALPOI%TYPE,
+       --Campos de Auditoria
+       PAR_CUSUARIO_CREACION             IN ALC_POISSON.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI     IN ALC_POISSON.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_POISSON.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN        OUT INTEGER 
+     );
+     
+     PROCEDURE PRC_UPDATE_TABLA_POISSON(
+       PAR_NCODIGO_LAMBDA        IN ALC_POISSON.N_CODLAM%TYPE,
+       PAR_CCODIGO_X             IN ALC_POISSON.C_CODIGX%TYPE,
+       PAR_CVALOR                IN ALC_POISSON.C_VALPOI%TYPE,
+       --Campos de Auditoria
+       PAR_CUSUARIO_MODI     IN ALC_POISSON.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_POISSON.A_NOMPRG%TYPE
+     ); 
+     
+    PROCEDURE PRC_GET_TABLA_POISSON( 
+       --Parametros de la busqueda 
+       PAR_NCODIGO_POISSON  IN ALC_POISSON.N_CODPOI%TYPE,
+       --Parametros de retorno
+       par_out_cursor OUT SYS_REFCURSOR 
+    );
+     
+    PROCEDURE PRC_INACTIVA_TABLA_POISSON(       
+        --Parametros de la busqueda 
+       PAR_NCODIGO_POISSON  IN ALC_POISSON.N_CODPOI%TYPE,
+       --Campos de Auditoria
+       PAR_CUSUARIO_MODI     IN ALC_POISSON.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_POISSON.A_NOMPRG%TYPE
+     );
+    
+
+END PCK_ALC_MANTPOI;

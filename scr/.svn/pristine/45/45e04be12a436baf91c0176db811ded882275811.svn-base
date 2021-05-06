@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('tabla.almacenamientoPTAP.bandeja')}"></title>
+<link th:href="@{/css/jquery.fileupload.css}" rel="stylesheet" />
+<link th:href="@{/css/jquery.fileupload-ui.css}" rel="stylesheet" />
+<link th:href="@{/css/subidaArchivo.css}" rel="stylesheet" />
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+	
+		<!-- Modal -->
+		<div id="modal-registra-almacenamientoPTAP" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			
+				<!-- Modal content-->
+ 			    <div class="modal-content" id="id-modal-content">
+			    	
+ 			    </div> 
+			    
+			</div>
+		</div> 		
+		
+		<form name="formInactivaAlmacenamientoPTAP" id="form-inactiva-almacenamientoPTAP" style="display:none;" 
+			  th:action="@{/almacenamientoPTAP/inactivar}" method="post">
+			<input type="hidden" id="inacId" name="inacId" />
+
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>			
+		
+		<!-- Modal -->
+		<div id="modal-registra-tableFirst" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			
+				<!-- Modal content-->
+ 			    <div class="modal-content" id="id-modal-content-tableFirst">
+			    	
+ 			    </div> 
+			    
+			</div>
+		</div> 		
+		
+		
+		<!-- Modal -->
+		<div id="modal-registra-tableSecond" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			
+				<!-- Modal content-->
+ 			    <div class="modal-content" id="id-modal-content-tableSecond">			    	
+ 			    </div> 
+			    
+			</div>
+		</div> 
+		
+		<form name="formInactivaTableSecond" id="form-inactiva-tableSecond" style="display:none;" 
+			  th:action="@{/tableSecond/inactivar}" method="post">
+			<input type="hidden" id="inacIdDetalle2" name="inacIdDetalle2" />
+
+			<button id="form-button-delete-procesoTableSecond" type="submit">Delete</button>
+		</form>	
+		
+		<form name="formCalculoFirstTable" id="form-calculo-tableFirst" style="display:none;" 
+			  th:action="@{/tableFirst/calcular}" method="post">
+			<input type="hidden" id="idDetalle" name="idDetalle" />
+			<input type="hidden" id="idCabecera" name="idCabecera" />
+
+			<button id="form-button-calcular-TableFirst" type="submit">Delete</button>
+		</form>
+		
+		<!-- Modal -->
+		<div id="modal-registra-tableThree" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			
+				<!-- Modal content-->
+ 			    <div class="modal-content" id="id-modal-content-tableThree">
+			    	
+ 			    </div> 
+			    
+			</div>
+		</div> 
+		
+		<form name="formInactivaTableThree" id="form-inactiva-tableThree" style="display:none;" 
+			  th:action="@{/tableThree/inactivar}" method="post">
+			<input type="hidden" id="inacIdDetalle" name="inacIdDetalle" />
+
+			<button id="form-button-delete-procesoTableThree" type="submit">Delete</button>
+		</form>	
+				
+		<h3 class="text-center" th:text="${#messages.msg('home.almacenamientoPTAP.titulo')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('almacenamientoPTAP.fechaMuestra')}"></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								
+								<input type="text" class="form-control" id="idFechaMuestreo" name="idFechaMuestreo"
+			                    		   maxlength="20" />
+			                    		   															
+							</div>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+					
+				</div>
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-right">
+					<button type="button" class="btn btn-info btn-crear-mant-correo" data-toggle="modal" onclick="modificarAlmacenamientoPTAP(-1)"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('tipoProceso.agregar')}"></label></button>
+					<button type="button" id="idBtnBuscarAlmacenamientoPTAP" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span><label th:text="${#messages.msg('tipoProceso.buscar')}"></label></button>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="container_12">
+				<div th:replace="almacenamientoPTAP/almacenamientoPTAPTable :: resultsList" class="grid_10 height800" id="idAlmacenamientoPTAPTable"></div>
+			</div>
+		</div>
+			<script type="text/javascript" th:src="@{/js/jquery.iframe-transport.js}"></script>
+			<script type="text/javascript" th:src="@{/js/jquery.fileupload.js}"></script>
+			<script type="text/javascript" th:src="@{/js/subidaArchivos.js}"></script>
+		<script type="text/javascript" th:src="@{/js/almacenamientoPTAP.js}"></script>
+		
+	</div>
+</body>
+</html>

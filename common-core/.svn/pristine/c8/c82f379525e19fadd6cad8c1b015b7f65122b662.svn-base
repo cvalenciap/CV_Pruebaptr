@@ -1,0 +1,61 @@
+
+/*
+form {
+	margin: 15px;
+}
+
+fieldset {
+	margin: 0 auto;
+	text-align: left;
+	width: 50%;
+	line-height: 1.8;
+}
+
+input {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: 20px;
+	width: 60%;
+}
+
+label {
+	display: inline-block;
+	float: center;
+	padding-top: 2px;
+	text-align: left;
+	width: 100px;
+}
+
+.btnBig {
+	margin: 20px 0;
+	line-height: 34px;
+	position: relative;
+	cursor: pointer;
+	user-select: none;
+	outline: none !important;
+	width: 100%;
+}
+
+.btnSmall {
+	margin: 20px 0;
+	line-height: 34px;
+	position: relative;
+	cursor: pointer;
+	user-select: none;
+	outline: none !important;
+	width: 30%;
+}
+
+.fieldError {
+	color: red;
+}
+
+
+
+button:active {
+	outline: none;
+}
+
+*/

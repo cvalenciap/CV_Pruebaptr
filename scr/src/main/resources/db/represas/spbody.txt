@@ -1,0 +1,392 @@
+create or replace package body PCK_REPRESAS is
+
+PROCEDURE PRC_BUSCA_REPRESAS(
+  --PARAMETROS BUSQUEDA
+  PAR_VNOMBRE_REPRESA                      IN SCR_MANT_REPRESA.V_NOMREP%TYPE,
+  PAR_VNUMERO_PRECIPITACION                IN VARCHAR2,
+  --PARAMETROS PAGINACION
+  PAR_COL_ORDER_BY                         IN INTEGER,
+  PAR_COL_ORDER_BY_DIR                     IN VARCHAR2,
+  PAR_PAG_DESDE                            IN INTEGER,
+  PAR_CANTIDAD_PAG                         IN INTEGER,
+  --PARAMETROS RETORNO
+  PAR_OUT_QUANTITY                         OUT INTEGER,
+  PAR_OUT_CURSOR                           OUT SYS_REFCURSOR
+)
+IS
+
+  V_QUERY                                  VARCHAR2(4000);
+  V_QUERY_FROM                             VARCHAR2(4000);
+  V_QUERY_COUNT                            VARCHAR2(4000);
+  V_QUERY_WHERE                            VARCHAR2(4000);
+
+BEGIN
+
+  V_QUERY_COUNT := 'select count(*) ';
+
+  V_QUERY := 'select *
+              from (select a.*, rownum rn
+                    from (select b.n_numpre,
+                                 c.v_nomrep,
+                                 b.n_cota,
+                                 b.n_volume,
+                                 b.n_descar,
+                                 b.n_lluvia,
+                                 b.n_evapor,
+                                 b.n_humrel,
+                                 b.n_hy,
+                                 b.n_cuadal,                                 
+                                 b.d_fecreg,
+                                 d.v_nomcol,
+                                 e.c_nomcli,
+                                 b.n_difniv,
+                                 b.n_difvol,
+                                 b.n_tmpmax,
+                                 b.n_tmpmin,
+                                 b.n_cautra,
+                                 b.n_voltra,
+                                 b.n_ariori,                                 
+                                 b.n_codigo,
+                                 b.n_codrep,                                 
+                                 b.n_ccolre,                                                                 
+                                 b.n_codcli,                                 
+                                 b.n_codman,
+                                 decode (b.v_estado, 1, ''activo'', 2, ''inactivo'', '' '') v_estado'; 
+
+  V_QUERY_FROM := ' from   scr_represas b,
+                           scr_mant_represa c,
+                           scr_mcolaborador d,
+                           scr_mant_clima e
+                    where  b.n_codrep = c.n_codigo and
+                           b.n_ccolre = d.n_codcol and
+                           b.n_codcli = e.n_codigo ';
+
+  V_QUERY := V_QUERY || V_QUERY_FROM;
+
+  V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+
+  V_QUERY_WHERE := '';
+
+
+  IF (LENGTH(TRIM(PAR_VNOMBRE_REPRESA))>0) THEN
+     V_QUERY_WHERE :=  V_QUERY_WHERE || ' and upper(c.v_nomrep) like upper(''%' || PAR_VNOMBRE_REPRESA || '%'')';
+  END IF;
+
+  IF (LENGTH(TRIM(PAR_VNUMERO_PRECIPITACION))>0) THEN
+    V_QUERY_WHERE :=  V_QUERY_WHERE || ' and b.n_numpre = ' || PAR_VNUMERO_PRECIPITACION;
+  END IF;
+
+  V_QUERY := V_QUERY || V_QUERY_WHERE;
+
+  V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_WHERE;
+
+  V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+
+  OPEN PAR_OUT_CURSOR FOR V_QUERY;
+
+  EXECUTE IMMEDIATE V_QUERY_COUNT INTO PAR_OUT_QUANTITY;
+
+END;
+
+PROCEDURE PRC_GET_REPRESAS(
+  --PARAMETROS BUSQUEDA
+  PAR_NCODIGO_REPRESAS                     SCR_REPRESAS.N_CODIGO%TYPE,
+  --PARAMETROS RETORNO
+  PAR_OUT_CURSOR                           OUT SYS_REFCURSOR
+)
+IS
+
+  V_QUERY VARCHAR2(4000);
+
+BEGIN
+  
+  V_QUERY := 'select b.n_numpre,
+                     c.v_nomrep,
+                     b.n_cota,
+                     b.n_volume,
+                     b.n_descar,
+                     b.n_lluvia,
+                     b.n_evapor,
+                     b.n_humrel,
+                     b.n_hy,
+                     b.n_cuadal,                                 
+                     b.d_fecreg,
+                     d.v_nomcol,
+                     e.c_nomcli,
+                     b.n_difniv,
+                     b.n_difvol,
+                     b.n_tmpmax,
+                     b.n_tmpmin,
+                     b.n_cautra,
+                     b.n_voltra,
+                     b.n_ariori,                                 
+                     b.n_codigo,
+                     b.n_codrep,                                 
+                     b.n_ccolre,                                                                 
+                     b.n_codcli,                                 
+                     b.n_codman,
+                     b.v_estado
+              from   scr_represas b,
+                     scr_mant_represa c,
+                     scr_mcolaborador d,
+                     scr_mant_clima e
+              where  b.n_codrep = c.n_codigo and
+                     b.n_ccolre = d.n_codcol and
+                     b.n_codcli = e.n_codigo and
+                     b.n_codigo = ' || PAR_NCODIGO_REPRESAS;
+                    
+  OPEN PAR_OUT_CURSOR FOR V_QUERY;
+  
+  EXCEPTION
+       WHEN OTHERS THEN
+            dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+PROCEDURE PRC_INSERT_REPRESAS(
+  --PARAMETROS INSERCION
+  PAR_NNUMERO_PRECIPITACION                SCR_REPRESAS.N_NUMPRE%TYPE,  
+  PAR_NCODIGO_REPRESA                      SCR_REPRESAS.N_CODREP%TYPE,
+  PAR_NCOD_COL_REP                         SCR_REPRESAS.N_CCOLRE%TYPE,
+  PAR_NCOTA                                SCR_REPRESAS.N_COTA%TYPE,
+  PAR_NCODIGO_CLIMA                        SCR_REPRESAS.N_CODCLI%TYPE,
+  PAR_NTEMPERATURA_MAXIMA                  SCR_REPRESAS.N_TMPMAX%TYPE,
+  PAR_NVOLUMEN                             SCR_REPRESAS.N_VOLUME%TYPE,  
+  PAR_NVOLUMEN_TRASVASADO                  SCR_REPRESAS.N_VOLTRA%TYPE,
+  PAR_NCAUDAL_TRASVASADO                   SCR_REPRESAS.N_CAUTRA%TYPE,
+  PAR_NDESCARGA                            SCR_REPRESAS.N_DESCAR%TYPE,
+  PAR_NTEMPERATURA_MINIMA                  SCR_REPRESAS.N_TMPMIN%TYPE,
+  PAR_NLLUVIA                              SCR_REPRESAS.N_LLUVIA%TYPE,  
+  PAR_NDIFERENCIA_NIVEL                    SCR_REPRESAS.N_DIFNIV%TYPE,
+  PAR_NDIFERENCIA_VOLUMEN                  SCR_REPRESAS.N_DIFVOL%TYPE,
+  PAR_NEVAPORACION                         SCR_REPRESAS.N_EVAPOR%TYPE,
+  PAR_NHUMEDAD_RELATIVA                    SCR_REPRESAS.N_HUMREL%TYPE,
+  PAR_NAFORO_RIO_RIMAC                     SCR_REPRESAS.N_ARIORI%TYPE,
+  PAR_NHY                                  SCR_REPRESAS.N_HY%TYPE,
+  PAR_NCAUDAL                              SCR_REPRESAS.N_CUADAL%TYPE,
+  PAR_NCODIGO_MANIOBRA                     SCR_REPRESAS.N_CODMAN%TYPE,
+  PAR_VESTADO                              SCR_REPRESAS.V_ESTADO%TYPE,  
+  --PARAMETROS AUDITORIA
+  PAR_AUSUAREPRESAS_CREACION               SCR_REPRESAS.A_USUINS%TYPE,  
+  PAR_APROGRAMA_REPRESAS                   SCR_REPRESAS.A_PROGRA%TYPE,
+  PAR_ACODIGO_AREA_REPRESAS                SCR_REPRESAS.A_CODARE%TYPE,
+  PAR_ACODIGO_SISTEMA_REPRESAS             SCR_REPRESAS.A_CODSIS%TYPE
+)
+IS
+
+BEGIN
+  
+ INSERT INTO SCR_REPRESAS
+      (A_USUINS,
+       A_FECINS,       
+       A_PROGRA,
+       A_CODARE,
+       A_CODSIS,
+       N_CODIGO,
+       N_NUMPRE,
+       D_FECREG,
+       N_CODREP,
+       N_CCOLRE,
+       N_COTA,
+       N_CODCLI,
+       N_TMPMAX,
+       N_VOLUME,
+       N_VOLTRA,
+       N_CAUTRA,
+       N_DESCAR,
+       N_TMPMIN,
+       N_LLUVIA,
+       N_DIFNIV,
+       N_DIFVOL,
+       N_EVAPOR,
+       N_HUMREL,
+       N_ARIORI,
+       N_HY,
+       N_CUADAL,
+       N_CODMAN,
+       V_ESTADO)
+ VALUES
+      (PAR_AUSUAREPRESAS_CREACION,
+       SYSDATE,       
+       PAR_APROGRAMA_REPRESAS,
+       PAR_ACODIGO_AREA_REPRESAS,
+       PAR_ACODIGO_SISTEMA_REPRESAS,
+       SQ_CDL_REPRESAS.NEXTVAL,
+       PAR_NNUMERO_PRECIPITACION,
+       SYSDATE,
+       PAR_NCODIGO_REPRESA,
+       PAR_NCOD_COL_REP,
+       PAR_NCOTA,
+       PAR_NCODIGO_CLIMA,
+       PAR_NTEMPERATURA_MAXIMA,
+       PAR_NVOLUMEN,  
+       PAR_NVOLUMEN_TRASVASADO,
+       PAR_NCAUDAL_TRASVASADO,
+       PAR_NDESCARGA,
+       PAR_NTEMPERATURA_MINIMA,
+       PAR_NLLUVIA,  
+       PAR_NDIFERENCIA_NIVEL,
+       PAR_NDIFERENCIA_VOLUMEN,
+       PAR_NEVAPORACION,
+       PAR_NHUMEDAD_RELATIVA,
+       PAR_NAFORO_RIO_RIMAC,
+       PAR_NHY,
+       PAR_NCAUDAL,
+       PAR_NCODIGO_MANIOBRA,
+       PAR_VESTADO);       
+ EXCEPTION
+       WHEN OTHERS THEN
+            dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+PROCEDURE PRC_UPDATE_REPRESAS(
+  --PARAMETROS MODIFICACION
+  PAR_NCODIGO_REPRESAS                     SCR_REPRESAS.N_CODIGO%TYPE,
+  PAR_NNUMERO_PRECIPITACION                SCR_REPRESAS.N_NUMPRE%TYPE,  
+  PAR_NCODIGO_REPRESA                      SCR_REPRESAS.N_CODREP%TYPE,
+  PAR_NCOD_COL_REP                         SCR_REPRESAS.N_CCOLRE%TYPE,
+  PAR_NCOTA                                SCR_REPRESAS.N_COTA%TYPE,
+  PAR_NCODIGO_CLIMA                        SCR_REPRESAS.N_CODCLI%TYPE,
+  PAR_NTEMPERATURA_MAXIMA                  SCR_REPRESAS.N_TMPMAX%TYPE,
+  PAR_NVOLUMEN                             SCR_REPRESAS.N_VOLUME%TYPE,  
+  PAR_NVOLUMEN_TRASVASADO                  SCR_REPRESAS.N_VOLTRA%TYPE,
+  PAR_NCAUDAL_TRASVASADO                   SCR_REPRESAS.N_CAUTRA%TYPE,
+  PAR_NDESCARGA                            SCR_REPRESAS.N_DESCAR%TYPE,
+  PAR_NTEMPERATURA_MINIMA                  SCR_REPRESAS.N_TMPMIN%TYPE,
+  PAR_NLLUVIA                              SCR_REPRESAS.N_LLUVIA%TYPE,  
+  PAR_NDIFERENCIA_NIVEL                    SCR_REPRESAS.N_DIFNIV%TYPE,
+  PAR_NDIFERENCIA_VOLUMEN                  SCR_REPRESAS.N_DIFVOL%TYPE,
+  PAR_NEVAPORACION                         SCR_REPRESAS.N_EVAPOR%TYPE,
+  PAR_NHUMEDAD_RELATIVA                    SCR_REPRESAS.N_HUMREL%TYPE,
+  PAR_NAFORO_RIO_RIMAC                     SCR_REPRESAS.N_ARIORI%TYPE,
+  PAR_NHY                                  SCR_REPRESAS.N_HY%TYPE,
+  PAR_NCAUDAL                              SCR_REPRESAS.N_CUADAL%TYPE,
+  PAR_NCODIGO_MANIOBRA                     SCR_REPRESAS.N_CODMAN%TYPE,
+  PAR_VESTADO                              SCR_REPRESAS.V_ESTADO%TYPE,   
+  --PARAMETROS AUDITORIA  
+  PAR_AUSUAREPRESAS_MODIFICACION           SCR_REPRESAS.A_USUMOD%TYPE,
+  PAR_APROGRAMA_REPRESAS                   SCR_REPRESAS.A_PROGRA%TYPE,
+  PAR_ACODIGO_AREA_REPRESAS                SCR_REPRESAS.A_CODARE%TYPE,
+  PAR_ACODIGO_SISTEMA_REPRESAS             SCR_REPRESAS.A_CODSIS%TYPE
+)
+IS
+
+BEGIN
+   
+ UPDATE SCR_REPRESAS
+    SET A_USUMOD = PAR_AUSUAREPRESAS_MODIFICACION,
+        A_FECMOD = SYSDATE,
+        A_PROGRA = PAR_APROGRAMA_REPRESAS,
+        A_CODARE = PAR_ACODIGO_AREA_REPRESAS,
+        A_CODSIS = PAR_ACODIGO_SISTEMA_REPRESAS,
+        N_NUMPRE = PAR_NNUMERO_PRECIPITACION,        
+        N_CODREP = PAR_NCODIGO_REPRESA,
+        N_CCOLRE = PAR_NCOD_COL_REP,
+        N_COTA   = PAR_NCOTA,
+        N_CODCLI = PAR_NCODIGO_CLIMA,
+        N_TMPMAX = PAR_NTEMPERATURA_MAXIMA,
+        N_VOLUME = PAR_NVOLUMEN,
+        N_VOLTRA = PAR_NVOLUMEN_TRASVASADO,
+        N_CAUTRA = PAR_NCAUDAL_TRASVASADO,
+        N_DESCAR = PAR_NDESCARGA,
+        N_TMPMIN = PAR_NTEMPERATURA_MINIMA,
+        N_LLUVIA = PAR_NLLUVIA,
+        N_DIFNIV = PAR_NDIFERENCIA_NIVEL,
+        N_DIFVOL = PAR_NDIFERENCIA_VOLUMEN,
+        N_EVAPOR = PAR_NEVAPORACION,
+        N_HUMREL = PAR_NHUMEDAD_RELATIVA,
+        N_ARIORI = PAR_NAFORO_RIO_RIMAC,
+        N_HY     = PAR_NHY,
+        N_CUADAL = PAR_NCAUDAL,
+        N_CODMAN = PAR_NCODIGO_MANIOBRA,
+        V_ESTADO = PAR_VESTADO        
+  WHERE N_CODIGO = PAR_NCODIGO_REPRESAS;
+ EXCEPTION
+       WHEN OTHERS THEN
+            dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+PROCEDURE PRC_INACTIVA_REPRESAS(
+   --PARAMETROS INACTIVACION
+  PAR_NCODIGO_REPRESAS                     SCR_REPRESAS.N_CODIGO%TYPE,   
+  --PARAMETROS AUDITORIA  
+  PAR_AUSUAREPRESAS_MODIFICACION           SCR_REPRESAS.A_USUMOD%TYPE,
+  PAR_APROGRAMA_REPRESAS                   SCR_REPRESAS.A_PROGRA%TYPE,
+  PAR_ACODIGO_AREA_REPRESAS                SCR_REPRESAS.A_CODARE%TYPE,
+  PAR_ACODIGO_SISTEMA_REPRESAS             SCR_REPRESAS.A_CODSIS%TYPE
+) 
+IS
+
+BEGIN
+
+ UPDATE SCR_REPRESAS
+    SET V_ESTADO = 2,
+        A_USUMOD = PAR_AUSUAREPRESAS_MODIFICACION,
+        A_FECMOD = SYSDATE,       
+        A_PROGRA = PAR_APROGRAMA_REPRESAS,
+        A_CODARE = PAR_ACODIGO_AREA_REPRESAS,
+        A_CODSIS = PAR_ACODIGO_SISTEMA_REPRESAS
+  WHERE N_CODIGO = PAR_NCODIGO_REPRESAS;
+ EXCEPTION
+       WHEN OTHERS THEN
+            dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+
+END;
+ 
+-- REPORTE REPRESAS
+
+PROCEDURE PRC_REPORTE_REPRESAS(
+           --Parametro de busqueda
+           PAR_PERIODO IN VARCHAR2,
+           --Parametro de retorno
+           PAR_OUT_CURSOR OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+OPEN PAR_OUT_CURSOR FOR
+     SELECT    
+      R.N_CODREP,MR.V_NOMREP,TO_CHAR(TO_CHAR(R.D_FECREG,'dd'), '00') DIANUM, TO_CHAR(R.D_FECREG,'yyyyMMdd') DATER,
+      ROUND(AVG(R.N_VOLUME),2) PROM_VOL,ROUND(AVG(R.N_NUMPRE),2) PROM_PRECIP
+      FROM SCR_REPRESAS R,
+           SCR_MANT_REPRESA MR
+     WHERE
+                  MR.N_CODIGO =R.N_CODREP
+                  AND R.V_ESTADO = '1'
+                  AND TO_CHAR(R.D_FECREG,'yyyyMM') = PAR_PERIODO 
+     GROUP BY     R.N_CODREP,MR.V_NOMREP,TO_CHAR(TO_CHAR(R.D_FECREG,'dd'), '00'), TO_CHAR(R.D_FECREG,'yyyyMMdd')
+     ORDER BY
+                  R.N_CODREP, TO_CHAR(R.D_FECREG,'yyyyMMdd');
+
+END;
+
+-- REPORTE REPRESAS POR MANIOBBRA
+
+PROCEDURE PRC_REPORTE_REPRESAS_CAUDAL(
+           --Parametro de busqueda
+           PAR_PERIODO  IN VARCHAR2,
+           PAR_REPRESA IN SCR_MANT_REPRESA.N_CODIGO%TYPE,
+           --Parametro de retorno
+           PAR_OUT_CURSOR OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+OPEN PAR_OUT_CURSOR FOR
+     SELECT    
+      R.N_CODREP,MR.V_NOMREP,MAN.N_TIPMAN,
+      TRIM(TO_CHAR(TO_CHAR(R.D_FECREG,'dd'), '00')) DIANUM, TO_CHAR(R.D_FECREG,'yyyyMMdd') DATER,
+      ROUND(AVG(MAN.N_APEFIN),2) PROM_APERTURA
+      FROM SCR_REPRESAS R,
+           SCR_MANT_REPRESA MR,
+           SCR_MANIOBRA MAN
+     WHERE
+                  MR.N_CODIGO =R.N_CODREP
+                  AND R.N_CODMAN = MAN.N_CODIGO
+                  AND R.V_ESTADO = '1'
+                  AND TO_CHAR(R.D_FECREG,'yyyyMM') = PAR_PERIODO
+                  AND R.N_CODREP = PAR_REPRESA
+     GROUP BY     R.N_CODREP,MR.V_NOMREP,MAN.N_TIPMAN,TRIM(TO_CHAR(TO_CHAR(R.D_FECREG,'dd'), '00')), TO_CHAR(R.D_FECREG,'yyyyMMdd')
+     ORDER BY
+                  R.N_CODREP, MAN.N_TIPMAN, TO_CHAR(R.D_FECREG,'yyyyMMdd');
+
+END;
+
+end PCK_REPRESAS;

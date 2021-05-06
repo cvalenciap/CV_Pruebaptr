@@ -1,0 +1,138 @@
+create or replace PACKAGE BODY PCK_ALC_MANTPOI AS
+
+    PROCEDURE PRC_BUSCA_TABLA_POISSON( 
+       --Parametros de la busqueda
+       PAR_NCODIGO_LAMBDA             IN ALC_POISSON.N_CODLAM%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER,
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER,
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    ) IS  
+    V_QUERY VARCHAR2(4000);
+    V_QUERY_FROM VARCHAR2(4000);
+    V_QUERY_COUNT VARCHAR2(4000);
+
+    BEGIN
+    
+          V_QUERY_COUNT := 'select count(*) '; 
+ 
+          V_QUERY := 'select * 
+                      from (select a.*, rownum rn
+                            from (select  c.n_codlam, c.c_codigx, c.c_valpoi, c.n_codpoi';
+        
+          IF(PAR_NCODIGO_LAMBDA <> 0)THEN
+            V_QUERY_FROM := ' from ALC_POISSON c where c.n_codlam =' || PAR_NCODIGO_LAMBDA;
+          ELSE
+            V_QUERY_FROM := ' from ALC_POISSON c ';
+          END IF;
+          
+        
+          V_QUERY := V_QUERY || V_QUERY_FROM;
+         
+          V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+        
+          V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+    
+    
+             
+          OPEN par_out_cursor FOR v_query;
+          
+          execute immediate v_query_count into par_out_quantity;
+    
+    END;
+    
+    PROCEDURE PRC_INSERT_TABLA_POISSON(
+       PAR_NCODIGO_LAMBDA        IN ALC_POISSON.N_CODLAM%TYPE,
+       PAR_CCODIGO_X             IN ALC_POISSON.C_CODIGX%TYPE,
+       PAR_CVALOR                IN ALC_POISSON.C_VALPOI%TYPE,
+       --Campos de Auditoria
+       PAR_CUSUARIO_CREACION     IN ALC_POISSON.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI         IN ALC_POISSON.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_POISSON.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN        OUT INTEGER
+     )IS
+        C_COUNT INTEGER;
+         BEGIN
+         SELECT COUNT(N_CODLAM) INTO PAR_OUT_RETURN FROM ALC_POISSON WHERE N_CODLAM = PAR_NCODIGO_LAMBDA;
+           IF (PAR_OUT_RETURN = 0) THEN
+         
+             INSERT INTO ALC_POISSON 
+                  (A_USUCRE,
+                   A_FECCRE,
+                   A_USUMOD,
+                   A_FECMOD,
+                   A_NOMPRG,
+                   N_CODPOI,
+                   N_CODLAM,
+                   C_CODIGX,
+                   C_VALPOI)
+                VALUES
+                  (PAR_CUSUARIO_CREACION,
+                   SYSDATE,
+                   PAR_CUSUARIO_MODI,
+                   SYSDATE,
+                   PAR_CPROGRAMA,
+                   SQ_ALC_POISSON.NEXTVAL,
+                   PAR_NCODIGO_LAMBDA,
+                   NVL(PAR_CCODIGO_X, ' '),
+                   NVL(PAR_CVALOR, ' '));
+                   
+            END IF;
+    
+    END;
+    
+    PROCEDURE PRC_UPDATE_TABLA_POISSON(
+       PAR_NCODIGO_LAMBDA        IN ALC_POISSON.N_CODLAM%TYPE,
+       PAR_CCODIGO_X             IN ALC_POISSON.C_CODIGX%TYPE,
+       PAR_CVALOR                IN ALC_POISSON.C_VALPOI%TYPE,
+       --Campos de Auditoria 
+       PAR_CUSUARIO_MODI     IN ALC_POISSON.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_POISSON.A_NOMPRG%TYPE
+     )IS 
+         BEGIN
+         UPDATE ALC_POISSON
+            SET A_USUMOD = PAR_CUSUARIO_MODI, 
+               A_FECMOD = SYSDATE,
+               A_NOMPRG = PAR_CPROGRAMA, 
+               N_CODLAM = PAR_NCODIGO_LAMBDA,
+               C_CODIGX = NVL(PAR_CCODIGO_X, ' '),
+               C_VALPOI = NVL(PAR_CVALOR, ' ')
+         WHERE 
+               N_CODLAM = PAR_NCODIGO_LAMBDA AND C_CODIGX = PAR_CCODIGO_X;
+       
+     
+    END;
+    
+    PROCEDURE PRC_GET_TABLA_POISSON(
+       --Parametros de la busqueda
+        PAR_NCODIGO_POISSON  IN ALC_POISSON.N_CODPOI%TYPE,
+       --Parametros de retorno
+       par_out_cursor OUT SYS_REFCURSOR 
+    )
+    IS
+        v_query VARCHAR2(4000);
+        BEGIN
+          v_query := ' select  c.n_codlam, c.c_codigx, c.c_valpoi, c.n_codpoi '   ||
+                     ' from ALC_POISSON c where c.n_codpoi = ' || PAR_NCODIGO_POISSON;
+          OPEN par_out_cursor FOR v_query;
+          
+         
+    END;
+        
+    PROCEDURE PRC_INACTIVA_TABLA_POISSON(       
+        --Parametros de la busqueda
+        PAR_NCODIGO_POISSON  IN ALC_POISSON.N_CODPOI%TYPE,
+       --Campos de Auditoria
+       PAR_CUSUARIO_MODI     IN ALC_POISSON.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_POISSON.A_NOMPRG%TYPE
+     )IS
+     BEGIN
+        DELETE ALC_POISSON 
+        WHERE N_CODPOI = PAR_NCODIGO_POISSON;
+             
+    END;
+END;

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('error.title')}"></title>
+</head>
+<body>
+	<div layout:fragment="content">
+	
+		<h3 class="text-center" th:text="#{exception.title}"></h3>
+		
+		<div class="panel panel-default">
+			<div class="panel-title">
+				<h4 class="text-center">P&aacute;gina no encontrada</h4>
+			</div>
+			<div class="panel-body">
+				<!--  As we are using Thymeleaf, you might consider using
+	      ${#httpServletRequest.requestURL}. But that returns the path
+	      to this error page.  Hence we explicitly add the url to the
+	      Model in some of the example code. -->
+				<div class="alert alert-success" th:if="${principal}">
+					<span th:text="#{exception.principal}" /> <span th:text="${principal.name}">Page
+						URL</span>
+				</div>
+
+				<div class="alert alert-success" th:if="${url}">
+					<span th:text="#{exception.url}" /> <span th:text="${url}">Page
+						URL</span>
+				</div>
+
+			</div>
+		</div>
+
+
+		<!--
+      // Hidden Exception Details  - this is not a recommendation, but here is
+      // how you hide an exception in the page using Thymeleaf
+      -->
+		<div th:utext="'&lt;!--'" th:remove="tag"></div>
+		<div th:utext="'Failed URL: ' +  ${url}" th:remove="tag">${url}</div>
+		<div th:utext="'Exception: ' + ${message}" th:remove="tag">${exception.message}</div>
+		<p th:text="${error}" th:remove="tag">Error Info</p>
+		<div th:utext="'--&gt;'" th:remove="tag"></div>
+
+	</div>
+
+</body>
+</html>

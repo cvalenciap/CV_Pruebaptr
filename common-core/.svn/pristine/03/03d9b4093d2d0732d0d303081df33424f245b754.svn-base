@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+
+<body>
+	<footer class="footer" th:fragment="footer">
+	
+	<hr/>
+
+		<h6 class="text-center" th:utext="#{footer.title}">xx</h6>
+
+<script th:inline="javascript"  >
+
+<div th:if="${#httpServletRequest.userPrincipal!=null}" th:remove="tag">
+/*<![CDATA[*/    
+    var userNameAuth = /*[[${#httpServletRequest.userPrincipal.name}]]*/ '';
+    
+    $.ajaxSetup({
+        beforeSend: function (xhr)
+        {
+           xhr.setRequestHeader("UserNameAuth", userNameAuth);
+        }
+    });   
+/*]]>*/
+</div>
+
+$(document).ready(function() {
+	/*<![CDATA[*/ 	
+	MYAPPL.contextPath = /*[[@{/}]]*/ '';
+	/*]]>*/
+});
+
+
+</script>
+
+
+
+
+
+
+	</footer>
+
+</body>
+</html>

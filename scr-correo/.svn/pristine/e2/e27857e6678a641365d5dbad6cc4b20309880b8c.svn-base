@@ -1,0 +1,10 @@
+mensaje.rios.no.validos=No se corresponden los ríos registrados en Base de Datos y archivo de caudal.
+mensaje.fila.caudal.no.valido=La fila de medidas del caudal por dia y hora no válido.
+mensaje.archivo.corrupto=Archivo que se quiere carga está corrupto.
+
+# Remitente del envio de correo de reportes
+mensaje.remitente.correo=scaudales@sedapal.com.pe
+
+# Usuario y clave de correo
+mensaje.usuario.correo=scaudales@sedapal.com.pe
+mensaje.clave.correo=sC2018$$

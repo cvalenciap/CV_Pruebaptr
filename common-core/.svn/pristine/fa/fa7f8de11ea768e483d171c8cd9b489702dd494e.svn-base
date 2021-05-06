@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('reestablecer.title')}"></title>
+</head>
+<body>
+		
+	<div layout:fragment="content">
+		<div id="page-content-wrapper">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-12">						
+
+						<div class="panel-heading">
+							<div class="panel-title" th:utext="#{reestablecer.title}" ></div>
+						</div>
+						
+						<div th:if="${error}" class="alert alert-info">
+								<span th:text="${error}" />
+						</div>
+						
+						<div class="panel-body" >
+							<form id="claveForm" class="form-horizontal" th:action="@{/olvido}" method="post">
+										<div class="form-group ">
+											
+												<div class="form-group ">
+													<label class="col-sm-2 control-label" th:utext="#{reestablecer.input.usuario}" >Usuario(*)</label>
+													<div class="col-sm-3">
+														<input id="codUsuario" name="codUsuario"  th:placeholder="#{reestablecer.input.placeholder}" 
+														onKeypress="return MYAPPL.soloNumerosLetrasTildesGuionesBajo(event);"														
+														style="text-transform: uppercase;"
+														class="form-control" type="text" value="" size="15" maxlength="15" 
+														onselectstart="return false" onpaste="return false;" onCopy="return false" onCut="return false" 
+														onDrag="return false" onDrop="return false" autocomplete="off"/>
+														
+													</div>
+													
+													<button id="btnEnviar" type="submit" class="btn btn-primary">
+														<i class="glyphicon glyphicon-ok"></i>  
+														<span th:text="#{reestablecer.button.send}"> Enviar</span>
+													</button>
+													<a class="btn btn-primary" th:href="@{/}" > 
+														<i class="glyphicon glyphicon-share-alt"></i>  
+														<span th:utext="#{reestablecer.button.back}"> Retornar</span></a>
+												</div>
+											
+		
+										</div>
+							</form>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<script type="text/javascript">
+
+			$(document).ready(function() {
+				
+			    $('#claveForm').bootstrapValidator({
+			        
+			        feedbackIcons: {
+			            valid: 'glyphicon glyphicon-ok',
+			            invalid: 'glyphicon glyphicon-remove',
+			            validating: 'glyphicon glyphicon-refresh'
+			        },
+			        fields: {
+			        	codUsuario: {
+			                validators: {
+			                    notEmpty: {
+			                        message: 'El nombre de usuario es requerido'
+			                    },
+						        stringLength: {
+						            max: 15,
+						            message: 'El nombre de usuario debe ser menor de 15 caracteres'
+						        }
+			                }
+			            },
+			            title: {
+			                validators: {
+			                    notEmpty: {
+			                        message: 'The title is required and cannot be empty'
+			                    },
+			                    stringLength: {
+			                        max: 100,
+			                        message: 'The title must be less than 100 characters long'
+			                    }
+			                }
+			            }
+			        }
+			    });
+			});
+			
+			
+			
+			</script>
+
+		
+	</div>
+		
+	
+
+
+	
+
+</body>
+
+</html>

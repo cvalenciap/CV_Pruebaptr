@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content-verif" th:fragment="form-edit-detalle">
+	
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalEditTitle" th:text="${#messages.msg('turbidimetroDigitalVerif.registrar')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalDetalleTitle"  style="display:none;">Editar Parametros de Campo</span>
+        	<span id="idValCrearModalDetalleTitle" style="display:none;" th:text="${#messages.msg('formulario242.RDetalle.registrarParametrosCampo')}">Registrar</span>
+		</div>
+		
+		<div class="modal-footer">
+			<form name="form-edit-Detalle" id="form-edit-Detalle-id" method="post" 
+				  th:action="@{/formularioDetalleSave}" th:object="${formularioDetalle242}"
+				  role="form">
+				  											
+					 <div class="center"> 
+							<div class="col-md-12 col-sm-12 col-xs-12">
+							  <div class="form-group">									                    
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.LocalidadMuestreo')}"></label>
+								<div class="col-md-3 col-sm-3 col-xs-3 ">
+								     <input type="hidden" id="idFormularioHeader" name="idFormularioHeader" th:field="*{codigoHeader}" />
+								     <select class="form-control" id="cboLocalMuestreo" name="cboLocalidad" onchange="changeEstacionMuestreo();" th:field="*{localMuestreo}" style="height: 33px;"></select>
+								     <input type="hidden" id="cboLocalidadHidden" th:value="*{localMuestreo}" />			                    	 	   			                    	 
+			                    </div>	
+			                  </div> 
+			                  <div class="form-group">		
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.EstacionMuestreo')}"></label>
+								<div class="col-md-3 col-sm-3 col-xs-3 ">
+								     <select class="form-control" id="cboEstacionMuestreo" name="cboPersonaMuestrea" th:field="*{estacionMuestreo}" style="height: 33px;">
+								     		<option  th:value="0">--Seleccione--</option>
+								     </select>
+								     <input type="hidden" id="cboEstacionHidden" th:value="*{estacionMuestreo}" />			                    	 	   			                    	 
+			                    </div>
+			                  </div> 
+			                  <div class="form-group">	  	
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.CoordW')}"></label>
+								<div class="col-md-3 col-sm-3 col-xs-3 ">
+								    <input type="text"  class="form-control" id="coordenadaW"
+			                    		maxlength="10"  th:field="*{coordenadaW}" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+			                    	 	th:placeholder="Coord_W"/>	                    	 	   			                    	 
+			                    </div>	
+			                  </div>			                   		                    			                    
+			 				</div>
+			 				
+			 				<div class="col-md-12 col-sm-12 col-xs-12">
+			 				  <div class="form-group">	 											                    
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.CoordE')}"></label>
+								<div class="col-md-2 col-sm-2 col-xs-2 ">
+									<input type="text"  class="form-control" id="coordenadaE"
+			                    		maxlength="10"  th:field="*{coordenadaE}" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+			                    	 	th:placeholder="Coord_E"/>                    	 	   			                    	 
+			                    </div>	
+			                  </div>
+			                  <div class="form-group">	  
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.Altura')}"></label>
+								<div class="col-md-2 col-sm-2 col-xs-2 ">
+									<input type="text"  class="form-control letraMayuscula" id="altura" style="text-align: center;" 
+			                    		maxlength="7"  th:field="*{altura}" onkeypress="return MYAPPL.soloNumerosSinPunto(event)"
+			                    	 	th:placeholder="Altura"/>		                    	 	   			                    	 
+			                    </div>
+			                  </div> 
+			                  <div class="form-group">	  
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.Hora')}"></label>
+								<div class="col-md-1 col-sm-1 col-xs-1 ">
+									<input type="text" id="hora" name="hora"
+								           th:field="*{hora}" class="form-control letraMayuscula"
+								           placeholder="Hora" title="Ingrese la hora de inicio"
+								           style="text-align: center;" maxlength="5" />
+							        <ul th:if="${#fields.hasErrors('hora')}" class="errorList">
+								    <li th:each="error : ${#fields.errors('hora')}"
+									    th:text="${error}" class="alert alert-danger">Error de entrada</li>
+							        </ul>		                    	 	   			                    	 
+			                    </div>
+			                  </div>
+			                  <div class="form-group">
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.Observacion')}"></label>
+								<div class="col-md-3 col-sm-3 col-xs-3 ">
+								      <textarea id="observaciones" class="form-control" rows="3" th:field="*{observaciones}" 
+								      maxlength="400" placeholder="Obs."></textarea>         	 	   			                    	 
+			                    </div>			                    
+			                    <input type="hidden"  th:field="*{idDetalle}" />
+			                  </div>			                   		                    			                    
+			 				</div>
+			 				
+			 				
+<!-- 			 				PARAMETROS DE CAMPO -->
+							<div class="col-md-12 col-sm-12">
+			 				<div class="panel panel-success">
+			 					
+			 					<div class="col-md-12 col-sm-12 col-xs-12 panel-heading text-left">
+			 						PARAMETROS DE CAMPO
+			 					</div>
+			 					<div class="panel-body">
+			 					
+			 					<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:10px">
+			 					  <div class="form-group">
+			 						<label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.Ph')}"></label>
+									<div class="col-md-2 col-sm-2 col-xs-2">
+									<input type="text"  class="form-control letraMayuscula" id="ph" name="ph" th:value="${formularioDetalle242.strPh}" 
+			                    		   maxlength="7" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+			                    	 	   th:placeholder="Ph"/>		                    	 	   			                    	 
+			                    	</div>
+			 					  </div>
+			 					  <div class="form-group">
+				 					<label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.Temp')}"></label>
+									<div class="col-md-2 col-sm-2 col-xs-2 ">
+									    <input type="text"  class="form-control" id="temperatura" name="temperatura" th:value="${formularioDetalle242.strTemperatura}" 
+				                    		   maxlength="10" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+				                    	 	   th:placeholder="TEMP."/>				                    	 	   			                    	 
+				                    </div>
+			                      </div>
+			                      <div class="form-group">
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.Conductividad')}"></label>
+									<div class="col-md-2 col-sm-2 col-xs-2 ">
+										<input type="text"  class="form-control" id="conductividad"  name="conductividad" th:value="${formularioDetalle242.strConductividad}" 
+				                    		maxlength="10" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+				                    	 	th:placeholder="COND."/>		                    	 	   			                    	 
+				                    </div>
+			                      </div>
+			                      <div class="form-group">
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.Turbiedad')}"></label>
+									<div class="col-md-2 col-sm-2 col-xs-2 ">
+										<input type="text"  class="form-control letraMayuscula" id="turbiedad" name="turbiedad" th:value="${formularioDetalle242.strTurbiedad}" 
+				                    		maxlength="10"  onkeypress="return MYAPPL.soloNumerosPunto(event)"
+				                    	 	th:placeholder="Turb."/>		                    	 	   			                    	 
+				                    </div>
+			                      </div>
+			                    </div>
+			                    
+			                    <div class="col-md-12 col-sm-12 col-xs-12">
+			                      <div class="form-group">
+			                     	<label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.Oxigeno')}"></label>
+									<div class="col-md-2 col-sm-2 col-xs-2 ">
+										<input type="text"  class="form-control" id="oxigeno"  name="oxigeno" th:value="${formularioDetalle242.strOxigeno}"
+				                    		maxlength="10"  onkeypress="return MYAPPL.soloNumerosPunto(event)"
+				                    	 	th:placeholder="OXIG."/>			                    	 	   			                    	 
+				                    </div>
+			                      </div>
+			                      <div class="form-group">
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.Clorofila')}"></label>
+									<div class="col-md-2 col-sm-2 col-xs-2 ">
+										<input type="text"  class="form-control" id="clorofila" name="clorofila" th:value="${formularioDetalle242.strClorofila}"
+				                    		maxlength="10"   onkeypress="return MYAPPL.soloNumerosPunto(event)"
+				                    	 	th:placeholder="CLOROF."/>		                    	 	   			                    	 
+				                    </div>
+			                      </div>
+			                      <div class="form-group">
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-center" th:text="${#messages.msg('formulario242.RDetalle.Ficocianina')}"></label>
+									<div class="col-md-2 col-sm-2 col-xs-2 ">
+										<input type="text"  class="form-control" id="ficocianina" name="ficocianina" th:value="${formularioDetalle242.strFicocianina}"
+				                    		maxlength="10"   onkeypress="return MYAPPL.soloNumerosPunto(event)"
+				                    	 	th:placeholder="FICOC."/>		                    	 	   			                    	 
+				                    </div>	
+				                  </div>  
+			 					</div>
+			 					
+			 					</div><!-- FIN PANEL BODY -->
+			 				</div><!-- FIN PANEL -->
+			 				</div>
+			 							 									
+					 </div> 	
+
+					 
+					 <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset>  	          				
+			</form>
+		</div>
+			<script th:inline="javascript">	
+				MYAPPL.removeInputEnter();
+				MYAPPL.removePasteIntoBody();
+			</script>
+	</div>
+	
+
+	
+</body>
+</html>

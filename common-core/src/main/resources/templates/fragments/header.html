@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+
+<body>
+	<div th:fragment="header" class="page-header"  style="margin:0px;" >
+		<div class="text-center" style="">
+			<span th:if="${#httpServletRequest.userPrincipal==null}">&nbsp;</span>
+			<span th:if="${#httpServletRequest.userPrincipal!=null}" th:text="${'Usuario: '+#httpServletRequest.userPrincipal.name+'&nbsp;'}"></span>
+	    </div>
+		<h1 class="text-center" style="background-color:#FFFFFF;margin-top: 0;" >
+		    <a th:href="@{/}" style="text-decoration: none!important;" sec:authorize="!hasAuthority('restablecerClave')">
+			    <img alt="Spring"
+				src="../../../images/company_logo.gif"
+				th:src="@{/images/company_logo.gif}" th:alt-title="#{application.sedapal}"
+				class="logoStyle" />
+		    </a>
+		    <a href="#" style="text-decoration: none!important;" 
+		    	sec:authorize="hasAuthority('restablecerClave')">
+			    <img alt="Spring"
+				src="../../../images/company_logo.gif"
+				th:src="@{/images/company_logo.gif}" th:alt-title="#{application.sedapal}"
+				class="" />
+		    </a>
+			<span th:utext="#{application.subtitle}" style="line-height: 1.5em;"></span>		
+			
+		</h1>
+	</div>
+</body>
+</html>

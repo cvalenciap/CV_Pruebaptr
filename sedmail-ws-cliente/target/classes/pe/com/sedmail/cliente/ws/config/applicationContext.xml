@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       					   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+       					   http://www.springframework.org/schema/context 
+                http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- Wrapper del cliente -->
+	<bean id="sedmailClienteWs" class="pe.com.sedmail.cliente.ws.SedmailClienteWs">
+		<property name="restTemplate" ref="wsRestTemplate" />
+	</bean>
+
+<!-- 	utilizar parametros del properties -->
+	<util:properties id="configClient"
+		location="classpath:pe/com/sedmail/cliente/ws/config/configClient.properties" />
+
+	<context:property-placeholder
+		properties-ref="configClient" />
+		
+<!-- 	Configuracion optativa para conexión mediante http  -->
+	<!-- Plantilla para comunicarnos con el WS -->
+<!-- 	<bean id="wsRestTemplate" class="org.springframework.web.client.RestTemplate" -->
+<!-- 		p:messageConverters-ref="messageConvertersList"> -->
+		<!-- Creación de mensajes REST -->
+<!-- 		<constructor-arg> -->
+<!--             <bean class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory"> -->
+<!--                 <constructor-arg ref="httpClient"/> -->
+<!--             </bean> -->
+<!--         </constructor-arg> -->
+<!-- 	</bean> -->
+	
+<!-- 	converter responsive message -->
+<!-- 	<util:list id="messageConvertersList"> -->
+<!--         <bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter" -->
+<!--               p:supportedMediaTypes="application/xml"> -->
+<!--             <property name="marshaller" ref="marshaller" /> -->
+<!--             <property name="unmarshaller" ref="marshaller" /> -->
+<!--         </bean> -->
+<!--     </util:list> -->
+
+<!-- 	<beans profile="rest-json"> -->
+<!--         <import resource="classpath:/META-INF/spring/mvc/rest-json-converter-context.xml"/> -->
+<!--         <import resource="classpath:/META-INF/spring/mvc/rest-json-type-converter-context.xml"/> -->
+    
+<!--         since id is the same as XML list above, essentially overriding the other list -->
+<!--         <util:list id="messageConvertersList"> -->
+<!--             <ref bean="mappingJacksonHttpMessageConverterWithType"/> -->
+<!--         </util:list> -->
+<!--     </beans> -->
+    
+<!--     client http with pool  -->
+    <bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
+        <constructor-arg>
+            <bean class="org.apache.http.impl.conn.PoolingClientConnectionManager"/>
+        </constructor-arg>
+    </bean>
+    
+    
+    
+<!--     ****************************************** -->
+
+<!-- 	<context:component-scan base-package="org.wai" /> -->
+	<bean id="wsRestTemplate" class="org.springframework.web.client.RestTemplate">
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+				<bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+<!-- 					mapeo manual de objetos -->
+<!-- 				<bean class="org.springframework.http.converter.ObjectToStringHttpMessageConverter"> -->
+<!-- 				   <constructor-arg> -->
+<!-- 				     <bean class="org.springframework.context.support.ConversionServiceFactoryBean"/> -->
+<!-- 				   </constructor-arg> -->
+<!-- 				 </bean> -->
+			</list>
+		</property>
+	</bean>
+	<bean id="asyncWsRestTemplate" class="org.springframework.web.client.AsyncRestTemplate">
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.xml.SourceHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:/pe/com/sedmail/cliente/ws/config/configClient.properties</value>
+<!-- 				<value>classpath:/properties/configClient.properties</value> -->
+			</list>
+		</property>
+	</bean>
+</beans>

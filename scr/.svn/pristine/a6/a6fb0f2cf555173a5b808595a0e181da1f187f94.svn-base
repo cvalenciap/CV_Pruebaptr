@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsList" class="grid_10 height800 " >
+		
+<!-- 		<p class="main_heading"> -->
+<!-- 				<legend>Lista de reportes encontrados</legend> -->
+				
+				
+<!-- 		</p> -->
+		<table  class="fancyTable" id="tablaReporteHidroBiologico" cellpadding="0" cellspacing="0" style="width: 100%">
+			<thead>
+				<tr>
+					<th th:text="${#messages.msg('analisis.hidrobiologico.column.acciones')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('analisis.hidrobiologico.column.correlativo')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('analisis.hidrobiologico.column.fecha.reporte')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('analisis.hidrobiologico.column.fecha.muestreo')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('analisis.hidrobiologico.column.muestreador')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('analisis.hidrobiologico.column.analista')}" style="width: 50px;"></th>
+				
+				</tr>
+			</thead>
+		</table>
+
+	<script type="text/javascript">
+			$( document ).ready(function() {
+				cargarTablaHidroBiologia();	
+			}); 
+		</script>	
+	</div>
+</body>
+</html>

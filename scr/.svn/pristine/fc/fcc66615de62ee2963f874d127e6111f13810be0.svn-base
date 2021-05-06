@@ -1,0 +1,397 @@
+{
+	"cantidaRutas":4,
+	"horaInicio": "30/04/2017 09:30:00",	
+	"listaPaquetes":
+		[
+			{
+				"identificador":"001",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 09:40:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 13:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":5.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.05562",
+								"longitud":"-77.03697"	
+							  }
+			},
+			{
+				"identificador":"002",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 10:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 11:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":2.0,
+				"peso":1.0,
+				"coordenada": {
+								"latitud":"-12.04387",
+								"longitud":"-77.01185"	
+							  }
+			},
+			{
+				"identificador":"003",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 09:30:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 13:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":5.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.05182",
+								"longitud":"-77.02599"	
+							  }
+			},
+			{
+				"identificador":"004",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 11:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 16:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":8.0,
+				"peso":5.0,
+				"coordenada": {
+								"latitud":"-12.0507",
+								"longitud":"-77.03185"	
+							  }
+			},
+			{
+				"identificador":"005",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 12:30:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 13:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":5.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.0461",
+								"longitud":"-77.01263"	
+							  }
+			},
+			{
+				"identificador":"006",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 11:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 13:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":5.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.03694",
+								"longitud":"-77.07607"	
+							  }
+			},
+			{
+				"identificador":"007",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 18:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":1.0,
+				"peso":2.0,
+				"coordenada": {
+								"latitud":"-12.04715",
+								"longitud":"-77.02799"	
+							  }
+			},
+			{
+				"identificador":"008",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 18:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":3.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.03715",
+								"longitud":"-77.06841"	
+							  }
+			},
+			{
+				"identificador":"009",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 13:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":5.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.04525",
+								"longitud":"-77.04363"	
+							  }
+			},
+			{
+				"identificador":"010",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 15:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":1.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.04772",
+								"longitud":"-77.05347"	
+							  }
+			},
+			{
+				"identificador":"011",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 16:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":5.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.04004",
+								"longitud":"-77.06212"	
+							  }
+			},
+			{
+				"identificador":"012",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 16:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":3.0,
+				"peso":3.0,
+				"coordenada": {
+								"latitud":"-12.05083",
+								"longitud":"-77.02197"	
+							  }
+			},
+			{
+				"identificador":"013",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 17:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":8.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.04927",
+								"longitud":"-77.02773"	
+							  }
+			},
+			{
+				"identificador":"014",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 14:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":5.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.04927",
+								"longitud":"-77.02773"	
+							  }
+			},
+			{
+				"identificador":"015",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 19:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":5.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.06611",
+								"longitud":"-77.07291"	
+							  }
+			},
+			{
+				"identificador":"016",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 18:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":2.0,
+				"peso":1.0,
+				"coordenada": {
+								"latitud":"-12.04628",
+								"longitud":"-77.03268"	
+							  }
+			},
+			{
+				"identificador":"017",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 18:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":5.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.05068",
+								"longitud":"-77.02792"	
+							  }
+			},
+			{
+				"identificador":"018",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 20:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":4.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.03757",
+								"longitud":"-77.0734"	
+							  }
+			},
+			{
+				"identificador":"019",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 19:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":10.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.05265",
+								"longitud":"-77.03908"	
+							  }
+			},
+			{
+				"identificador":"020",
+				"tipoOperacion":1,
+				"fechaEntregaEstimada":"30/04/2017 00:00:00",
+				"ventanaHorariaInicio":"30/04/2017 09:00:00",
+				"ventanaHorariaFin":"30/04/2017 15:00:00",
+				"tipoServicio": {
+									"tipoServicio":1,
+									"descripcion":"Económico",
+									"tiempoGestion":600
+								},
+				"estado":0,
+				"cantidaPiezas":5.0,
+				"peso":4.0,
+				"coordenada": {
+								"latitud":"-12.04824",
+								"longitud":"-77.02982"	
+							  }
+			}
+		],
+	"hub":
+		  {
+		  	"identificador":"0001",
+		  	"descripcion":"El Comercio - DataImagenes",
+		  	"coordenada": {
+								"latitud":"-12.048395",
+								"longitud":"-77.064054"	
+						  }
+		  	
+		  }
+}

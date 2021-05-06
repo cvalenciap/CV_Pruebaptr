@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<syncparticipants>
+<participant displayName="SVN (common-core, ...ail-ws-cliente)" id="org.eclipse.team.svn.ui.synchronize.update.SynchronizeModelParticipant" secondary_id="1600124945408">
+<data consultChangeSets="false" root="false">
+<org.eclipse.team.ui.MODEL_PARTICIPANT_SETTINGS org.eclipse.team.ui.MODEL_PARTICIPANT_DESCRIPTION="common-core, ...ail-ws-cliente" startupAction="none">
+<org.eclipse.team.ui.MODEL_PARTICIPANT_REFRESH_SCHEDULE org.eclipse.team.ui.CTX_REFRESHSCHEDULE_ENABLED="false" org.eclipse.team.ui.CTX_REFRESHSCHEDULE_INTERVAL="3600" org.eclipse.team.ui.CTX_REFRESHSCHEDULE_RUNONCE="false"/>
+<org.eclipse.team.ui.MODEL_PARTICIPANT_MAPPINGS modelProviderId="org.eclipse.core.resources.modelProvider">
+<mappings>
+<resources resourcePath="/sedmail-ws-cliente" resourceType="4"/>
+<resources resourcePath="/common-core" resourceType="4"/>
+<resources resourcePath="/scr-core" resourceType="4"/>
+<resources resourcePath="/sed-seg-core-beans" resourceType="4"/>
+<resources resourcePath="/scr-correo-core-bean" resourceType="4"/>
+<resources resourcePath="/sed-seg-ws-cliente" resourceType="4"/>
+<resources resourcePath="/scr-correo-core" resourceType="4"/>
+<resources resourcePath="/scr" resourceType="4"/>
+<resources resourcePath="/scr-correo" resourceType="4"/>
+<resources resourcePath="/scr-core-bean" resourceType="4"/>
+</mappings>
+</org.eclipse.team.ui.MODEL_PARTICIPANT_MAPPINGS>
+</org.eclipse.team.ui.MODEL_PARTICIPANT_SETTINGS>
+</data>
+</participant>
+</syncparticipants>

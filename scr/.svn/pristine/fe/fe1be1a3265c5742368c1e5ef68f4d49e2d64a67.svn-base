@@ -1,0 +1,109 @@
+create or replace PACKAGE BODY PCK_CARGA IS
+
+  PROCEDURE PRC_BUSCA_ULTIMA_CARGA (
+    --Parametro de retorno
+    PAR_OUT_CURSOR OUT SYS_REFCURSOR
+    ) IS
+    v_query VARCHAR2(4000);
+  BEGIN
+    v_query := ' SELECT t.N_CODIGO,t.V_NOMCAR,t.V_NOMARC,t.V_RUTA,TO_CHAR(t.D_FECHOR,''DD/MM/YYYY HH:MI:SS''), ' ||
+             ' t.V_ESTCAR, t.V_DESCRI ' ||
+             ' FROM (SELECT c.N_CODIGO,c.V_NOMCAR,c.V_NOMARC,c.V_RUTA, c.D_FECHOR, c.V_ESTCAR, c.V_DESCRI ' ||
+             ' FROM SCR_CARGA c ORDER BY c.N_CODIGO DESC) t' ||
+             ' WHERE ROWNUM <= 1';
+    OPEN PAR_OUT_CURSOR FOR v_query;
+
+    EXCEPTION
+      WHEN OTHERS THEN
+           dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+  END PRC_BUSCA_ULTIMA_CARGA;
+  
+PROCEDURE PRC_BUSCA_CARGA (
+   --Parametros de la paginacion
+   par_col_order_by IN integer, par_col_order_by_dir IN varchar2 , 
+   par_pag_desde IN integer, par_cantidad_pag IN integer,
+   --Parametros de retorno
+   par_out_quantity OUT integer,
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+BEGIN
+  v_query_count:= ' SELECT COUNT(*) ';
+    
+  v_query :=  'SELECT * FROM(SELECT a.*, rownum rn FROM(SELECT UPPER(c.V_NOMCAR), TO_CHAR(c.D_FECHOR,''DD/MM/YYYY HH:MI:SS'') D_FEC, ' ||
+                ' ''AUTOMATICO'' V_TIP, (c.V_RUTA || c.V_NOMARC) V_ARC,  DECODE(c.V_ESTCAR,''1'',''EXITO'',''2'',''ERROR'') V_EST, ' ||
+                '  c.N_CODIGO, c.V_ESTCAR, c.V_DESCRI ';
+  v_query_from := ' FROM SCR_CARGA c ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+  
+  v_query := v_query || ' ORDER BY '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' AND rn <= ' || (par_pag_desde+par_cantidad_pag);
+    
+  OPEN par_out_cursor FOR v_query;
+  execute immediate v_query_count into par_out_quantity;
+  
+END;
+
+PROCEDURE PRC_INSERT_CARGA(
+	PAR_V_NOMCAR               		SCR_CARGA.V_NOMCAR%TYPE,
+	PAR_V_NOMARC                 	SCR_CARGA.V_NOMARC%TYPE,
+	PAR_V_RUTA                    SCR_CARGA.V_RUTA%TYPE,
+	PAR_D_FECHOR					        SCR_CARGA.D_FECHOR%TYPE,
+	PAR_V_ESTCAR                  SCR_CARGA.V_ESTCAR%TYPE,
+	PAR_V_DESCRI                  SCR_CARGA.V_DESCRI%TYPE,
+
+	--Campos de Auditoria
+	PAR_A_USUINS            			SCR_CARGA.A_USUINS%TYPE,
+	PAR_A_PROGRA                  SCR_CARGA.A_PROGRA%TYPE,
+	PAR_A_CODARE                 	SCR_CARGA.A_CODARE%TYPE,
+	PAR_A_CODSIS              		SCR_CARGA.A_CODSIS%TYPE,
+  
+  PAR_OUT_COD_CAR		OUT 		INTEGER
+ )
+ IS
+ BEGIN
+  PAR_OUT_COD_CAR := SQ_CDL_CARGA.NEXTVAL;
+ 
+ INSERT INTO SCR_CARGA
+      (A_USUINS,
+       A_FECINS,
+       A_USUUPD,
+       A_FECUPD,
+       A_PROGRA,
+       A_CODARE,
+       A_CODSIS,
+	   
+       N_CODIGO,
+       V_NOMCAR,
+       V_NOMARC,
+       V_RUTA,
+       D_FECHOR,
+       V_ESTCAR,
+       V_DESCRI)
+    VALUES
+      (PAR_A_USUINS,
+       SYSDATE,
+	   NULL,
+	   NULL,
+       PAR_A_PROGRA,
+       PAR_A_CODARE,
+       PAR_A_CODSIS,
+	   
+       PAR_OUT_COD_CAR,
+       PAR_V_NOMCAR,
+       PAR_V_NOMARC,
+       PAR_V_RUTA,
+       PAR_D_FECHOR,
+       PAR_V_ESTCAR,
+       PAR_V_DESCRI);
+       
+  EXCEPTION
+     WHEN OTHERS THEN
+          dbms_output.put_line('Se ha producido el siguiente error: ' || sqlerrm);
+END;
+ 
+END PCK_CARGA;

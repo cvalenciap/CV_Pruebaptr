@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('bandeja.detalle.title')}"></title>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+    });
+    /*]]>*/
+</script>
+</head>
+<body>
+	<div layout:fragment="content">
+	
+		<!-- MODAL PARA ACTUALIZAR VALOR DE ALMACENAMIENTO -->
+		<div id="modal-actualiza-almacenamiento" class="modal fade" role="dialog" data-backdrop="static">
+		  <div class="modal-dialog" style="width: 50%;">
+		<!-- Modal content-->
+		    <div class="modal-content" id="id-modal-content" th:replace="reporteRepresasFormulas :: contenFormulas">
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- MODAL PARA ACTUALIZAR VALOR DE VOLUMEN TRASVASADO POR REPRESA -->
+		<div id="modal-actualiza-vol-trasvasado" class="modal fade" role="dialog" data-backdrop="static">
+		  <div class="modal-dialog" style="width: 50%;">
+		<!-- Modal content-->
+		    <div class="modal-content" id="id-modal-content" th:replace="reporteRepresasFormulaVolTras :: contenFormulas">
+		    </div>
+		  </div>
+		</div>
+
+		<div class="containerform">
+			<div class="container_save" style="display: none;">
+			</div>
+			
+			<form id="form-get-reporte" th:action="@{/represasResumen/getData}" method="post" style="display: none;"></form>
+			
+			<fieldset>
+				<div class="col-md-12 espaciado-superior">
+					<div class="col-md-12 label-name">
+						<font size="4" th:text="${today}">
+					    </font>
+					</div>
+					<div class="col-md-12 adjuste-inner-text espaciado-superior center-align">
+						<font size="5" th:text="${#messages.msg('represas.resumen.title')}"></font>
+					</div>
+				</div>
+			</fieldset>
+
+			<div class="panel-heading">
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+					<form th:action="@{/represas}" role="form" method="get">
+						<button type="submit" class="btn btn-info">
+							<span class="glyphicon glyphicon-chevron-left"></span>
+							<div style="display: inherit;" th:text="${#messages.msg('represas.resumen.retornar')}"></div>
+						</button>
+					</form>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+
+		</div>
+		
+		<br />
+
+		<div style="text-align: right;">
+			<button type="button" class="btn btn-md btn-success"
+				id="idBtnFormExportar">
+				<span class="glyphicon glyphicon-export"></span> <span > Exportar</span>
+			</button>
+		</div>
+
+		<div class="col-md-12 espaciado-superior espaciado-inferior label-name">
+			<div class="col-md-2 left-align label-name">
+				<input type="text" id="txtPeriodo" name="periodo" readonly="readonly"
+					class="form-control"
+					th:placeholder="${#messages.msg('represas.resumen.periodo')}"
+					title="Ingrese el per&iacute;odo" style="text-align: center;"
+					maxlength="6" />
+			</div>
+			
+		</div>
+		
+		<div class="panel">
+			<div class="container_12">
+				<div th:replace="reporteRepresasTable :: resultsList" id="idReporteRepresasTable"></div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:src="@{/js/tableHeadFixer.js}"></script>
+		<script type="text/javascript" th:src="@{/js/math.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/reporteRepresas.js}"></script>
+		
+	</div>
+	
+</body>
+
+</html>

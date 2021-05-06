@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop-reference-model>
+<aop-project name="sedmail-ws-cliente"/>
+<aop-project name="common-core"/>
+<aop-project name="scr-core"/>
+<aop-project name="sed-seg-core-beans"/>
+<aop-project name="scr-correo-core-bean"/>
+<aop-project name="sed-seg-ws-cliente"/>
+<aop-project name="scr-correo-core"/>
+<aop-project name="scr"/>
+<aop-project name="scr-correo"/>
+<aop-project name="scr-core-bean"/>
+</aop-reference-model>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('proceso.extraccion.title')}"></title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="containerform">
+			
+			<form id="form-send-mail" th:action="@{/procesoExtraccion/ejecutar}" method="post" style="display: none;"></form>
+			
+			<fieldset>
+				<div class="col-md-12 espaciado-superior espaciado-inferior">
+					<div class="col-md-12 adjuste-inner-text espaciado-superior center-align">
+						<font size="5" th:text="${#messages.msg('proceso.extraccion.title')}"></font>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="espaciado-superior"></div>
+		
+		<div class="col-md-12 espaciado-superior">
+			<div class="col-md-2">
+			</div>
+			
+			<div class="col-md-2">
+				<label th:text="${#messages.msg('proceso.extraccion.correo')}"></label>
+			</div>
+			
+			<div class="col-md-6">
+				<div class="col-md-1">:</div>
+				<div class="col-md-11">
+					<label th:text="${procesoExtraccionBean.strCorreoExtraer}"></label>
+				</div>
+			</div>
+			
+			<div class="col-md-2">
+			</div>
+		</div>
+		
+		<div class="col-md-12 espaciado-superior">
+			<div class="col-md-2">
+			</div>
+			
+			<div class="col-md-2">
+				<label th:text="${#messages.msg('proceso.extraccion.remitente')}"></label>
+			</div>
+			
+			<div class="col-md-6">
+				<div class="col-md-1">:</div>
+				<div class="col-md-11">
+					<label th:text="${procesoExtraccionBean.strRemitente}"></label>
+				</div>
+			</div>
+			
+			<div class="col-md-2">
+			</div>
+		</div>
+		
+		<div class="col-md-12 espaciado-superior">
+			<div class="col-md-2">
+			</div>
+			
+			<div class="col-md-2">
+				<label th:text="${#messages.msg('proceso.extraccion.asunto')}"></label>
+			</div>
+			
+			<div class="col-md-6">
+				<div class="col-md-1">:</div>
+				<div class="col-md-11">
+					<label th:text="${procesoExtraccionBean.strAsunto}"></label>
+				</div>
+			</div>
+			
+			<div class="col-md-2">
+			</div>
+		</div>
+		
+		<div class="col-md-12 espaciado-superior">
+			<div class="col-md-2">
+			</div>
+			
+			<div class="col-md-2">
+				<label th:text="${#messages.msg('proceso.extraccion.nomadjunto')}"></label>
+			</div>
+			
+			<div class="col-md-6">
+				<div class="col-md-1">:</div>
+				<div class="col-md-11">
+					<label th:text="${procesoExtraccionBean.strNombreAdjunto}"></label>
+				</div>
+			</div>
+			
+			<div class="col-md-2">
+			</div>
+		</div>
+		
+		<div class="col-md-12 espaciado-superior">
+			<div class="col-md-2">
+			</div>
+			
+			<div class="col-md-2">
+				<label th:text="${#messages.msg('proceso.extraccion.rutafile')}"></label>
+			</div>
+			
+			<div class="col-md-6">
+				<div class="col-md-1">:</div>
+				<div class="col-md-11">
+					<p align="justify" th:text="${procesoExtraccionBean.strRutaArchivo}">
+					</p>
+				</div>
+			</div>
+			
+			<div class="col-md-2">
+			</div>
+		</div>
+
+		<div class="col-md-12 col-sm-12 col-xs-12 espaciado-superior" th:if="${procesoExtraccionBean.bolPuedeExtraer}">
+			<div class="wrapper text-center">
+				<div class="btn-group">
+					<button type="submit" class="btn btn-primary btn-md" id="enviarButton">
+					Ejecutar
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" th:src="@{/js/procesoExtraccion.js}"></script>
+		
+	</div>
+	
+</body>
+
+</html>

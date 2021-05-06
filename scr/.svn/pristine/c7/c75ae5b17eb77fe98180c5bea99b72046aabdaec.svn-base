@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+<script th:inline="javascript">
+/*<![CDATA[*/        
+    var mensajeRespuestaServer = /*[[${mensajeRespuesta}]]*/ ;
+    var estadoRespuestaServer = /*[[${estadoRespuesta}]]*/ ;
+    var ltaAnalista =  /*[[${ltaAnalista}]]*/ ;   
+    var descripcionPtar = /*[[${descripcionPtar}]]*/ ;   
+    var idPtarSector = /*[[${idPtarSector}]]*/ ;
+    var idParametro = /*[[${idParametro}]]*/ ;
+    var ltaRegDBO = /*[[${ltaRegDBO}]]*/ ;    
+    var ltaPuntoMuestra = /*[[${ltaPuntoMuestra}]]*/ ; 
+    var fechaActual = /*[[${fechaActual}]]*/ ;
+    var modo = /*[[${modo}]]*/ ;
+    var ltaSubParametrosTodo = /*[[${ltaSubParametrosTodo}]]*/ ; 
+    var ltaVariableGeneral = /*[[${ltaVariableGeneral}]]*/ ; 
+    var diasVencimiento = /*[[${diasVencimiento}]]*/ ;
+    var fechaInicial = /*[[${fechaInicial}]]*/ ;
+    var fechaVencimiento = /*[[${fechaVencimiento}]]*/ ;
+    var estadoAprobacionDBO = /*[[${estadoAprobacionDBO}]]*/ ; 
+    var ltaPuntoMuestraTotal = /*[[${ltaPuntoMuestraTotal}]]*/;
+    var observacionDBO = /*[[${observacionDBO}]]*/;
+/*]]>*/
+</script>
+</head>
+<body class="skin-gym bar-white">    
+	<div class="" role="document">   
+		<div class="">
+		    <div class="box-wrap-header">
+				<div class="pull-left">
+					<div class="title-main">						
+						<label class="control-label col-sm-8" ><span id="lblTitulo">Registro DBO</span></label>
+						<label class="control-label col-sm-2" ><strong>Fecha: </strong></label>
+						<label class="control-label col-sm-2" style="text-align: left !important;" th:text="${fechaActual}" for="txtFecha"></label>
+					</div>
+				</div>
+				<div class="pull-right">
+					<div id="toolbar" style="margin-top: 7px;">	
+							<button id="btnVerSemillaRegDBO" title="Ver Semillas" class="btn-s btn-agregar">
+								Ver Semillas
+							</button>	
+							&nbsp;
+							<button id="btnVerAnalistaRegDBO" style="display: none;" title="Ver Analista" class="btn-s btn-agregar">
+								Ver Analista
+							</button>	
+							&nbsp;
+							<button id="btnAdjuntarRegDBO" title="adjuntar" class="btn-s btn-agregar">
+								<i class="fa fa-paperclip"></i>
+							</button>	
+							&nbsp;									
+							<button id="btnNuevoRegDBO" title="Agregar" class="btn-s btn-agregar">+</button>							
+					</div>
+				</div>
+			</div>	          
+			<div class="modal-body">
+					<div class="box-form">
+				    	<div class="row">
+				    	  <div class="col-md-1">
+				    	  	<div class ="row" style="margin: auto !important">
+								<button type="button" id="btnEditarFecha" class="btn-s btn-agregar" style="display: none; margin: auto !important">
+									 <i class="fa fa-pencil-square-o">&nbsp;<font face="arial">Editar</font></i>
+								</button>
+								<button type="button" id="btnGuardarFecha" style="display: none; margin: auto !important" class="btn-s btn-agregar">
+									 <i class="glyphicon glyphicon-floppy-disk">&nbsp;<font face="arial">Guardar</font></i>
+								</button>
+							</div>
+				    	  </div>
+					      <div class="col-md-3">
+					        <div class="row">
+					              <form class="form-horizontal">
+									  <div class="form-group">
+										    <label class="control-label col-sm-4" ><strong>Fecha Inicial: </strong></label>
+										    <div class="input-group date FechaInicial col-sm-5"  id="datetimepickerFechaInicial">
+												<input type="text" id="dtpFechaInicial" readonly="readonly" class="form-control "/>
+												<span class="input-group-addon">
+													<span class="glyphicon glyphicon-calendar"></span>
+												</span>
+											</div>
+									   </div>
+								  </form>											              
+							 </div>
+					      </div>
+					      <div class="col-md-3">
+					        <div class="row">  													 	             
+								<form class="form-horizontal">
+									  <div class="form-group">
+									    	<label class="control-label col-sm-6" ><strong>Fecha Vencimiento : </strong></label>	
+									  		<div class="input-group date FechaVencimiento col-sm-4"  id="datetimepickerFechaVencimiento">
+												<input type="text" id="dtpFechaVencimiento" readonly="readonly" class="form-control "/>
+											</div>
+									  </div>
+								 </form>
+							 </div>
+					      </div>
+				    	</div>	
+				    				    	
+					</div>
+					
+                	<div class="panel-body" style="padding: 0px !important;">
+						<div class="table-responsive">
+							<table id="tblResultadoRegistroDBO" 
+								class="table table-striped table-bordered table-hover text-center text-middle" 
+								data-flat="true" 
+								data-cache="false"
+								data-check-box-header="true">
+							</table>
+						</div>		
+					</div>
+					<div class="box-wrap-body">
+						<div class="modal-footer">
+							<div class="pull-left">
+								<div id="divMensajeInformacion"></div>
+							</div>
+			                <div class="pull-right">    
+			              	    <button id="btnMostrarFRegistroDBO" style="display: none;" class="btn-s btn-add">Ver Formulas</button> 
+			                	<button id="btnHabilitarRegistroDBO" style="display: none;" class="btn-s btn-add">Habilitar</button>      
+                				<button id="btnAprobarRegistroDBO" style="display: none;" class="btn-s btn-add">Aprobar</button>    
+			                    <button id="btnGuardarTodoRegistroDBO" class="btn-s btn-add">Guardar</button>
+			                    <button id="btnBorrarMultipleRegistroDBO" class="btn-s btn-add">Borrar Varios</button>            
+			                </div>
+			            </div>
+						<div class="box-form" id="divFormulasDBO" style="display: none">
+							<h4 class="title">Edici&oacute;n de F&oacute;rmulas</h4>
+							<div class="row">
+					    		<div class="col-md-12">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="control-label col-sm-1" >Deplec (%).</label>
+											<div class="col-md-2">
+												<input type="text" valor="" disabled="disabled" class="form-control input-sm" maxlength="100" id="txtVariable1" />
+											</div>
+											<div class="col-md-1">
+												<button type="button" id="btnEditarVariable1" class="btn-s btn-EditarFormula">
+													 <i class="fa fa-pencil-square-o"></i>
+												</button>
+												<button type="button" id="btnGuardarVariable1" style="display: none" class="btn-s btn-EditarFormula">
+													 <i class="glyphicon glyphicon-floppy-disk"></i>
+												</button>
+											</div>
+											<label class="control-label col-sm-1" >Dilc (%).</label>
+											<div class="col-md-2">
+												<input type="text" valor="" disabled="disabled" class="form-control input-sm" maxlength="100" id="txtVariable2" />
+											</div>
+											<div class="col-md-1">
+												<button type="button" id="btnEditarVariable2" class="btn-s btn-EditarFormula">
+													 <i class="fa fa-pencil-square-o"></i>
+												</button>
+												<button type="button" id="btnGuardarVariable2" style="display: none" class="btn-s btn-EditarFormula">
+													 <i class="glyphicon glyphicon-floppy-disk"></i>
+												</button>
+											</div>
+											<label class="control-label col-sm-1" >DBO5 Total.</label>
+											<div class="col-md-2">
+												<input type="text" valor="" disabled="disabled" class="form-control input-sm" maxlength="100" id="txtVariable3" />
+											</div>
+											<div class="col-md-1">
+												<button type="button" id="btnEditarVariable3" class="btn-s btn-EditarFormula">
+													 <i class="fa fa-pencil-square-o"></i>
+												</button>
+												<button type="button" id="btnGuardarVariable3" style="display: none" class="btn-s btn-EditarFormula">
+													 <i class="glyphicon glyphicon-floppy-disk"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>							
+						<div class="box-form" id="divVariablesDBO" style="display: none">
+							<h4 class="title">Leyenda de Variables</h4>	
+					    	<div class="row">
+					    		<div class="col-md-3">
+									<div>
+										<div class="table-responsive">
+											<table id="tblVariables1DBO"
+												class="table table-striped table-bordered table-hover text-center text-middle"
+												data-flat="true" data-cache="false">
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div>
+										<div class="table-responsive">
+											<table id="tblVariables2DBO"
+												class="table table-striped table-bordered table-hover text-center text-middle"
+												data-flat="true"  data-cache="false">
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div>
+										<div class="table-responsive">
+											<table id="tblVariables3DBO"
+												class="table table-striped table-bordered table-hover text-center text-middle"
+												data-flat="true"  data-cache="false">
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div>
+										<div class="table-responsive">
+											<table id="tblVariables4DBO"
+												class="table table-striped table-bordered table-hover text-center text-middle"
+												data-flat="true" data-cache="false">
+											</table>
+										</div>
+									</div>
+								</div>
+					    	</div>
+						</div>
+					</div>
+			</div>
+<!--             inicio adecuacion texto observacion -->			
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<b class="accordeon_heading">Observaci&oacute;n</b>
+							</h3>
+						</div>
+						<div class="panel-body">
+							<div class="box-form">
+								<div class="row">
+									<div class="col-md-12">
+										<label><font class="text-danger">(*) Agrega observaciones al Registro de Laboratorio para el par&aacute;metro DBO</font></label>
+										<textarea id="txtObservacionRegistro" maxlength="500" class="form-control" rows="5" style="overflow:auto; resize:none" th:text="${observacionDBO}"></textarea>
+										<div class="modal-footer">
+											<div class="pull-left">
+												<div id="divMensajeInformacionObservacionRegistro"></div>
+											</div>
+							                <div class="pull-right">  
+							                	<button id="btnEditarObservacionRegistro" class="btn-s btn-add">Editar</button>
+							                	<button id="btnGuardarObservacionRegistro" class="btn-s btn-add">Guardar</button>
+							                	<button id="btnRegresarObservacionRegistro" class="btn-s btn-add">Regresar</button>            
+							                </div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>			
+		</div>
+	</div>	
+	<script type="text/javascript" th:src="@{/js/registroDBO.js}"></script>
+</body>
+</html>

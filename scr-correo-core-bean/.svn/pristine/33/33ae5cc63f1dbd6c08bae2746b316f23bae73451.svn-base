@@ -1,0 +1,14 @@
+pe\com\sedapal\scr\correo\core\beans\Caudal.class
+pe\com\sedapal\scr\correo\core\beans\CaudalDetalle.class
+pe\com\sedapal\scr\correo\core\beans\MetricasJob.class
+pe\com\sedapal\scr\correo\core\beans\AdjuntoMensaje.class
+pe\com\sedapal\scr\correo\core\beans\MensajeCorreo.class
+pe\com\sedapal\scr\correo\core\beans\ServidorArchivos.class
+pe\com\sedapal\scr\correo\core\beans\Carga.class
+pe\com\sedapal\scr\correo\core\beans\CuentaCorreo.class
+pe\com\sedapal\scr\correo\core\beans\ReporteResumenBean.class
+pe\com\sedapal\scr\correo\core\beans\ConfiguracionCorreo.class
+pe\com\sedapal\scr\correo\core\beans\ServidorCorreos.class
+pe\com\sedapal\scr\correo\core\beans\MedidaCaudalHora.class
+pe\com\sedapal\scr\correo\core\beans\ReporteGraficoBean.class
+pe\com\sedapal\scr\correo\core\beans\MedidaCaudalDia.class

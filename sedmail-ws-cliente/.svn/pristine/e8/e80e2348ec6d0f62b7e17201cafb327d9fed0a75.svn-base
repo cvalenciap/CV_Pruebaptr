@@ -1,0 +1,15 @@
+#produccion
+#urlws=http://1.1.194.16:8080/sedmail-rest-web/sedmail
+urlws=http://webapp16.sedapal.com.pe:8080/sedmail-rest-web/sedmail
+
+#desarrollo sedapal Desplegado
+#urlws=http://1.1.194.17:8080/sedmail-rest-web/sedmail
+
+#pruebas con servicio web localhost
+#urlws=http://localhost:8090/sedmail-rest-web/sedmail
+
+#desarrollo desplegado canvia
+#urlws=http://10.240.147.46:8080/sedmail-rest-web/sedmail
+
+#nat desarrollo sedapal
+#urlws=http://192.168.110.27:8084/sedmail-rest-web/sedmail

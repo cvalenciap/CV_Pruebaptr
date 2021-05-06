@@ -1,0 +1,112 @@
+s#PRODUCCION SEDAPAL
+spring.thymeleaf.cache=false
+jdbc.driverClassName = oracle.jdbc.driver.OracleDriver
+jdbc.url=jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(HOST=1.48.1.7)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=1.48.1.8)(PORT=1610))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=DBAPLIC)))
+jdbc.username = AGLC_CONEX
+jdbc.password = 4G1C_C0N3X
+#jdbc.username = AGLC
+#jdbc.password = 4G1CT6
+oracle.schema.procedures=AGLC
+
+
+#DESARROLLO GMD
+#spring.thymeleaf.cache=false
+#jdbc.driverClassName = oracle.jdbc.driver.OracleDriver
+#jdbc.url=jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.110.22)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.110.22)(PORT=1610))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=DBAPLIC)))
+#jdbc.username = AGLC_CONEX
+#jdbc.password = DESARROLLO
+#oracle.schema.procedures=AGLC
+
+
+#DESARROLLO SEDAPAL
+#spring.thymeleaf.cache=false
+#jdbc.driverClassName = oracle.jdbc.driver.OracleDriver
+#jdbc.url=jdbc:oracle:thin:@1.48.1.137:1610/DBAPLIC
+#jdbc.username = AGLC_CONEX
+#jdbc.password = DESARROLLO
+#oracle.schema.procedures=AGLC
+
+
+#PRE-PASE SEDAPAL
+#spring.thymeleaf.cache=false
+#jdbc.driverClassName = oracle.jdbc.driver.OracleDriver
+#jdbc.url=jdbc:oracle:thin:@1.48.1.137:1521/TIVOLI
+#jdbc.username = AGLC_CONEX
+#jdbc.password = desarrollo
+#oracle.schema.procedures=AGLC
+
+#SERVIDOR LOCAL GMD
+#spring.thymeleaf.cache=false
+#jdbc.driverClassName = oracle.jdbc.driver.OracleDriver
+#jdbc.url=jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)(ADDRESS=(PROTOCOL=TCP)(HOST=10.100.120.134)(PORT=1525))(ADDRESS=(PROTOCOL=TCP)(HOST=10.100.120.134)(PORT=1525))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=DBAPLIC)))
+#jdbc.username = AGLC_CONEX
+#jdbc.password = desarrollo
+#oracle.schema.procedures=AGLC
+
+
+server.port = 8080
+server.contextPath=/scr
+
+spring.messages.basename=messages,common
+
+#PARAMETROS
+##CODIGO SISTEMA
+parametro.sistema.codigo=47
+#parametro.sistema.codigo=47
+## DURACION SESION EN MINUTOS
+parametro.sesion.duracion=30
+
+spring.session.store-type=none
+
+# PARAMETROS PROPIOS DEL APLICATIVO
+parametro.numero.correos.leer=10
+
+# LONGITUD DE ARCHIVOS
+spring.http.multipart.maxFileSize=1MB
+spring.http.multipart.maxRequestSize=1MB
+
+# Permite nombrar la instancia para evitar conflictos
+spring.jmx.default-domain=lab3
+
+parametro.app.ruta.carpeta.compartida=/home/tomcat/
+parametro.app.archadj.raiz=lab
+parametro.peso.max.doc=1024
+parametro.tipo.archivo=(pdf|xls|xlsx)$
+parametro.cant.max.doc=200
+
+parametro.temp.dir.folder=alc
+parametro.temp.dir.clear.hours=2
+parametro.temp.dir.clear.minutes=0
+parametro.temp.dir.clear.seconds=0
+
+
+#SISTEMA SPTAR
+parametro.sistema.codigoSptar=53
+
+#RUTA DE GUARDADO DE ARCHIVOS
+#archivo.rutaGuardado=\\\\10.100.120.134\\dir_appCxpress\\adjuntosSptar
+archivo.rutaGuardado=\\\\EZCHAUPISS\\Archivos_Sptar
+archivo.tamanioMax = 5242880
+
+#RUTA DE REPORTES JASPER
+
+ruta.reporteImpresionGuia = 
+
+ruta.reporteRegLab=reportRegLaboratorio.jasper
+nombre.reporteRegLab=ReporteRegistroLaboratorio
+
+ruta.reporteGestionLab=reportGestLaboratorio.jasper
+nombre.reporteGestionLab=ReporteGestionLaboratorio
+
+ruta.reporteHistoricoLab=reporteHistLaboratorio.jasper
+nombre.reporteHistoricoLab=ReporteHistoricoLaboratorio
+
+ruta.reporteAcumuladoLab=reportAcumLaboratorio.jasper
+nombre.reporteAcumuladoLab=ReporteAcumuladoLaboratorio
+
+#parametros de conexion a rest sedmail
+sedmail.user=mailadmin
+sedmail.password=Gmd2018*
+
+
+

@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportGestLaboratorio" printOrder="Horizontal" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7c7ac54f-8652-4894-9bf3-e2f9216c46df">
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="false"/>
+	<property name="ireport.zoom" value="0.9090909090909127"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="291"/>
+	<property name="net.sf.jasperreports.export.xls.create.custom.palette" value="true"/>
+	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="true"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<style name="TABLACRUZADA" mode="Opaque" forecolor="#305496" backcolor="#D9E1F2" hAlign="Center" vAlign="Middle" isBlankWhenNull="false" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
+		<box>
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.5"/>
+			<leftPen lineWidth="0.5"/>
+			<bottomPen lineWidth="0.5"/>
+			<rightPen lineWidth="0.5"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{ROW_COUNT}%2==0]]></conditionExpression>
+			<style mode="Transparent" forecolor="#305496" backcolor="#FFFFFF" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+	</style>
+	<style name="TABLACRUZADA2" mode="Opaque" forecolor="#375623" backcolor="#E2EFDA" hAlign="Center" vAlign="Middle" isBlankWhenNull="false" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
+		<box>
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.5"/>
+			<leftPen lineWidth="0.5"/>
+			<bottomPen lineWidth="0.5"/>
+			<rightPen lineWidth="0.5"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{ROW_COUNT}%2==0]]></conditionExpression>
+			<style mode="Transparent" forecolor="#375623" backcolor="#FFFFFF" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+	</style>
+	<subDataset name="DSRegistroLabReporte" uuid="7c48f684-1061-481c-841c-d44b30ee7175">
+		<field name="idRegistroLaboratorio" class="java.lang.String"/>
+		<field name="idTipoRegistro" class="java.lang.String"/>
+		<field name="descricpionTipoRegistro" class="java.lang.String"/>
+		<field name="idSubParametro" class="java.lang.String"/>
+		<field name="descripcionSubParametro" class="java.lang.String"/>
+		<field name="idPtoMuestra" class="java.lang.String"/>
+		<field name="descripcionPtoMuestra" class="java.lang.String"/>
+		<field name="numValor" class="java.lang.String"/>
+		<field name="descripcionNumValor" class="java.lang.String"/>
+		<field name="secuencia" class="java.lang.String"/>
+		<field name="secuenciaSubParam" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="DSRegistroLabReporteDirecto" uuid="bb5bb18b-2e0e-4832-987b-c37314b2d9a2"/>
+	<parameter name="ltaDirectoMap" class="java.util.List" isForPrompting="false"/>
+	<parameter name="descripcionPtar" class="java.lang.String"/>
+	<parameter name="descripcionSector" class="java.lang.String"/>
+	<parameter name="fechaRegistro" class="java.lang.String"/>
+	<parameter name="estado" class="java.lang.String"/>
+	<parameter name="ltaFisicoQuimicoMap" class="java.util.List" isForPrompting="false"/>
+	<parameter name="ltaMicroHidroMap" class="java.util.List" isForPrompting="false"/>
+	<parameter name="ltaParaMap" class="java.util.List" isForPrompting="false"/>
+	<parameter name="idRegistro" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String"/>
+	<group name="RegistroDirecto">
+		<groupExpression><![CDATA[$P{ltaDirectoMap}]]></groupExpression>
+		<groupHeader>
+			<band height="120">
+				<staticText>
+					<reportElement uuid="648eef3a-57c3-4cba-b45f-f8cc58eca203" style="Crosstab Data Text" x="0" y="0" width="3000" height="20" backcolor="#FFFFFF"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<crosstab isRepeatColumnHeaders="false" isRepeatRowHeaders="false" ignoreWidth="false">
+					<reportElement uuid="b5c437e0-1a43-4ac3-8aa3-371b4476dc6b" stretchType="RelativeToBandHeight" x="0" y="20" width="3000" height="58"/>
+					<crosstabDataset>
+						<dataset>
+							<datasetRun subDataset="DSRegistroLabReporte" uuid="8c8584fb-0f3f-4eb6-9181-e6b2c7876457">
+								<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{ltaDirectoMap})]]></dataSourceExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>
+						<cellContents>
+							<textField isStretchWithOverflow="true">
+								<reportElement uuid="d64d3ce4-1f36-454c-9755-2b3a8325a0d7" style="Crosstab Data Text" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="200" height="25" forecolor="#FFFFFF" backcolor="#203764"/>
+								<box>
+									<pen lineColor="#000000"/>
+									<topPen lineWidth="0.0" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineColor="#000000"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Verdana" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA["Parámetros de Campo"]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabHeaderCell>
+					<rowGroup name="secuenciaSubParam" width="200">
+						<bucket class="java.lang.Integer">
+							<bucketExpression><![CDATA[Integer.valueOf($F{secuenciaSubParam})]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents backcolor="#D9E1F2" mode="Opaque">
+								<textField isStretchWithOverflow="true">
+									<reportElement uuid="0d93d808-c08d-4318-b5fa-22d1db75911f" style="TABLACRUZADA" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="200" height="20" isPrintWhenDetailOverflows="true">
+										<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+										<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="false"/>
+									</reportElement>
+									<box>
+										<topPen lineWidth="0.0"/>
+										<leftPen lineWidth="0.0"/>
+										<bottomPen lineWidth="0.0"/>
+										<rightPen lineWidth="0.0"/>
+									</box>
+									<textElement textAlignment="Left" verticalAlignment="Middle">
+										<font fontName="Verdana"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{descripcionSubParametro}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents/>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<columnGroup name="secuencia" height="25">
+						<bucket class="java.lang.Integer">
+							<bucketExpression><![CDATA[Integer.valueOf($F{secuencia})]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents backcolor="#F0F8FF" mode="Opaque">
+								<textField isStretchWithOverflow="true">
+									<reportElement uuid="cee922c2-96a8-4585-a56a-f0c5de906615" style="Crosstab Data Text" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="62" height="25" forecolor="#FFFFFF" backcolor="#203764">
+										<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+										<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="false"/>
+									</reportElement>
+									<box>
+										<pen lineColor="#000000"/>
+										<topPen lineWidth="0.0" lineColor="#000000"/>
+										<leftPen lineWidth="0.0" lineColor="#000000"/>
+										<bottomPen lineWidth="0.0" lineColor="#000000"/>
+										<rightPen lineWidth="0.0" lineColor="#000000"/>
+									</box>
+									<textElement verticalAlignment="Middle">
+										<font fontName="Verdana" isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{descripcionPtoMuestra}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents/>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<measure name="descripcionNumValorMeasure" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionNumValor}]]></measureExpression>
+					</measure>
+					<measure name="descripcionPtoMuestra" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionPtoMuestra}]]></measureExpression>
+					</measure>
+					<measure name="descripcionSubParametro" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionSubParametro}]]></measureExpression>
+					</measure>
+					<crosstabCell width="62" height="20">
+						<cellContents>
+							<textField>
+								<reportElement uuid="b2b471f0-6231-4e20-ae64-b232a378e0ea" style="TABLACRUZADA" mode="Opaque" x="0" y="0" width="62" height="20"/>
+								<box>
+									<topPen lineWidth="0.0"/>
+									<leftPen lineWidth="0.0"/>
+									<bottomPen lineWidth="0.0"/>
+									<rightPen lineWidth="0.0"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Verdana"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{descripcionNumValorMeasure} == null ? "--" : $V{descripcionNumValorMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+				</crosstab>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="RegistroFisicoQuimico">
+		<groupExpression><![CDATA[$P{ltaFisicoQuimicoMap}]]></groupExpression>
+		<groupHeader>
+			<band height="120">
+				<staticText>
+					<reportElement uuid="898ca08f-e470-483f-a523-bd923ea631df" style="Crosstab Data Text" x="0" y="0" width="3000" height="20" backcolor="#FFFFFF"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<crosstab isRepeatColumnHeaders="false" isRepeatRowHeaders="false" ignoreWidth="false">
+					<reportElement uuid="22a4a8d3-4a9f-4d3c-a006-948e899d3fd2" stretchType="RelativeToTallestObject" x="0" y="20" width="3000" height="58"/>
+					<crosstabDataset>
+						<dataset>
+							<datasetRun subDataset="DSRegistroLabReporte" uuid="c2be0377-bca4-46e3-b370-554356251838">
+								<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{ltaFisicoQuimicoMap})]]></dataSourceExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>
+						<cellContents>
+							<textField isStretchWithOverflow="true">
+								<reportElement uuid="821c7bcf-7b6d-4c9d-bfa6-881d50659072" style="Crosstab Data Text" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="200" height="25" forecolor="#FFFFFF" backcolor="#203764"/>
+								<box>
+									<topPen lineWidth="0.0"/>
+									<leftPen lineWidth="0.0"/>
+									<bottomPen lineWidth="0.0"/>
+									<rightPen lineWidth="0.0"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Verdana" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA["Químicos y Físicos"]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabHeaderCell>
+					<rowGroup name="secuenciaSubParam" width="200">
+						<bucket class="java.lang.Integer">
+							<bucketExpression><![CDATA[Integer.valueOf($F{secuenciaSubParam})]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents backcolor="#F0F8FF" mode="Opaque">
+								<textField isStretchWithOverflow="true">
+									<reportElement uuid="dc53a77b-7952-4e77-a48e-5ea0d097c751" style="TABLACRUZADA" positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="200" height="20" isPrintWhenDetailOverflows="true">
+										<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+										<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="false"/>
+									</reportElement>
+									<box>
+										<topPen lineWidth="0.0"/>
+										<leftPen lineWidth="0.0"/>
+										<bottomPen lineWidth="0.0"/>
+										<rightPen lineWidth="0.0"/>
+									</box>
+									<textElement textAlignment="Left" verticalAlignment="Middle">
+										<font fontName="Verdana"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{descripcionSubParametro}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents/>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<columnGroup name="secuencia" height="25">
+						<bucket class="java.lang.Integer">
+							<bucketExpression><![CDATA[Integer.valueOf($F{secuencia})]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents backcolor="#F0F8FF" mode="Opaque">
+								<textField isStretchWithOverflow="true">
+									<reportElement uuid="88a72b9c-2ef1-4035-b0d7-8734df235058" style="Crosstab Data Text" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="62" height="25" forecolor="#FFFFFF" backcolor="#203764">
+										<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+										<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="false"/>
+									</reportElement>
+									<box>
+										<topPen lineWidth="0.0"/>
+										<leftPen lineWidth="0.0"/>
+										<bottomPen lineWidth="0.0"/>
+										<rightPen lineWidth="0.0"/>
+									</box>
+									<textElement verticalAlignment="Middle">
+										<font fontName="Verdana" isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{descripcionPtoMuestra}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents/>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<measure name="descripcionNumValorMeasure" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionNumValor}]]></measureExpression>
+					</measure>
+					<measure name="descripcionPtoMuestra" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionPtoMuestra}]]></measureExpression>
+					</measure>
+					<measure name="descripcionSubParametro" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionSubParametro}]]></measureExpression>
+					</measure>
+					<crosstabCell width="62" height="20">
+						<cellContents>
+							<textField>
+								<reportElement uuid="af5b8444-594a-4329-8955-fc206805b4a8" style="TABLACRUZADA" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="62" height="20"/>
+								<box>
+									<topPen lineWidth="0.0"/>
+									<leftPen lineWidth="0.0"/>
+									<bottomPen lineWidth="0.0"/>
+									<rightPen lineWidth="0.0"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Verdana"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{descripcionNumValorMeasure} == null ? "--" : $V{descripcionNumValorMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+				</crosstab>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="RegistroMicroHidro">
+		<groupExpression><![CDATA[$P{ltaMicroHidroMap}]]></groupExpression>
+		<groupHeader>
+			<band height="120">
+				<staticText>
+					<reportElement uuid="3187ed60-4552-4214-b149-77a9860cfff8" style="Crosstab Data Text" x="0" y="0" width="3000" height="20" backcolor="#FFFFFF"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<crosstab isRepeatColumnHeaders="false" isRepeatRowHeaders="false" ignoreWidth="false">
+					<reportElement uuid="4e40fa8b-6df6-4237-badf-0a9efa97c3a0" stretchType="RelativeToBandHeight" x="0" y="20" width="3000" height="58"/>
+					<crosstabDataset>
+						<dataset>
+							<datasetRun subDataset="DSRegistroLabReporte" uuid="5844fb39-1a82-4cc1-a232-cea791a7645c">
+								<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{ltaMicroHidroMap})]]></dataSourceExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>
+						<cellContents>
+							<textField isStretchWithOverflow="true">
+								<reportElement uuid="c8fba4a0-bb70-49ac-a900-cce8bc5ef71c" style="Crosstab Data Text" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="200" height="25" forecolor="#FFFFFF" backcolor="#203764"/>
+								<box>
+									<topPen lineWidth="0.0"/>
+									<leftPen lineWidth="0.0"/>
+									<bottomPen lineWidth="0.0"/>
+									<rightPen lineWidth="0.0"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Verdana" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA["Microbiológico e Hidrobiológico"]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabHeaderCell>
+					<rowGroup name="secuenciaSubParam" width="200">
+						<bucket class="java.lang.Integer">
+							<bucketExpression><![CDATA[Integer.valueOf($F{secuenciaSubParam})]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents backcolor="#F0F8FF" mode="Opaque">
+								<textField isStretchWithOverflow="true">
+									<reportElement uuid="c908819e-36b4-41f4-b7c5-457cdfeb6ce2" style="TABLACRUZADA" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="200" height="20" isPrintWhenDetailOverflows="true">
+										<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="false"/>
+										<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+									</reportElement>
+									<box>
+										<topPen lineWidth="0.0"/>
+										<leftPen lineWidth="0.0"/>
+										<bottomPen lineWidth="0.0"/>
+										<rightPen lineWidth="0.0"/>
+									</box>
+									<textElement textAlignment="Left" verticalAlignment="Middle">
+										<font fontName="Verdana"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{descripcionSubParametro}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents/>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<columnGroup name="secuencia" height="25">
+						<bucket class="java.lang.Integer">
+							<bucketExpression><![CDATA[Integer.valueOf($F{secuencia})]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents backcolor="#F0F8FF" mode="Opaque">
+								<textField isStretchWithOverflow="true">
+									<reportElement uuid="000f2644-95fe-484c-897b-1526adbecdb7" style="Crosstab Data Text" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="62" height="25" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#FFFFFF" backcolor="#203764">
+										<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="false"/>
+										<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+									</reportElement>
+									<box>
+										<topPen lineWidth="0.0"/>
+										<leftPen lineWidth="0.0"/>
+										<bottomPen lineWidth="0.0"/>
+										<rightPen lineWidth="0.0"/>
+									</box>
+									<textElement verticalAlignment="Middle">
+										<font fontName="Verdana" isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{descripcionPtoMuestra}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents/>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<measure name="descripcionNumValorMeasure" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionNumValor}]]></measureExpression>
+					</measure>
+					<measure name="descripcionPtoMuestra" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionPtoMuestra}]]></measureExpression>
+					</measure>
+					<measure name="descripcionSubParametro" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionSubParametro}]]></measureExpression>
+					</measure>
+					<crosstabCell width="62" height="20">
+						<cellContents>
+							<textField>
+								<reportElement uuid="1207a716-48da-4ecc-ab68-98109b3e37c1" style="TABLACRUZADA" mode="Opaque" x="0" y="0" width="62" height="20"/>
+								<box>
+									<topPen lineWidth="0.0"/>
+									<leftPen lineWidth="0.0"/>
+									<bottomPen lineWidth="0.0"/>
+									<rightPen lineWidth="0.0"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Verdana"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{descripcionNumValorMeasure} == null ? "--" : $V{descripcionNumValorMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+				</crosstab>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="RegistroPara">
+		<groupExpression><![CDATA[$P{ltaParaMap}]]></groupExpression>
+		<groupHeader>
+			<band height="120">
+				<staticText>
+					<reportElement uuid="33f2c20c-28ba-4621-8bad-d637b6ae2666" style="Crosstab Data Text" x="0" y="0" width="3000" height="20" backcolor="#FFFFFF"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<crosstab isRepeatColumnHeaders="false" isRepeatRowHeaders="false" ignoreWidth="false">
+					<reportElement uuid="34fa46f5-13bd-44f7-9cf2-87df0731cab4" stretchType="RelativeToBandHeight" x="0" y="20" width="3000" height="58"/>
+					<crosstabDataset>
+						<dataset>
+							<datasetRun subDataset="DSRegistroLabReporte" uuid="cb6c1233-8f4f-42d2-9ad3-add7842085e4">
+								<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{ltaParaMap})]]></dataSourceExpression>
+							</datasetRun>
+						</dataset>
+					</crosstabDataset>
+					<crosstabHeaderCell>
+						<cellContents>
+							<textField isStretchWithOverflow="true">
+								<reportElement uuid="4c1f59c0-66b3-43fa-b1a2-de4958548bb3" style="Crosstab Data Text" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="200" height="25" forecolor="#FFFFFF" backcolor="#203764"/>
+								<box>
+									<topPen lineWidth="0.0"/>
+									<leftPen lineWidth="0.0"/>
+									<bottomPen lineWidth="0.0"/>
+									<rightPen lineWidth="0.0"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Verdana" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA["Parasitológico"]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabHeaderCell>
+					<rowGroup name="secuenciaSubParam" width="200">
+						<bucket class="java.lang.Integer">
+							<bucketExpression><![CDATA[Integer.valueOf($F{secuenciaSubParam})]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents>
+								<textField isStretchWithOverflow="true">
+									<reportElement uuid="b1ae66b3-7fe6-4358-905a-19b66c327895" style="TABLACRUZADA" isPrintRepeatedValues="false" x="0" y="0" width="200" height="20" isPrintWhenDetailOverflows="true">
+										<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="false"/>
+										<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+									</reportElement>
+									<box>
+										<topPen lineWidth="0.0"/>
+										<leftPen lineWidth="0.0"/>
+										<bottomPen lineWidth="0.0"/>
+										<rightPen lineWidth="0.0"/>
+									</box>
+									<textElement textAlignment="Left">
+										<font fontName="Verdana" isBold="false"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{descripcionSubParametro}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents/>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<columnGroup name="secuencia" height="25">
+						<bucket class="java.lang.Integer">
+							<bucketExpression><![CDATA[Integer.valueOf($F{secuencia})]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents backcolor="#F0F8FF" mode="Opaque">
+								<textField isStretchWithOverflow="true">
+									<reportElement uuid="cc568292-2d99-4199-90cb-89c509ac2263" style="Crosstab Data Text" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Opaque" x="0" y="0" width="62" height="25" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#FFFFFF" backcolor="#203764">
+										<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="false"/>
+										<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+									</reportElement>
+									<box>
+										<topPen lineWidth="0.0"/>
+										<leftPen lineWidth="0.0"/>
+										<bottomPen lineWidth="0.0"/>
+										<rightPen lineWidth="0.0"/>
+									</box>
+									<textElement verticalAlignment="Middle">
+										<font fontName="Verdana" isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{descripcionPtoMuestra}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents/>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<measure name="descripcionNumValorMeasure" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionNumValor}]]></measureExpression>
+					</measure>
+					<measure name="descripcionPtoMuestra" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionPtoMuestra}]]></measureExpression>
+					</measure>
+					<measure name="descripcionSubParametro" class="java.lang.String" calculation="First">
+						<measureExpression><![CDATA[$F{descripcionSubParametro}]]></measureExpression>
+					</measure>
+					<crosstabCell width="62" height="20">
+						<cellContents>
+							<textField>
+								<reportElement uuid="60fdc2f6-2c59-4d1b-bd2a-17130cb429a7" style="TABLACRUZADA" mode="Opaque" x="0" y="0" width="62" height="20"/>
+								<box>
+									<topPen lineWidth="0.0"/>
+									<leftPen lineWidth="0.0"/>
+									<bottomPen lineWidth="0.0"/>
+									<rightPen lineWidth="0.0"/>
+								</box>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Verdana"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{descripcionNumValorMeasure} == null ? "--" : $V{descripcionNumValorMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+				</crosstab>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="85" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+			<staticText>
+				<reportElement uuid="b3e8842e-82e0-49af-85b2-1f39abbd4885" style="Crosstab Data Text" isPrintRepeatedValues="false" mode="Opaque" x="0" y="20" width="820" height="25" forecolor="#305496" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE GESTIÓN DE REGISTROS DE LABORATORIO]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="75030a3e-b73b-4822-afd7-f4cc49e60f0d" style="Crosstab Data Text" mode="Opaque" x="0" y="45" width="820" height="20" forecolor="#305496" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Verdana" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Nro : " +$P{idRegistro}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="252" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+			<staticText>
+				<reportElement uuid="bddcfe6b-3493-440a-b4b4-b78109945130" style="Crosstab Data Text" mode="Opaque" x="0" y="38" width="200" height="20" forecolor="#305496" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Verdana" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sector : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="700d5bd1-8644-4a73-b4fa-477abffe033b" style="Crosstab Data Text" mode="Opaque" x="0" y="18" width="200" height="20" forecolor="#305496" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Verdana" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PTAR : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="97f0c07d-35ff-4abc-9491-e5ec16a2fa16" style="Crosstab Data Text" mode="Opaque" x="200" y="18" width="310" height="20" forecolor="#305496" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Verdana" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{descripcionPtar}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="03c71b7e-1c17-4657-8d25-b0f18865e739" style="Crosstab Data Text" mode="Opaque" x="200" y="38" width="310" height="20" forecolor="#305496" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Verdana" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{descripcionSector}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7b7a5fad-4634-4d54-99dc-c1304e971980" style="Crosstab Data Text" mode="Opaque" x="510" y="18" width="186" height="20" forecolor="#305496" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Verdana" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Registro : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d8e6838d-792d-4a28-8fb8-8c00904eb1cb" style="Crosstab Data Text" mode="Opaque" x="696" y="18" width="124" height="20" forecolor="#305496" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Verdana" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fechaRegistro}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d61b7d9e-1a0c-4c8b-9b0e-f07a5ea6c854" style="Crosstab Data Text" mode="Opaque" x="510" y="38" width="186" height="20" forecolor="#305496" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Verdana" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="9313cdb7-37ae-4d18-9846-f05714905d79" style="Crosstab Data Text" mode="Opaque" x="696" y="38" width="124" height="20" forecolor="#305496" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Verdana" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{estado}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RetainShape">
+				<reportElement uuid="e240edcc-3314-4dc3-a2cc-699b6a3f6eb1" x="0" y="97" width="607" height="144">
+					<printWhenExpression><![CDATA[$P{logo} != "default"]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+		</band>
+	</columnHeader>
+	<columnFooter>
+		<band height="20" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="16" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="26" splitType="Stretch"/>
+	</summary>
+</jasperReport>

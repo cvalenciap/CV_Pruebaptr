@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-edit-maniobras">
+	
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('maniobras.registrar')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('maniobras.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('maniobras.crear')}">Crear texto html</span>
+		</div>
+		
+		<form name="formInactivaManiobras" id="form-inactiva-maniobras" style="display:none;" 
+			  th:action="@{/maniobra/inactivar}" method="post">
+			<input type="hidden" id="inacIdManiobra" name="inacIdManiobra" />  
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>
+		
+		<div class="modal-footer left-align">
+			
+			<div class="col-md-12">
+			
+				<div class="col-md-8">
+					<div class="col-md-12" style="padding: 0px;">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<label class="control-label" th:text="${#messages.msg('registrar.maniobras.header.panel1')}">maniobras</label>
+							</div>
+							<div class="panel-body">
+							
+							<form name="form-edit-maniobras" id="form-edit-maniobras" method="post" 
+								  th:action="@{/maniobrasSave}" th:object="${maniobrasEditBean}"
+								  role="form">
+								  
+								<input type="hidden" id="codigo" name="codigo" />
+								<input type="hidden" id="strCodigoRepresas" name="strCodigoRepresas" />
+								
+								<input type="hidden" id="flgClean" name="flgClean" />
+							
+							
+									<div class="col-md-12">	
+										
+										<div class="form-group col-md-4 padding-left">
+						                   	<label><span th:text="${#messages.msg('registrar.maniobras.fecha')}"></span></label>
+						                   	<input type="text" id="fechaRepresas" class="form-control"               		
+						                   	 	th:placeholder="${#messages.msg('registrar.maniobras.fecha')}" disabled="disabled"/>
+						                </div>
+						                
+										<div class="form-group col-md-4 padding-left">
+						                   	<label><span th:text="${#messages.msg('registrar.maniobras.hora')}"></span></label>
+						                   	<input type="text" class="form-control" maxlength="5" th:field="*{strHora}"       
+						                   		readonly="readonly"             		
+						                   	 	th:placeholder="${#messages.msg('registrar.maniobras.formato.hora')}"/>
+						                </div>
+						                
+										<div class="form-group col-md-4 padding-left">						
+											<label><span th:text="${#messages.msg('registrar.maniobras.tipo.maniobra')}"></span></label>
+											<input type="text" class="form-control" value="DESCARGA" disabled="disabled"/>
+											<input type="hidden" th:field="*{intTipoManiobra}"/>
+						                </div>
+									</div>
+									
+									<div class="col-md-12">	
+										<div class="form-group">
+											<div class="form-group col-md-6 padding-left">
+												<label><span th:text="${#messages.msg('registrar.maniobras.apertura.inicial')}"></span></label>
+							                    <input type="text" class="form-control" maxlength="7" th:field="*{dblAperturaInicial}"  
+							                    	 onkeypress="return MYAPPL.soloNumeros(event)"                  		
+							                    	 th:placeholder="${#messages.msg('registrar.maniobras.apertura.inicial')}"/>
+							                 </div>                  
+						                </div>
+						                <div class="form-group">
+						                	<div class="form-group col-md-6 padding-left">
+							                    <label><span th:text="${#messages.msg('registrar.maniobras.apertura.final')}"></span></label>
+							                    <input type="text" class="form-control" maxlength="7" th:field="*{dblAperturaFinal}"          
+							                    	onkeypress="return MYAPPL.soloNumeros(event)"          		
+							                     	th:placeholder="${#messages.msg('registrar.maniobras.apertura.final')}"/>
+							                 </div>
+										</div>
+									</div>
+					
+									<div class="form-group col-md-12 espaciado-superior">
+										<div class="wrapper text-center">
+											<div class="btn-group">
+												<button type="submit" class="btn btn-primary btn-md" id="guardarButton">
+												
+													<div  th:text="${#messages.msg('maniobras.guardar')}"></div>
+												</button>
+											</div>
+											<div class="btn-group">
+												<button type="button" class="btn btn-default btn-limpiar">
+													<div  th:text="${#messages.msg('tipoProceso.limpiar')}"></div>
+												</button>							
+											</div>
+										</div>
+									</div>
+								</form>
+				
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-md-4">
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<label class="control-label" th:text="${#messages.msg('registrar.maniobras.header.panel2')}">factor</label>
+						</div>
+						<div class="panel-body">
+						
+							<form name="form-edit-factor" id="form-edit-factor" method="post" 
+								  th:action="@{/maniobras/factorSave}" role="form">
+								  <input type="hidden" name="represasId" id="represasId" />
+								<div class="form-group">
+									<div class="form-group col-md-12 left-align">
+										<input type="checkbox" id="factor-descarga-check" name="factor-check"/> Habilitar Factor
+										<input type="hidden" id="factor-descarga" name="factor" value="0"/>
+										<input type="hidden" id="factor-descarga-valor" name="factorValor" value="0"/>
+									</div>
+									<div id="factor-section">
+										<div class="form-group col-md-12 left-align">
+											<input type="text" class="form-control" maxlength="50" id="factorDescargaId"  
+												name="factorDescargaName"         		
+					                    	 	th:placeholder="${#messages.msg('registrar.maniobras.factor')}"
+					                    	 	onkeypress="return MYAPPL.soloFormulaMatematicaBasica(event)"
+	                    	 					style="text-transform: uppercase;"/>
+										</div>
+									</div>
+									<div class="form-group col-md-12 center-align espaciado-superior">
+										<button type="submit" id="actualizarFactorBtn" class="btn btn-primary">Actualizar Factor</button>
+									</div>
+									
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			
+			</div>
+			
+			<div class="panel espaciado-superior">
+				<div class="container_12 espaciado-superior">
+					<div th:replace="maniobrasTable :: resultsList" class="grid_10 height800" id="idManiobrasTable"></div>
+				</div>			
+			</div>
+			
+			<div class="wrapper text-center">						
+				<div class="btn-group">					
+					<button type="button" class="btn btn-default btn-md" data-dismiss="modal">							
+						<div  th:text="${#messages.msg('maniobras.cancelar')}"></div>
+					</button>
+				</div>
+			</div>						
+			
+		</div>
+	</div>
+</body>
+</html>

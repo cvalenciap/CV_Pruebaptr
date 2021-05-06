@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	
+	<div th:fragment="resultsList" class="grid_10 height800" id="idClimaTable">
+	
+	<div class="modal-content" id="id-modal-content"></div>
+	
+		
+	<div id="myClima">
+	 <br/>
+			<div id="pickList">
+				
+				<div class="row" onselectstart="return false" unselectable="on">
+					<div class="col-lg-5 col-md-5 col-sm-5" >
+						<label for="comment" th:text="${#messages.msg('punto.subactividad.listado')}"></label>
+						<select id="cboPuntosPosibles" class="form-control pickListSelect pickData scrolls" multiple="">
+						</select>
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-2 pickListButtons verticalPick">
+						<button class="pRemove btn btn-primary btn-sm">&lt; Remover</button>
+						<button class="pAdd btn btn-primary btn-sm">Asignar ></button>
+					</div>
+					<div class="col-lg-5 col-md-5 col-sm-5">
+						<label for="comment" th:text="${#messages.msg('punto.subactividad.listado.asignados')}"></label>
+						<select id="cboPuntosAsignados" class="form-control pickListSelect pickListResult scrolls"
+							multiple="">
+						</select>
+					</div>
+				</div>
+			</div>
+			
+	<br/>
+	
+	<br/>
+
+	
+    </div>
+    
+		
+	</div>
+</body>
+</html>

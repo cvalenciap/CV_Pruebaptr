@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('unidadMedida.title')}"></title>
+<link th:href="@{/css/jquery.fileupload.css}" rel="stylesheet" />
+<link th:href="@{/css/jquery.fileupload-ui.css}" rel="stylesheet" />
+<link th:href="@{/css/subidaArchivo.css}" rel="stylesheet" />
+</head>
+<body>
+	<div layout:fragment="content">
+		
+		<div id="seccion-caracteristicas" >
+			<!-- Inicio bloque fileupload que debe incluirse -->
+			<div th:replace="/COMM/subidaArchivos :: fileUpload"></div>
+			<!-- Fin bloque fileupload -->
+		</div>
+		<br /><br /><br />
+		<div id="seccion-almacenamiento" >
+			<div th:replace="/COMM/subidaArchivos :: fileUpload"></div>
+		</div>
+		<br /><br /><br />
+		<div id="seccion-transporte" >
+			<div th:replace="/COMM/subidaArchivos :: fileUpload"></div>
+		</div>
+		<br /><br /><br />
+		<div id="seccion-disposicion-final" >
+			<div th:replace="/COMM/subidaArchivos :: fileUpload"></div>
+		</div>
+		<br /><br /><br />
+		<div>
+		<button type="button" onclick="guardarDocumento();" class="btn btn-info fileinput-button">Guardar</button>
+		</div>
+		<script type="text/javascript" th:src="@{/js/jquery.ui.widget.js}"></script>
+		<script type="text/javascript" th:src="@{/js/jquery.iframe-transport.js}"></script>
+		<script type="text/javascript" th:src="@{/js/jquery.fileupload.js}"></script>
+		<script type="text/javascript" th:src="@{/js/subidaArchivos.js}"></script>
+		<script type="text/javascript">
+			
+			var blUsuarioTienePermisos = true; // booleano que indica si el usuario tiene permisos para adjuntar/eliminar archivos
+			
+			var datosDoc = {
+					id: nsSAA.obtenerIdPagina(), // identificador de la pagina
+					anhoDocumento: 2017, // año del documento
+					tipoDocumento: 1, // tipo del documento
+					codDocumento: 10, // codigo del documento
+					tipArchDocumento: 19, // numero del parametro para los tipos permitidos de archivos adjuntos del Documento
+					tamMaxArchDocumento: 26, // numero del parametro para el peso maximo de archivos adjuntos del Documento
+					secciones: [
+						{
+							id: 'seccion-caracteristicas', // id del div
+							cod: 6, // numero del parametro para el codigo de la Seccion
+							codCantMax: 12 // numero del parametro para la cantidad maxima de archivos adjuntos de la Seccion
+						},
+						{
+							id: 'seccion-almacenamiento', 
+							cod: 7,
+							codCantMax: 13
+						},
+						{
+							id: 'seccion-transporte', 
+							cod: 8,
+							codCantMax: 14
+						},
+						{
+							id: 'seccion-disposicion-final', 
+							cod: 9,
+							codCantMax: 15
+						}
+					]
+				};
+				
+			
+			// obligatorio llamarlo solo una vez
+			nsSAA.configurarGlobal(blUsuarioTienePermisos, datosDoc);
+			
+			var guardarDocumento = function() {
+				nsSAA.guardarArchivosAdjuntos(datosDoc);
+			};
+		</script>
+	</div>
+</body>
+</html>

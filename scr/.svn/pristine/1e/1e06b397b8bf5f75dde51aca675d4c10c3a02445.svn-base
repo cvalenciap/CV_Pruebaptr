@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+	<body>
+		<div class="container_save">     	
+			<script th:fragment="mensajesSave" th:inline="javascript">
+			/*<![CDATA[*/			
+			    mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';		
+			    mensajeError = /*[[${mensajeError}]]*/ '';		
+			    codigo = /*[[${codigo}]]*/ '0';
+			/*]]>*/
+			
+			showToastFormulario222(mensajeTipo, mensajeError);
+			if(codigo>0){
+				$('#form-edit-HDetalle-id #codigo').val(codigo);
+				$('#form-edit-HDetalle-id #codHeader').val(codigo);
+				idCabecera = codigo;
+				$('#idcabeceraHidden').val(codigo);
+				
+				if($("#form-edit-HDetalle-id #idModificarDetalle2").val()=='1'){
+					modificarDetalle2(-1);
+					$("#form-edit-HDetalle-id #idModificarDetalle2").val('0');
+				}
+			}
+			</script>
+		</div>
+	</body>
+</html>

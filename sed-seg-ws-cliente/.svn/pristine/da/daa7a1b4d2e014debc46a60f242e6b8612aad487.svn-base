@@ -1,0 +1,23 @@
+#en local
+#urlws=http://localhost:8181/webserviceserguridad/seguridadws?wsdl
+#tgestiona server desarrollo
+#urlws=http://192.168.150.200:8181/webserviceserguridad/seguridadws?wsdl
+#preprod sesapal
+#urlws=http://1.1.193.118:8080/webserviceserguridad/seguridadws?wsdl
+#produccion
+urlws=http://1.1.194.16:8080/webserviceserguridad/seguridadws?wsdl
+
+#desarrollo gmd
+#urlws=http://10.240.147.27:8180/webserviceserguridad/seguridadws?wsdl
+
+#desarrollo sedapal Desplegado
+#urlws=http://1.1.194.17:8080/webserviceserguridad/seguridadws?wsdl
+
+#prueba servicio
+#urlws=http://localhost:8090/webserviceserguridad/seguridadws?wsdl
+
+#local gmd new version
+#urlws=http://10.240.147.46:8080/webserviceserguridad_ACT/seguridadws?wsdl
+
+#nateado
+#urlws=http://192.168.110.27:8084/webserviceserguridad_ACT/seguridadws?wsdl

@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('actividad.area.bandeja')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+	
+	
+			<!-- Modal -->
+		<div id="modal-registra-clima" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			
+				<!-- Modal content-->
+<!-- 			    <div class="modal-content" id="id-modal-content" th:replace="actividadAreaEdit :: form-edit-actividad-area"> -->
+			    	
+<!-- 			    </div> -->
+			    
+			</div>
+		</div>
+	
+	
+		<form name="formInactivaclima" id="form-inactiva-clima" style="display:none;" 
+			  th:action="@{/clima/inactivar}" method="post">
+			<input type="hidden" id="inacIdclima" name="inacIdclima" />
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>	
+		
+		<h3 class="text-center" th:text="${#messages.msg('home.clima')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('clima.estado')}"></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<select class="form-control" id="cboAreas" name="cboAreas" style="height: 33px;"></select>
+							</div>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+					
+				</div>
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-right">
+				<button type="button" class="btn btn-info btn-create-clima" data-toggle="modal" data-target="#modal-registra-clima"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('clima.agregar')}"></label></button>
+					<button type="button" id="idBtnFormBuscarClima" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span><label th:text="${#messages.msg('clima.buscar')}"></label></button>
+				
+				
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="container_12">
+				<div th:replace="actividadArea/actividadAreaTable :: resultsList" class="grid_10 height800" id="idClimaTable"></div>
+			</div>
+			<script type="text/javascript" th:src="@{/js/actividadArea.js}"></script>
+		</div>
+	</div>
+</body>
+</html>

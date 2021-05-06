@@ -1,0 +1,36 @@
+/*
+#outer {
+	position: relative;
+}
+
+#inner {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.rcorners1 {
+    border-radius: 25px;
+    background: #8AC007;
+    padding: 20px; 
+    width: 200px;
+    height: 275px; 
+}
+
+.rcorners2 {
+    border-radius: 25px;
+    border: 2px solid #8AC007;
+    padding: 20px; 
+    width: 200px;
+    height: 275px; 
+}
+
+.rcorners3 {
+    border-radius: 25px;
+    background: url(../images/paper.gif);
+    background-position: left top;
+    background-repeat: repeat;
+    padding: 20px; 
+    width: 300px;
+    height: 250px; 
+}
+*/

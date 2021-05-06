@@ -1,0 +1,160 @@
+/**
+ * 
+ * Resumen.
+ * Objeto 				: ETLReportesResumenJob
+ * Descripción 			: Clase ejecutora de la tarea programada de envío de correo
+ * Fecha de Creación 	: 25/07/2017
+ * Autor 				: lmgamarrach
+ * -----------------------------------------------------------------
+ * Modificaciones
+ * Fecha             Nombre                  Descripción
+ * -----------------------------------------------------------------
+ * 
+ *
+ */
+package pe.com.sedapal.scr.correo.job;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import microsoft.exchange.webservices.data.core.ExchangeService;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.credential.WebCredentials;
+import pe.com.sedapal.scr.correo.core.beans.AdjuntoMensaje;
+import pe.com.sedapal.scr.correo.core.beans.ConfiguracionCorreo;
+import pe.com.sedapal.scr.correo.core.beans.MensajeCorreo;
+import pe.com.sedapal.scr.correo.core.common.Constants;
+import pe.com.sedapal.scr.correo.service.IConfigCorreoService;
+import pe.com.sedapal.scr.correo.task.EnviarMensajeTask;
+import pe.com.sedapal.scr.correo.task.LeerMensajesTask.RedirectionUrlCallback;
+
+@Component
+public class ETLReportesResumenJob {
+	final static Logger logger = Logger.getLogger(ETLReportesResumenJob.class);
+
+	@Autowired
+	private EnviarMensajeTask enviarMensajeTask;
+	
+	@Autowired
+	private IConfigCorreoService configCorreoService;
+	
+	private ExchangeService exchangeService;
+	
+	/**
+	 * Método que permite ejecutar la tarea programada de envío de correo
+	 * @Return No hay objeto de retorno 
+	 * @throws Exception Excepción que puede ser lanzada
+	 */
+	public void execute() throws Exception{
+		
+		logger.info("**Iniciando Proceso de Reportes Resumen**");
+		
+		ConfiguracionCorreo configCorreoEnvios 
+		= configCorreoService.obtenerConfigCorreo(Constants.TIPO_CORREO_ENVIOS, Constants.ESTADO_ACTIVO);
+		
+		ConfiguracionCorreo configCorreo 
+			= configCorreoService.obtenerConfigCorreo(Constants.TIPO_PROCESO_REPORTE, Constants.ESTADO_ACTIVO);
+		
+		logger.info("Correos recuperados correctamente");
+		
+		exchangeService = new ExchangeService(ExchangeVersion.Exchange2010_SP2);
+	
+		WebCredentials credentials 
+			= new WebCredentials(configCorreoEnvios.getCuentaCorreo().getStrUsuario(), 
+					configCorreoEnvios.getCuentaCorreo().getStrClave());
+		exchangeService.setCredentials(credentials);
+		exchangeService.autodiscoverUrl(configCorreoEnvios.getCuentaCorreo().getStrCorreo(), new RedirectionUrlCallback());
+		exchangeService.setTraceEnabled(true);		
+		
+		logger.info("Conexion al correo establecida");
+		
+		MensajeCorreo mensajeCorreo = new MensajeCorreo();
+		
+		/* ---Remitente--- */
+		mensajeCorreo.setStrRemitente(configCorreoEnvios.getCuentaCorreo().getStrCorreo());
+		
+		/* ---Destinatarios--- */
+		List<String> destinatarios = new ArrayList<String>();
+		String paraBd = configCorreo.getMensajeCorreo().getStrPara() != null ? configCorreo.getMensajeCorreo().getStrPara() : "";
+		String[] arrDestinatarios = paraBd.split(",");
+		for(int j=0; j<arrDestinatarios.length; j++){
+			String strDestinatario = arrDestinatarios[j].trim();					
+			destinatarios.add(strDestinatario);
+		}
+		mensajeCorreo.setLstDestinatarios(destinatarios);
+		
+		/* ---CCs--- */
+		List<String> ccs = new ArrayList<String>();
+		String ccBd = configCorreo.getMensajeCorreo().getStrConCopia() != null ? configCorreo.getMensajeCorreo().getStrConCopia() : "";
+		String[] arrCcs = ccBd.split(",");
+		for(int j=0; j<arrCcs.length; j++){
+			String strCc = arrCcs[j].trim();
+			if(!StringUtils.isEmpty(strCc)){
+				ccs.add(strCc);
+			}
+		}
+		mensajeCorreo.setLstCcs(ccs);
+		
+			
+		/* ---Asunto--- */
+		mensajeCorreo.setStrAsunto(configCorreo.getMensajeCorreo().getStrAsunto());
+		
+		/* ---Contenido--- */
+		mensajeCorreo.setStrContenido(configCorreo.getMensajeCorreo().getStrContenido());
+		
+		/* ---Adjuntos--- */
+		List<AdjuntoMensaje> adjuntos = new ArrayList<AdjuntoMensaje>();
+		
+		/* ---Adjunto Reporte Grafico--- */
+		String[] fechaRutaGrafico = enviarMensajeTask.generarReporteGraficoCaudal();
+		
+		AdjuntoMensaje adjuntoUno = new AdjuntoMensaje();		
+		Path rutaUno = Paths.get(fechaRutaGrafico[1]);
+		byte[] archivoUno = Files.readAllBytes(rutaUno);
+		
+		adjuntoUno.setStrNombreAdjunto(Constants.REPORTE_GRAFICO+fechaRutaGrafico[0].substring(6,10)+""+fechaRutaGrafico[0].substring(3,5)+".pdf");
+		adjuntoUno.setBytArchivoAdjunto(archivoUno);		
+		adjuntos.add(adjuntoUno);
+			
+		/* ---Adjunto Reporte Resumen PDF--- */
+		String[] fechaRutaResumen = enviarMensajeTask.generarReporteResumenCaudal();
+		
+		AdjuntoMensaje adjuntoDos = new AdjuntoMensaje();
+		Path rutaDos = Paths.get(fechaRutaResumen[1]);
+		byte[] archivoDos = Files.readAllBytes(rutaDos);		
+		
+		adjuntoDos.setStrNombreAdjunto(Constants.REPORTE_RESUMEN+fechaRutaResumen[0].substring(6,10)+""+fechaRutaResumen[0].substring(3,5)+".pdf");
+		adjuntoDos.setBytArchivoAdjunto(archivoDos);		
+		adjuntos.add(adjuntoDos);
+		
+		/* ---Adjunto Reporte Resumen Excel--- */
+		String[] fechaRutaResumenExcel = enviarMensajeTask.generarReporteResumenCaudalExcel();
+		
+		AdjuntoMensaje adjuntoTres = new AdjuntoMensaje();
+		Path rutaTres = Paths.get(fechaRutaResumenExcel[1]);
+		byte[] archivoTres = Files.readAllBytes(rutaTres);	
+		
+		adjuntoTres.setStrNombreAdjunto(Constants.REPORTE_RESUMEN+fechaRutaResumen[0].substring(6,10)+""+fechaRutaResumen[0].substring(3,5)+".xls");
+		adjuntoTres.setBytArchivoAdjunto(archivoTres);		
+		adjuntos.add(adjuntoTres);
+		
+		/**/
+		mensajeCorreo.setLstAdjuntos(adjuntos);		
+		
+		enviarMensajeTask.enviarMensaje(mensajeCorreo, exchangeService);		
+		
+		/* --- Borrar Archivos Temporales--- */
+		enviarMensajeTask.deleteTempFiles(adjuntoUno.getStrNombreAdjunto(), adjuntoDos.getStrNombreAdjunto(), adjuntoTres.getStrNombreAdjunto());
+		
+		logger.info("**Finalizando Proceso de Reportes Resumen**");
+	}
+	
+}

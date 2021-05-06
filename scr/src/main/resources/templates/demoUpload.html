@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<body>
+<div layout:fragment="content">
+<h1>Spring Boot - Multiple file upload example - AJAX</h1>
+
+<form id="upload-file-form">
+  <label for="upload-file-input">Upload your file:</label>
+  <input id="upload-file-input" type="file" name="uploadfile" accept="*" />
+</form>
+
+<script type="text/javascript" th:src="@{/js/uploadFile.js}"></script>
+</div>
+</body>
+</html>

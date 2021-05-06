@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	
+	<div th:fragment="resultsList" class="" id="idClimaTable">
+	<div class="container_save"></div>
+	
+	<div class="modal-content" id="id-modal-content">
+	
+	<div class="container_save_reporte"></div>
+	<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" id="buttonCloseDetail" >&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('plan.operativo.reporte.detalle')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('tablaPoisson.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('tablaPoisson.crear')}">Crear texto html</span>
+	</div>
+	<div class="modal-footer">
+			<div id="reporteData" th:attr="data-codare=${reportePlanEditBean.codare}, data-mes=${reportePlanEditBean.mes} , data-codplan=${reportePlanEditBean.codplan}, data-estadoplan=${estadoplan}"></div>
+	
+			<div name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal containerform" role="form">
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:10px">
+					<div class="col-md-10 col-sm-10 col-xs-10">
+					
+							<div class="col-md-12 col-sm-12 col-xs-12">
+						    <label class="col-md-2 col-sm-2 col-xs-2" th:text="${#messages.msg('actividad.area.codigo')}"></label>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<input type="text" name="cpDesc" class="form-control" id="codigoDesc" disabled="disabled" th:attr="value=${reportePlanEditBean.codDescPlan}"></input>
+							</div>
+							
+							<label class="col-md-2 col-sm-2 col-xs-2" th:text="${#messages.msg('plan.operativo.descripcion')}"></label>
+							<div class="col-md-5 col-sm-5 col-xs-5">
+								<input type="text" name="cpDesc" class="form-control" id="descPlan" disabled="disabled" th:attr="value=${reportePlanEditBean.descripcion}"/>
+							</div>
+							</div>
+					
+							<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:10px">
+							<label class="col-md-2 col-sm-2 col-xs-2 col-xs-2" th:text="${#messages.msg('subactividad.parametro.grupo.label')}"></label>
+							<div class="col-md-3 col-sm-3 col-xs-3 col-xs-3">
+								<input type="text"  name="cpDesc" class="form-control" id="textArea" disabled="disabled" ></input>
+							</div>
+							
+							<label class="col-md-2 col-sm-2 col-xs-2 col-xs-1" th:text="${#messages.msg('plan.operativo.label.anio')}"></label>
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<input type="text" class="form-control"  name="periodo" id="periodo" disabled="disabled" th:attr="value=${reportePlanEditBean.periodo}" ></input>
+							</div>
+							
+							<label class="col-md-1 col-sm-1 col-xs-1" th:text="${#messages.msg('reporte.plan.operativo.mes')}"></label>
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<select class="form-control"  name="cboMeses" id="cboMeses" ></select>
+							</div>
+							</div>
+						
+					</div>
+					
+					<div class="col-md-2 col-sm-2 col-xs-2" style="text-align:center;padding-top:10px;padding-bottom:10px">
+								<button type="button" id="idBtnBuscarTablaPoisson" onclick="buscarReportePlanXFecha();" class="btn btn-primary" ><span class="glyphicon glyphicon-search"></span><label>Buscar</label></button>
+					</div>
+					
+					</div>
+					
+				</fieldset>
+			</div>
+			
+	<br/>
+		
+	<div class="row border-plan-operativo margen-reporte-plan"  >
+		<div th:text="${#messages.msg('reporte.plan.operativo.actividad')}" class="col-md-2 col-sm-2 col-xs-2 negrita text-center"></div>
+		<div class="col-md-10 col-sm-10 col-xs-10" >
+			<div th:text="${#messages.msg('reporte.plan.operativo.subactividad')}"  class="col-md-3 col-sm-3 col-xs-3 negrita text-center "></div>
+			<div  class="col-md-9 col-sm-9">
+				<div th:text="${#messages.msg('reporte.plan.operativo.parametro')}" class="col-md-4 col-sm-4 col-xs-4 negrita text-center"></div>
+				<div th:text="${#messages.msg('reporte.plan.operativo.programado')}" class="col-md-3 col-sm-3 col-xs-3 negrita text-center"></div>
+				<div th:text="${#messages.msg('reporte.plan.operativo.ejecutado')}"  class="col-md-3 col-sm-3 col-xs-3 negrita text-center"></div>
+				<div th:text="${#messages.msg('reporte.plan.operativo.porcentaje')}" class="col-md-2 col-sm-2 col-xs-2 negrita text-center"></div>
+			</div>
+		</div>
+	</div>
+	
+
+	
+	<form name="form-edit-reporte-plan" id="form-edit-reporte-plan" method="post" 
+				  th:action="@{/reportePlanOperativoSave1}" th:object="${reportePlanEditBean}"
+				  role="form">
+	
+	 <div class="center">
+	
+	<input type="hidden" class="form-control" th:field="*{codplan}"/>
+	<input type="hidden" class="form-control" th:field="*{codDescPlan}"/>
+	<input type="hidden"  th:field="*{descripcion}"/>
+	<input type="hidden" class="form-control" th:field="*{mes}"/>
+							
+		
+    <div th:each="actividad,stat : *{actividades}"   class="row actividad border-plan-operativo margen-reporte-plan" >  
+        	<div class="col-md-2 col-sm-2 col-xs-2 text-center form-group" th:text="${actividad.descripcion}" ></div>
+        	<div class="form-group"> <input id="strValorPoisson" type="hidden" class="form-control " 	maxlength="20"  th:field="*{actividades[__${stat.index}__].descripcion}"/></div>
+        	        	
+        	<div class="col-md-10 col-sm-10 col-xs-10 ">
+              <div th:each="subactividad,ind : *{actividades[__${stat.index}__].subactividades}"   class="row subactividad subactcalcular border-plan-operativo" >
+               		<div  class="col-md-3 col-sm-3 col-xs-3 text-center"  th:text="${subactividad.descripcion}">
+               		</div>
+               		<input type="hidden" class="form-control" style="width:100%" th:field="*{actividades[__${stat.index}__].subactividades[__${ind.index}__].descripcion}"/>
+                
+<!--                 	<div  class="col-md-9 col-sm-9 col-xs-9 actividad" > -->
+						<div  class="col-md-9 col-sm-9 col-xs-9" >
+                  		 <div  th:each="parametro,ipar : *{actividades[__${stat.index}__].subactividades[__${ind.index}__].parametros}"  class="row parametroPlan" >
+                   			<div th:text="${parametro.parametro}" th:class="${parametro.descripcion} == 'TOTALES'? 'col-md-4 col-sm-4 col-xs-4 negrita text-center':'col-md-4 col-sm-4 col-xs-4 text-center '">
+                   			</div>
+                   			<div th:text="${parametro.programado}" th:class="${parametro.descripcion} == 'TOTALES'? 'col-md-3 col-sm-3 col-xs-3 negrita text-center programado-total':'col-md-3 col-sm-3 col-xs-3 text-center programado'">
+                   			</div>
+                   			<div th:class="${parametro.descripcion} == 'TOTALES'? 'col-md-3 col-sm-3 col-xs-3 negrita total form-group':'col-md-3 col-sm-3 col-xs-3 no-total form-group'">
+                   				  <input type="text" class="form-control total-params"  onkeyup="calcularTotales();" 
+                   					onselectstart="return false" onpaste="return false;" onCopy="return false" onCut="return false" 
+										onDrag="return false" onDrop="return false" autocomplete="off"
+                   				  style="width:100%" th:field="*{actividades[__${stat.index}__].subactividades[__${ind.index}__].parametros[__${ipar.index}__].ejecutado}"/>
+                   			</div>
+                   			<div th:text="${parametro.porcentaje}" th:class="${parametro.descripcion} == 'TOTALES'? 'col-md-2 col-sm-2 col-xs-2 negrita text-center porcentaje-total':'col-md-2 col-sm-2 col-xs-2 text-center porcentaje'">
+                   			</div>
+                   			
+                   			<input type="hidden" class="form-control" style="width:100%" th:field="*{actividades[__${stat.index}__].subactividades[__${ind.index}__].parametros[__${ipar.index}__].actividad}"/>
+                   			<input type="hidden" class="form-control" style="width:100%" th:field="*{actividades[__${stat.index}__].subactividades[__${ind.index}__].parametros[__${ipar.index}__].codact}"/>
+                   			<input type="hidden" class="form-control" style="width:100%" th:field="*{actividades[__${stat.index}__].subactividades[__${ind.index}__].parametros[__${ipar.index}__].subactividad}"/>
+                   			<input type="hidden" class="form-control" style="width:100%" th:field="*{actividades[__${stat.index}__].subactividades[__${ind.index}__].parametros[__${ipar.index}__].codsubact}"/>
+                   			<input type="hidden" class="form-control" style="width:100%" th:field="*{actividades[__${stat.index}__].subactividades[__${ind.index}__].parametros[__${ipar.index}__].codparam}"/>
+                   			<input type="hidden" class="form-control" style="width:100%" th:field="*{actividades[__${stat.index}__].subactividades[__${ind.index}__].parametros[__${ipar.index}__].parametro}"/>
+                   			<input type="hidden" class="form-control" style="width:100%" th:field="*{actividades[__${stat.index}__].subactividades[__${ind.index}__].parametros[__${ipar.index}__].descripcion}"/>
+                   			<input type="hidden" class="form-control" style="width:100%" th:field="*{actividades[__${stat.index}__].subactividades[__${ind.index}__].parametros[__${ipar.index}__].programado}"/>
+                   			
+           		   		 </div>
+           		    </div>
+               </div>
+           	 </div>
+    </div>
+    
+    <fieldset class="col-md-12 col-sm-12 col-xs-12 form-group" th:fragment="buttons">
+						<span><br /></span>
+						<div class=" col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+     </fieldset>
+    
+    </div> 
+    
+   		 
+					
+    </form>
+      </div>
+    </div>
+    </div>
+		
+</body>
+</html>

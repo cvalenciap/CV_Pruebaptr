@@ -1,0 +1,128 @@
+create or replace PACKAGE PCK_CAUDAL IS
+
+PROCEDURE PRC_GET_CAUDAL(
+	   --Parametro de busqueda
+	   PAR_N_CODRIO  IN SCR_CAUDAL.N_CODRIO%TYPE,
+	   PAR_V_PERIOD IN SCR_CAUDAL.V_PERIOD%TYPE,
+	   PAR_V_ESTADO  IN SCR_CAUDAL.V_ESTADO%TYPE,
+	   --Parametro de retorno
+	   PAR_OUT_CURSOR OUT SYS_REFCURSOR
+);
+
+PROCEDURE PRC_GET_CAU_DET_RES(
+           --Parametro de busqueda
+           PAR_PERIODO IN SCR_CAUDAL.V_PERIOD%TYPE,
+           --Parametro de retorno
+           PAR_OUT_CURSOR OUT SYS_REFCURSOR
+);
+
+PROCEDURE PRC_GET_CAU_DET_GRA(
+           --Parametro de busqueda
+           PAR_PERIODO IN SCR_CAUDAL.V_PERIOD%TYPE,
+           --Parametro de retorno
+           PAR_OUT_CURSOR OUT SYS_REFCURSOR
+);
+
+PROCEDURE PRC_GET_CAU_DET2(
+           --Parametro de busqueda
+           PAR_CAUDAL_CODIGO IN SCR_CAUDAL.N_CODIGO%TYPE,
+           --Parametro de retorno
+           PAR_OUT_CURSOR OUT SYS_REFCURSOR
+);
+
+PROCEDURE PRC_BUSCA_CAUDAL (
+   --Parametros de la busqueda
+   PAR_TIPO_PROCESO IN VARCHAR2,
+   PAR_PERIODO IN VARCHAR2,
+   --Parametros de la paginacion
+   par_col_order_by IN integer, par_col_order_by_dir IN varchar2 , 
+   par_pag_desde IN integer, par_cantidad_pag IN integer,
+   --Parametros de retorno
+   par_out_quantity OUT integer,
+   par_out_cursor OUT SYS_REFCURSOR  
+);
+
+PROCEDURE PRC_INSERT_CAUDAL(
+   PAR_N_CODRIO       IN        	SCR_CAUDAL.N_CODRIO%TYPE,
+   PAR_V_TIPROC       IN          	SCR_CAUDAL.V_TIPROC%TYPE,
+   PAR_V_LOTE         IN            SCR_CAUDAL.V_LOTE%TYPE,
+   PAR_V_RUTA		  IN			SCR_CAUDAL.V_RUTA%TYPE,
+   PAR_V_PERIOD       IN            SCR_CAUDAL.V_PERIOD%TYPE,
+   PAR_V_ESTADO       IN            SCR_CAUDAL.V_ESTADO%TYPE,
+   PAR_V_NOMARC       IN            SCR_CAUDAL.V_NOMARC%TYPE,
+   PAR_N_CODCAR       IN            SCR_CAUDAL.N_CODCAR%TYPE,
+
+   --Campos de Auditoria
+   PAR_A_USUINS       IN     		SCR_CAUDAL.A_USUINS%TYPE,
+   PAR_A_PROGRA       IN            SCR_CAUDAL.A_PROGRA%TYPE,
+   PAR_A_CODARE       IN          	SCR_CAUDAL.A_CODARE%TYPE,
+   PAR_A_CODSIS       IN       		SCR_CAUDAL.A_CODSIS%TYPE,
+   
+   --Campos de Salida
+   PAR_OUT_COD_CAU		OUT 		INTEGER
+);
+
+PROCEDURE PRC_UPDATE_CAUDAL(
+   PAR_N_CODIGO       IN     		SCR_CAUDAL.N_CODIGO%TYPE,
+   PAR_V_TIPROC       IN          	SCR_CAUDAL.V_TIPROC%TYPE,
+   PAR_V_LOTE         IN            SCR_CAUDAL.V_LOTE%TYPE,
+   PAR_V_RUTA		  IN			SCR_CAUDAL.V_RUTA%TYPE,
+   PAR_D_FHREG        IN            SCR_CAUDAL.D_FHREG%TYPE,
+   PAR_V_ESTADO       IN            SCR_CAUDAL.V_ESTADO%TYPE,
+   PAR_V_NOMARC       IN            SCR_CAUDAL.V_NOMARC%TYPE,
+   PAR_N_CODCAR       IN            SCR_CAUDAL.N_CODCAR%TYPE,
+
+   --Campos de Auditoria
+   PAR_A_USUUPD       IN     		SCR_CAUDAL.A_USUUPD%TYPE,
+   PAR_A_PROGRA       IN            SCR_CAUDAL.A_PROGRA%TYPE,
+   PAR_A_CODARE       IN          	SCR_CAUDAL.A_CODARE%TYPE,
+   PAR_A_CODSIS       IN       		SCR_CAUDAL.A_CODSIS%TYPE
+);
+
+PROCEDURE PRC_INSERT_CAUDAL_DETALLE(
+   PAR_N_CODCAU         IN      		SCR_CAUDAL_DET.N_CODCAU%TYPE,
+   PAR_V_DIA            IN     	        SCR_CAUDAL_DET.V_DIA%TYPE,
+   PAR_N_NHR01			IN			    SCR_CAUDAL_DET.N_NHR01%TYPE,
+   PAR_N_NHR02          IN              SCR_CAUDAL_DET.N_NHR02%TYPE,
+   PAR_N_NHR03          IN           	SCR_CAUDAL_DET.N_NHR03%TYPE,
+   PAR_N_NHR04          IN              SCR_CAUDAL_DET.N_NHR04%TYPE,
+   PAR_N_NHR05          IN              SCR_CAUDAL_DET.N_NHR05%TYPE,
+   PAR_N_NHR06          IN              SCR_CAUDAL_DET.N_NHR06%TYPE,
+   PAR_N_NHR07          IN              SCR_CAUDAL_DET.N_NHR07%TYPE,
+   PAR_N_NHR08          IN              SCR_CAUDAL_DET.N_NHR08%TYPE,
+   PAR_N_NHR09			IN			    SCR_CAUDAL_DET.N_NHR09%TYPE,
+   PAR_N_NHR10          IN              SCR_CAUDAL_DET.N_NHR10%TYPE,
+   PAR_N_NHR11          IN           	SCR_CAUDAL_DET.N_NHR11%TYPE,
+   PAR_N_NHR12          IN              SCR_CAUDAL_DET.N_NHR12%TYPE,
+   PAR_N_NHR13          IN              SCR_CAUDAL_DET.N_NHR13%TYPE,
+   PAR_N_NHR14          IN              SCR_CAUDAL_DET.N_NHR14%TYPE,
+   PAR_N_NHR15          IN              SCR_CAUDAL_DET.N_NHR15%TYPE,
+   PAR_N_NHR16          IN              SCR_CAUDAL_DET.N_NHR16%TYPE,
+   PAR_N_NHR17			IN			    SCR_CAUDAL_DET.N_NHR17%TYPE,
+   PAR_N_NHR18          IN              SCR_CAUDAL_DET.N_NHR18%TYPE,
+   PAR_N_NHR19          IN           	SCR_CAUDAL_DET.N_NHR19%TYPE,
+   PAR_N_NHR20          IN              SCR_CAUDAL_DET.N_NHR20%TYPE,
+   PAR_N_NHR21          IN              SCR_CAUDAL_DET.N_NHR21%TYPE,
+   PAR_N_NHR22          IN              SCR_CAUDAL_DET.N_NHR22%TYPE,
+   PAR_N_NHR23          IN              SCR_CAUDAL_DET.N_NHR23%TYPE,
+   PAR_N_NHR24          IN              SCR_CAUDAL_DET.N_NHR24%TYPE,
+   PAR_N_PROMED         IN              SCR_CAUDAL_DET.N_PROMED%TYPE,
+
+   --Campos de Auditoria
+   PAR_A_USUINS        IN   			SCR_CAUDAL_DET.A_USUINS%TYPE,
+   PAR_A_PROGRA        IN            	SCR_CAUDAL_DET.A_PROGRA%TYPE,
+   PAR_A_CODARE        IN         	    SCR_CAUDAL_DET.A_CODARE%TYPE,
+   PAR_A_CODSIS        IN      		    SCR_CAUDAL_DET.A_CODSIS%TYPE,
+   
+   --Campos de salida
+   PAR_OUT_COD_CAU_DET     OUT          INTEGER
+);
+
+PROCEDURE PRC_GET_CAUDAL_DET_BY_CAUDAL(
+	   --Parametro de busqueda
+	   PAR_CAUDAL IN SCR_CAUDAL_DET.N_CODCAU%TYPE,
+	   --Parametro de retorno
+	   PAR_OUT_CURSOR OUT SYS_REFCURSOR
+);
+
+END PCK_CAUDAL;

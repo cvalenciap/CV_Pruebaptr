@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+<script th:inline="javascript">
+/*<![CDATA[*/    
+    var mensajeRespuestaServer = /*[[${mensajeRespuesta}]]*/ ;
+    var estadoRespuestaServer = /*[[${estadoRespuesta}]]*/ ;
+    var objSemillaSeeded = /*[[${objSemillaSeeded}]]*/ ; 
+    var modo =  /*[[${modo}]]*/ ; 
+/*]]>*/
+</script>
+</head>
+<body class="skin-gym bar-white">
+	<div class="modal-dialog modal-lg" role="document">   
+		<div class="modal-content">  
+		    <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <h4 class="modal-title">Mantenimiento de Seeded</h4>
+	        </div>
+			<div class="modal-body">
+				<div class="panel-body">
+					<div class="box-wrap-body">
+						<div class="box-form" id="divMantenimientoSeeded">
+							<div class="row">
+								<div class="col-md-9">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label for="txtCodigo" class="control-label col-sm-4">Codigo :</label>
+											<div class="col-md-3">
+												<input type="text" class="form-control input-sm"  id="txtCodigo" disabled="disabled"/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-9">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label for="txtCodigo" class="control-label col-sm-4">Valor GGA :</label>
+											<label for="txtValorGGA" class="control-label col-sm-1" th:text="*{objSemillaSeeded.numValGGa}"></label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-9">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="control-label col-sm-4">Volumen<font class="text-danger"> (*) :</font></label>
+											<div class="col-md-5">
+												<input type="text" class="form-control input-sm" onkeyup="calcularValoresSeeded()" id="txtVolumenSeeded" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-9">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="control-label col-sm-4">Initial DO B1<font class="text-danger"> (*) :</font></label>
+											<div class="col-md-5">
+												<input type="text" class="form-control input-sm" onkeyup="calcularValoresSeeded()" id="txtInicialSeeded" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-9">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="control-label col-sm-4">Final DO B2<font class="text-danger"> (*) :</font></label>
+											<div class="col-md-5">
+												<input type="text" class="form-control input-sm" onkeyup="calcularValoresSeeded()" id="txtFinalSeeded" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-9">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="control-label col-sm-4">Depletion : </label>
+											<div class="col-md-3">
+												<input type="text" class="form-control input-sm"  disabled="disabled" id="txtDepletionSeeded" />
+											</div>
+											<label class="control-label col-sm-2">%Dep : </label>
+											<div class="col-md-3">
+												<input type="text" class="form-control input-sm"  disabled="disabled" id="txtDepSeeded" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-9">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="control-label col-sm-4">BOD : </label>
+											<div class="col-md-3">
+												<input type="text" class="form-control input-sm"  disabled="disabled" id="txtBODSeeded" />
+											</div>
+											<label class="control-label col-sm-2">SCF : </label>
+											<div class="col-md-3">
+												<input type="text" class="form-control input-sm"  disabled="disabled" id="txtSCFSeeded" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+					    	<div class="row">
+								<div class="col-md-4">
+									&nbsp;
+								</div>
+							</div>				    	
+						</div>
+					</div>
+				</div>								
+			</div>			
+			<div class="modal-footer">
+			    <div class="pull-left">                    
+                 	<div class="alert-custom">
+						<div id="mensajeInformacionSeededM" class="alert-custom"></div>
+					</div>
+                 </div>
+                <div class="pull-right">                    
+                	 <button id="btnGrabarSeeded" name="btnGrabarSeeded" class="btn-s btn-add" >Grabar</button>
+                	 &nbsp;&nbsp;&nbsp;
+                     <button id="btnCancelarSeeded" name="btnCancelarSeeded" class="btn-s btn-clean" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+		</div>
+	</div>	
+	<script type="text/javascript" th:src="@{/js/verModalSeeded.js}"></script>
+</body>
+</html>

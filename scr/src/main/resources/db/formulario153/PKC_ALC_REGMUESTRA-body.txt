@@ -1,0 +1,378 @@
+create or replace package body PKC_ALC_REGMUESTRA is
+
+-- Author  : USER
+  PROCEDURE PRC_LISTADO_REG_MUESTRAS(
+    --Parametros de la busqueda
+   PAR_FECHA_INICIO          IN VARCHAR2,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR  
+       
+ )
+ IS
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+
+BEGIN
+
+  v_query_count:= ' select count(*) ';
+
+  v_query :=  'SELECT * 
+                 FROM(SELECT a.*, rownum rn 
+                        FROM(SELECT  
+                                      TO_CHAR(H.D_FECFOR, ''DD/MM/YYYY''), 
+                                      H.C_HORA,
+                                      H.C_CODFR,
+                                      D.C_DDCATL AS R,
+                                      B.C_DDCATL AS S, 
+                                      C.C_DDCATL AS T, 
+                                      E.C_DDCATL AS U,
+                                      H.C_TEMPRE,  
+                                      F.C_DDCATL AS V,
+                                      G.C_DDCATL AS Z,
+                                      H.C_APLMED,
+                                      H.N_CODCUS 
+                                       ';
+
+  v_query_from := ' FROM ALC_FORMULAR153 H 
+                                           LEFT JOIN ALC_DETCATLG B ON H.N_MATRIZ = B.C_VALCAT AND B.N_CCATLG=7
+                                           LEFT JOIN ALC_DETCATLG C ON H.N_TIPOAN = C.C_VALCAT AND C.N_CCATLG=8
+                                           LEFT JOIN ALC_DETCATLG D ON H.N_PUNMUE = D.C_VALCAT AND D.N_CCATLG=6
+                                           LEFT JOIN ALC_DETCATLG E ON H.N_TIPFRA = E.C_VALCAT AND E.N_CCATLG=9
+                                           LEFT JOIN ALC_DETCATLG F ON H.N_PERMUE = F.C_VALCAT AND F.N_CCATLG=10
+                                           LEFT JOIN ALC_DETCATLG G ON H.N_RECANA = G.C_VALCAT AND G.N_CCATLG=11   
+                                           WHERE ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := ' 1=1 ';
+  
+  
+   if(LENGTH(TRIM(PAR_FECHA_INICIO))>0) then
+    v_query_where :=  v_query_where || ' AND TO_CHAR(H.D_FECFOR, '''||'DD/MM/YYYY'||''') >= ''' || PAR_FECHA_INICIO ||''' AND ';
+    v_query_where :=  v_query_where || '     TO_CHAR(H.D_FECFOR, '''||'DD/MM/YYYY'||''') <= ''' || PAR_FECHA_INICIO ||''' AND H.N_TIPCUS = 1 ';  
+              
+   end if;
+  
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+  
+  v_query := v_query || ' order by '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' and rn <= ' || (par_pag_desde+par_cantidad_pag);
+    
+  OPEN par_out_cursor FOR v_query;
+  
+  execute immediate v_query_count into par_out_quantity;
+END;
+
+PROCEDURE PRC_GET_REGMUESTRA_PDF(
+    --Parametro de busqueda
+    PAR_FECHA       IN VARCHAR2,
+    --Parametro de retorno
+    PAR_OUT_CURSOR  OUT SYS_REFCURSOR
+)
+IS
+
+BEGIN
+
+OPEN PAR_OUT_CURSOR FOR
+    
+    SELECT  
+           TO_CHAR(H.D_FECFOR, 'DD/MM/YYYY HH:MI:SS AM') AS FECHA, 
+           H.C_CODFR  AS C_FRASCO,
+           D.C_DDCATL AS PTO_MUESTREO,
+           B.C_DDCATL AS MATRIZ, 
+           C.C_DDCATL AS T_ANALISIS, 
+           E.C_DDCATL AS T_FRASCO,
+           H.C_TEMPRE AS TEMPERATURA,  
+           F.C_DDCATL AS PERSONA_M,
+           G.C_DDCATL AS R_ANALISTA,
+           H.C_APLMED AS SEGURIDAD,
+           H.N_CODCUS AS ID_REGISTRO
+
+     FROM  ALC_FORMULAR153 H 
+           INNER JOIN ALC_DETCATLG B ON H.N_MATRIZ = B.C_VALCAT AND B.N_CCATLG=7
+           INNER JOIN ALC_DETCATLG C ON H.N_TIPOAN = C.C_VALCAT AND C.N_CCATLG=8
+           INNER JOIN ALC_DETCATLG D ON H.N_PUNMUE = D.C_VALCAT AND D.N_CCATLG=6
+           INNER JOIN ALC_DETCATLG E ON H.N_TIPFRA = E.C_VALCAT AND E.N_CCATLG=9
+           INNER JOIN ALC_DETCATLG F ON H.N_PERMUE = F.C_VALCAT AND F.N_CCATLG=10
+           INNER JOIN ALC_DETCATLG G ON H.N_RECANA = G.C_VALCAT AND G.N_CCATLG=11   
+                   
+     WHERE TO_CHAR(H.D_FECFOR, 'DD/MM/YYYY') >= PAR_FECHA AND        
+           TO_CHAR(H.D_FECFOR, 'DD/MM/YYYY') <= PAR_FECHA;
+
+END;
+  
+PROCEDURE PRC_GET_FORMULARIO153(
+   --Parametros de la busqueda
+   P_ID_REGISTRO   IN    ALC_FORMULAR153.N_CODCUS%TYPE,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+
+BEGIN
+  
+   OPEN PAR_OUT_CURSOR FOR
+   SELECT  
+         TO_CHAR(A.D_FECFOR, 'DD/MM/YYYY'), 
+                 A.C_HORA,
+                 A.N_CODCUS, 
+                 A.C_CODFR,
+                 A.N_PUNMUE,
+                 A.N_MATRIZ,  
+                 A.N_TIPOAN,
+                 A.N_TIPFRA,
+                 A.C_TEMPRE, 
+                 A.N_PERMUE,
+                 A.N_RECANA,
+                 A.C_APLMED,
+                 A.C_OBSERV
+            
+  FROM ALC_FORMULAR153 A
+        INNER JOIN ALC_DETCATLG B ON A.N_MATRIZ = B.C_VALCAT AND B.N_CCATLG=7
+        INNER JOIN ALC_DETCATLG C ON A.N_TIPOAN = C.C_VALCAT AND C.N_CCATLG=8
+        INNER JOIN ALC_DETCATLG D ON A.N_PUNMUE = D.C_VALCAT AND D.N_CCATLG=6
+        INNER JOIN ALC_DETCATLG E ON A.N_TIPFRA = E.C_VALCAT AND E.N_CCATLG=9
+        INNER JOIN ALC_DETCATLG F ON A.N_PERMUE = F.C_VALCAT AND F.N_CCATLG=10
+        INNER JOIN ALC_DETCATLG G ON A.N_RECANA = G.C_VALCAT AND G.N_CCATLG=11         
+                                 
+  WHERE  A.N_CODCUS = P_ID_REGISTRO;
+  
+END;
+
+ 
+PROCEDURE PRC_INSERT_MUESTRA(
+  
+   PAR_FECHA_REGISTRO               IN VARCHAR2,
+   PAR_COD_FRASCO                   ALC_FORMULAR153.C_CODFR%TYPE,
+   PAR_MATRIZ                       ALC_FORMULAR153.N_MATRIZ%TYPE,
+   PAR_PERSONA_MUESTREA             ALC_FORMULAR153.N_PERMUE%TYPE,
+   PAR_TIPO_ANALISIS                ALC_FORMULAR153.N_TIPOAN%TYPE,
+   PAR_RECEP_ANALISTA               ALC_FORMULAR153.N_RECANA%TYPE,
+   PAR_PUNTO_MUESTREO               ALC_FORMULAR153.N_PUNMUE%TYPE,
+   PAR_TIPO_FRASCO                  ALC_FORMULAR153.N_TIPFRA%TYPE, 
+   PAR_MEDIDAS_SEGURIDAD            ALC_FORMULAR153.C_APLMED%TYPE,
+   PAR_TEMP_PRESERVACION            ALC_FORMULAR153.C_TEMPRE%TYPE,
+   PAR_HORA                         ALC_FORMULAR153.C_HORA%TYPE,
+   PAR_OBSERVACION                  ALC_FORMULAR153.C_OBSERV%TYPE,
+   --Campos de Auditoria
+   A_PAR_USUARIO_CREACION           ALC_FORMULAR153.A_USUCRE%TYPE,
+   A_PAR_USUARIO_MODIFICACION       ALC_FORMULAR153.A_USUMOD%TYPE,
+   /*PAR_FECHA_CREACION               ALC_FORMULAR153.A_FECCRE%TYPE,*/
+   /*PAR_FECHA_MODULO                 ALC_FORMULAR153.A_FECMOD%TYPE,*/
+   A_PAR_NOMBRE_PROGRAMA            ALC_FORMULAR153.A_NOMPRG%TYPE,
+   PAR_OUT_RETURN            OUT INTEGER
+ )
+ 
+ IS
+ BEGIN
+   
+ PAR_OUT_RETURN := SQ_ALC_FORMULAR153.NEXTVAL;
+  -- insert into prueba_x(nombre, apellidos) values(PAR_NAME, PAR_APE);
+   
+ INSERT INTO ALC_FORMULAR153
+      (A_USUCRE,
+       A_FECCRE,
+       A_USUMOD,
+       A_FECMOD,
+       A_NOMPRG,
+       N_CODCUS,
+       N_TIPCUS,
+       C_CODFR,
+       D_FECFOR,
+       N_MATRIZ,
+       N_PERMUE,
+       N_TIPOAN,
+       N_RECANA,
+       N_PUNMUE,
+       N_TIPFRA,
+       C_APLMED,
+       C_TEMPRE,
+       C_HORA,
+       C_OBSERV
+       )
+    VALUES
+      (A_PAR_USUARIO_CREACION,
+       SYSDATE,
+       A_PAR_USUARIO_MODIFICACION,
+       SYSDATE, --NULL
+       A_PAR_NOMBRE_PROGRAMA,
+       PAR_OUT_RETURN,
+       1,
+       PAR_COD_FRASCO,
+       TO_DATE(PAR_FECHA_REGISTRO, 'DD/MM/YYYY'),
+       PAR_MATRIZ,
+       PAR_PERSONA_MUESTREA,
+       PAR_TIPO_ANALISIS,
+       PAR_RECEP_ANALISTA,
+       PAR_PUNTO_MUESTREO,
+       PAR_TIPO_FRASCO,
+       PAR_MEDIDAS_SEGURIDAD,
+       PAR_TEMP_PRESERVACION,
+       PAR_HORA,
+       PAR_OBSERVACION
+       );
+
+END;
+
+PROCEDURE PRC_UPDATE_FORMULARIO(
+  
+   A_PAR_USUARIO_MODIFICACION         ALC_FORMULAR153.A_USUMOD%TYPE,
+  -- A_PAR_NOMBRE_PROGRAMA              ALC_FORMULAR153.A_NOMPRG%TYPE,
+   PAR_ID_REGISTRO                    ALC_FORMULAR153.N_CODCUS%TYPE,
+   PAR_COD_FRASCO                     ALC_FORMULAR153.C_CODFR%TYPE,
+   PAR_FECHA_REGISTRO                 IN VARCHAR2,
+   PAR_HORA_REGISTRO                  IN VARCHAR2,
+   PAR_MATRIZ                         ALC_FORMULAR153.N_MATRIZ%TYPE,
+   PAR_PERSONA_MUESTREA               ALC_FORMULAR153.N_PERMUE%TYPE,
+   PAR_TIPO_ANALISIS                  ALC_FORMULAR153.N_TIPOAN%TYPE,
+   PAR_RECEP_ANALISTA                 ALC_FORMULAR153.N_RECANA%TYPE,
+   PAR_PUNTO_MUESTREO                 ALC_FORMULAR153.N_PUNMUE%TYPE,
+   PAR_TIPO_FRASCO                    ALC_FORMULAR153.N_TIPFRA%TYPE,
+   PAR_MEDIDAS_SEGURIDAD              ALC_FORMULAR153.C_APLMED%TYPE,
+   PAR_TEMP_PRESERVACION              ALC_FORMULAR153.C_TEMPRE%TYPE,
+   PAR_OBSERVACION                    ALC_FORMULAR153.C_OBSERV%TYPE
+ )
+ IS
+ BEGIN
+   
+  UPDATE ALC_FORMULAR153
+  SET  
+       A_USUMOD = A_PAR_USUARIO_MODIFICACION,
+       A_FECMOD = SYSDATE,
+       A_NOMPRG = 'PCK_ALC_REGMUESTRA.PRC',
+       N_TIPCUS = 1,
+       C_CODFR =  PAR_COD_FRASCO,
+       D_FECFOR = TO_DATE(PAR_FECHA_REGISTRO, 'DD/MM/YYYY'),
+       C_HORA   = PAR_HORA_REGISTRO,
+       N_MATRIZ = PAR_MATRIZ,
+       N_PERMUE = PAR_PERSONA_MUESTREA,
+       N_TIPOAN = PAR_TIPO_ANALISIS,
+       N_RECANA = PAR_RECEP_ANALISTA,
+       N_PUNMUE = PAR_PUNTO_MUESTREO,
+       N_TIPFRA = PAR_TIPO_FRASCO,
+       C_APLMED = PAR_MEDIDAS_SEGURIDAD,
+       C_TEMPRE = PAR_TEMP_PRESERVACION,
+       C_OBSERV = PAR_OBSERVACION
+       
+  WHERE N_CODCUS = PAR_ID_REGISTRO;
+  
+
+END;
+
+PROCEDURE PRC_ELIMINA_FORMULARIO(
+  
+   P_ID_REGISTRO            ALC_FORMULAR153.N_CODCUS%TYPE
+   --P_U_MODIFICACION         ALC_FORMULAR153.A_USUMOD%TYPE
+ ) 
+ IS
+ BEGIN
+       
+       /*UPDATE ALC_FORMULAR153 
+       SET  A_USUMOD = P_U_MODIFICACION,
+            A_FECMOD = SYSDATE,
+            A_NOMPRG = 'PCK_ALC_REGMUESTRA.PRC',
+            N_TIPCUS = 0
+       
+       WHERE N_CODCUS = P_ID_REGISTRO;*/
+       
+      DELETE ALC_FORMULAR153 
+      WHERE N_CODCUS = P_ID_REGISTRO;
+
+END;
+
+PROCEDURE PRC_LISTA_PUNTO_MUESTREO(
+  --Parametro de listado
+/*  PAR_V_estado           IN ALC_MANT_RIO.C_ESTADO%TYPE,*/
+  --Parametro de retorno
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR
+      SELECT D.C_VALCAT, D.C_DDCATL FROM ALC_CATALOGO C
+      INNER JOIN ALC_DETCATLG D ON C.N_CCATLG = D.N_CCATLG
+      WHERE C.N_CCATLG = 6
+      ORDER BY C_DDCATL ASC;  
+
+ 
+END;
+
+PROCEDURE PRC_LISTA_MATRIZ(
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR
+      SELECT D.C_VALCAT, D.C_DDCATL FROM ALC_CATALOGO C
+      INNER JOIN ALC_DETCATLG D ON C.N_CCATLG = D.N_CCATLG
+      WHERE C.N_CCATLG = 7
+      ORDER BY C_DDCATL ASC; 
+
+  
+END;
+
+PROCEDURE PRC_CBO_TIPO_ANALISIS(
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR
+      SELECT D.C_VALCAT, D.C_DDCATL FROM ALC_CATALOGO C
+      INNER JOIN ALC_DETCATLG D ON C.N_CCATLG = D.N_CCATLG
+      WHERE C.N_CCATLG = 8
+      ORDER BY C_DDCATL ASC;  
+
+ 
+END;
+
+PROCEDURE PRC_CBO_TIPO_FRASCO(
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR
+      SELECT D.C_VALCAT, D.C_DDCATL FROM ALC_CATALOGO C
+      INNER JOIN ALC_DETCATLG D ON C.N_CCATLG = D.N_CCATLG
+      WHERE C.N_CCATLG = 9
+      ORDER BY C_DDCATL ASC;  
+
+  
+END;
+
+PROCEDURE PRC_CBO_PERSONA_MUESTREA(
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR
+      SELECT D.C_VALCAT, D.C_DDCATL FROM ALC_CATALOGO C
+      INNER JOIN ALC_DETCATLG D ON C.N_CCATLG = D.N_CCATLG
+      WHERE C.N_CCATLG = 10
+      ORDER BY C_DDCATL ASC;  
+
+
+END;
+
+PROCEDURE PRC_CBO_RECEP_ANALISTA(
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR
+      SELECT D.C_VALCAT, D.C_DDCATL FROM ALC_CATALOGO C
+      INNER JOIN ALC_DETCATLG D ON C.N_CCATLG = D.N_CCATLG
+      WHERE C.N_CCATLG = 11
+      ORDER BY C_DDCATL ASC; 
+
+
+END;
+end PKC_ALC_REGMUESTRA;

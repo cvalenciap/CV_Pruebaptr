@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+	<body>
+		<div class="container_save">     	
+			<script th:fragment="mensajesSave" th:inline="javascript">
+			/*<![CDATA[*/
+			mensajeTipo = /*[[${mensajeTipo}]]*/'ninguno';
+			mensajeError = /*[[${mensajeError}]]*/'';
+			btnRefreshId = /*[[${btnBusqueda}]]*/'';
+			modalId = /*[[${modalId}]]*/'';
+			codigo = /*[[${codigo}]]*/0;
+			tipo = /*[[${tipo}]]*/0;
+			anio = /*[[${anio}]]*/0;
+			page = /*[[${page}]]*/0;
+			/*]]>*/
+			if (mensajeTipo == 'grabadoOk' || mensajeTipo == 'actualizadoOk') {
+				let $doc = MYAPPL.LOGIC.COMMONDIST.configDoc(codigo, page);
+				let $modal = {
+					mensajeTipo: mensajeTipo,
+					mensajeError: mensajeError,
+					btnRefreshId: btnRefreshId,
+					modalId: modalId
+				}
+				nsSAA.guardarArchivosAdjuntos($doc, $modal);
+			} else {
+				MYAPPL.showToast(mensajeTipo, mensajeError, btnRefreshId, modalId);		
+			}
+			</script>
+		</div>
+	</body>
+</html>

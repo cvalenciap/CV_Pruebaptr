@@ -1,0 +1,5 @@
+mensaje.rios.no.validos=No se corresponden los ríos registrados en Base de Datos y archivo de caudal.
+mensaje.fila.caudal.no.valido=La fila de medidas del caudal por dia y hora no válido.
+
+# Remitente del envio de correo de reportes
+mensaje.remitente.correo=scaudales@sedapal.com.pe

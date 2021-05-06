@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('home.analisisBacteriologico.reporte')}"></title>
+<link th:href="@{/css/jquery.fileupload.css}" rel="stylesheet" />
+<link th:href="@{/css/jquery.fileupload-ui.css}" rel="stylesheet" />
+<link th:href="@{/css/subidaArchivo.css}" rel="stylesheet" />
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+	
+		<!-- Modal -->
+		<div id="modal-registra-analisisBacteriologico" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			
+				<!-- Modal content-->
+ 			    <div class="modal-content" id="id-modal-content">
+			    	
+ 			    </div> 
+			    
+			</div>
+		</div>	
+						
+		<h3 class="text-center" th:text="${#messages.msg('home.analisisBacteriologico.reporte')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('analisisBacteriologico.fechaMuestra')}"></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								
+								<input type="text" class="form-control" id="idFechaMuestreo" name="idFechaMuestreo"
+			                    		   maxlength="20" />
+			                    		   															
+							</div>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+					
+				</div>
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-right">
+					<button type="button" id="idBtnBuscarAnalisisBacteriologico" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span><label th:text="${#messages.msg('tipoProceso.buscar')}"></label></button>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="container_12">
+				<div th:replace="reporteEnsayoBacteriologico/reporteEnsayoBacteriologicoTable :: resultsList" class="grid_10 height800" id="idanalisisBacteriologicoTable"></div>
+			</div>
+		</div>
+		<script type="text/javascript" th:src="@{/js/jquery.iframe-transport.js}"></script>
+		<script type="text/javascript" th:src="@{/js/jquery.fileupload.js}"></script>
+		<script type="text/javascript" th:src="@{/js/subidaArchivos.js}"></script>
+		<script type="text/javascript" th:src="@{/js/analisisBacteriologico.js}"></script>
+		<script type="text/javascript" th:src="@{/js/reporteEnsayoBacteriologico.js}"></script>
+		
+	</div>
+</body>
+</html>

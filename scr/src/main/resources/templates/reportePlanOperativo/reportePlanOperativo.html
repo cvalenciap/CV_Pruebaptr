@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('reporte.plan.operativo.window')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+	
+	
+			<!-- Modal -->
+		<div id="modal-registra-parametroplan" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			 	<div class="modal-content" id="id-modal-plan-bandeja">
+			 	</div>
+			 </div>
+		</div>
+		
+	
+	
+		<form name="formInactivaclima" id="form-inactiva-clima" style="display:none;" 
+			  th:action="@{/clima/inactivar}" method="post">
+			<input type="hidden" id="inacIdclima" name="inacIdclima" />
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>	
+		
+		<h3 class="text-center" th:text="${#messages.msg('reporte.plan.operativo.title')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+
+			<br/>
+			<p class="main_heading">
+				<legend  th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp form-group" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset style="align-text:center;">
+					<div class="col-md-12 col-sm-12 col-xs-12 form-group">
+							
+							<label class=" col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('actividad.area.label')}"></label>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<select class="form-control"  name="cboArea" id="cboArea" th:if="${!(codigoArea == 1 || codigoArea == 2)}"></select>
+								<input type="text" id="cboArea" class="form-control" name="cboArea"
+								 th:if="${(codigoArea == 1 || codigoArea == 2)}"
+								 th:value="${descripcionArea}" th:attr="data-codigoArea=${codigoArea}" disabled="disabled"/>
+								
+							</div>
+							<div  class="col-md-3 col-sm-3 col-xs-3"></div>
+							<button  class="col-md-2 col-sm-2 col-xs-2 btn btn-primary"  type="button" id="idBtnBuscarPlanOperativo"
+								th:if="${!(codigoArea == 1 || codigoArea == 2)}"
+							 	onclick="filtrarReportePorArea();"><span class="glyphicon glyphicon-search"></span><label>Buscar</label></button>
+							
+					</div>
+				</fieldset>
+			</form>
+			<br/>
+			
+		</div>
+			<div class="container_12" th:fragment="tablaBandeja" id="tablaBandeja">
+				<div th:replace="reportePlanOperativo/reportePlanBandeja :: resultsList" class="grid_10 height800" id="idClimaTable"></div>
+			</div>
+			<script type="text/javascript" th:src="@{/js/reportePlanOperativo.js}"></script>
+	</div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+h1{
+	color:#0000FF;
+}
+
+h2{
+	color:#FF0000;
+}
+
+footer{
+    margin-top:60px;
+}
+
+.main_heading {
+    padding-left: 15px;
+}
+
+/* fin menu */
+.no-padding-left{
+	padding-left:0px !important;
+}
+.no-padding-right{
+	padding-right:0px !important;
+}
+.no-padding{
+    padding:0px !important;
+}
+@media (max-width: 768px){
+	.control-label{
+		font-size:12.5px;
+	}
+	.no-padding-left{
+		padding-right:0px !important;
+	}
+	.input-group[class*=col-] {
+	    padding-right:0px !important;;
+	}
+	.input-group-addon{
+	    padding: 6px 5px !important;
+	}
+}
+@media (max-width: 400px){
+	.control-label{
+		font-size:13px;
+		height: 30px;
+	}
+	.no-padding-left{
+		padding-right:0px !important;
+	}
+	select.input-sm {
+		padding:5px 3px !important;
+	}
+	.input-sm {
+		padding:5px 3px !important;
+	}
+	.input-group-addon{
+	    padding: 6px 4px !important;
+	}
+}
+@media (max-width: 320px){
+	.control-label{
+		font-size:12px;
+	}
+	select.input-sm {
+		padding:4px 2px !important;
+	}
+	.input-sm {
+		padding:4px 2px !important;
+	}
+	.input-group-addon{
+	    padding: 6px 3px !important;
+	}
+}

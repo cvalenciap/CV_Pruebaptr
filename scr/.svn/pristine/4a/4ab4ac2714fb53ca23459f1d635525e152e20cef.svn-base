@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-edit-actividad-area">
+	
+	<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('clima.registrar')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('climao.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('clima.crear')}">Crear texto html</span>
+		</div>
+		
+		<div class="modal-footer">
+			<form name="form-edit-clima" id="form-edit-clima" method="post" 
+				  th:action="@{/climaSave}" 
+				  role="form">
+				  
+				   	
+<!--           <input type="hidden" id="codigo" name="codigo"  th:field="*{codigo}" /> -->
+
+
+                  
+          <div class="modal-footer left-align">       
+				<div class="form-group col-md-12 col-sm-12 col-xs-12">
+					<label class="control-label col-md-3 col-sm-3 col-xs-3 text-right" for="climaNombre"><span th:text="${#messages.msg('clima.nombre')}"></span></label>
+					<div class="form-group col-md-9 col-sm-9 col-xs-9 no-padding-right">
+                    	<input type="text" class="form-control" 
+                    		   maxlength="50"  th:field="*{nombreClima}" onkeypress="return MYAPPL.soloLetras(event)" 
+                    	 	   th:placeholder="${#messages.msg('clima.nombre')}"/>
+                    </div>	
+ 				</div>
+			
+				<div class="form-group col-md-12 col-sm-12 col-xs-12">
+					<label class="control-label col-md-3 col-sm-3 col-xs-3 text-right" for="climaAbreviatura"><span th:text="${#messages.msg('clima.abreviatura')}"></span></label>
+					<div class="form-group col-md-9 col-sm-9 col-xs-9 no-padding-right">
+                    	<input type="text"  class="form-control" 
+                    		maxlength="80"  th:field="*{abreviatura}" onkeypress="return MYAPPL.soloLetras(event)" 
+                    	 	th:placeholder="${#messages.msg('clima.abreviatura')}"/>
+                    </div>
+                </div>
+                <div id="idEstado"  class="form-group col-md-12 col-sm-12 col-xs-12">
+                     <label th:if="${climaEditBean.codigo != null}" class="control-label col-md-3 col-sm-3 col-xs-3 text-right"><span th:text="${#messages.msg('clima.estado')}"></span></label>
+                    <div th:if="${climaEditBean.codigo != null}"   class="form-group col-md-9 col-sm-9 col-xs-9 no-padding-right">
+                    	<select class="form-control" th:field="*{estado}" >
+							<option value="1">Activo</option>
+							<option value="2">Inactivo</option>
+						</select>
+                    </div>
+				</div>
+				
+						
+				<div class="clearfix"></div>
+				<div class="ln_solid"></div>
+				<div class="form-group col-md-12 col-sm-12 col-xs-12">
+					<div class="wrapper text-center">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-primary btn-md" id="guardarButton">
+								<span class="glyphicon glyphicon-ok"></span>
+								<div  th:text="${#messages.msg('clima.guardar')}"></div>
+							</button>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-md" data-dismiss="modal">
+								<span class="glyphicon glyphicon-ban-circle"></span>
+								<div  th:text="${#messages.msg('clima.cancelar')}"></div>
+							</button>
+						</div>
+					</div>
+				</div>
+		</div>	
+				
+			</form>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+
+	<div th:fragment="formServCorreo" class="col-md-12" style="padding: 0px;">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<label class="control-label"
+					th:text="${#messages.msg('correo.reporte.servidor.correo')}">servcorreo</label>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<div class="col-md-12">
+						<label class="control-label" for="strRutaServCorreo"
+							th:text="${#messages.msg('correo.extraccion.col5')}">servidor</label>
+					</div>
+					<div class="col-md-12">
+						<input type="text" class="form-control" id="strRutaServCorreo"
+							name="strRutaServCorreo" th:field="*{strRutaServCorreo}"
+							data-toggle="tooltip" data-placement="below"
+							placeholder="SERVIDOR" title="Ingrese el servidor" maxlength="80" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-12 espaciado-superior">
+						<label class="control-label" for="lonPuerto"
+							th:text="${#messages.msg('correo.extraccion.col6')}">puerto</label>
+					</div>
+					<div class="col-md-12">
+						<input type="text" class="form-control" id="lonPuerto" maxlength="6"
+							onkeypress="return MYAPPL.soloNumeros(event)" name="lonPuerto"
+							th:field="*{lonPuerto}" data-toggle="tooltip"
+							data-placement="below" placeholder="PUERTO"
+							title="Ingrese el puerto" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-12 espaciado-superior">
+						<label class="control-label" for="strUsuCorreo"
+							th:text="${#messages.msg('correo.extraccion.col15')}">correo</label>
+					</div>
+					<div class="col-md-12">
+						<input type="text" class="form-control" id="strUsuCorreo" name="strUsuCorreo"
+							th:field="*{strUsuCorreo}" data-toggle="tooltip"
+							data-placement="below" placeholder="CORREO"
+							title="Ingrese el correo" maxlength="80" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-12 espaciado-superior">
+						<label class="control-label" for="strPassCorreo"
+							th:text="${#messages.msg('correo.extraccion.col10')}">password</label>
+					</div>
+					<div class="col-md-12">
+						<input type="text" class="form-control" id="strPassCorreo"
+							name="strPassCorreo" th:field="*{strPassCorreo}"
+							data-toggle="tooltip" data-placement="below"
+							placeholder="CONTRASEÑA" title="Ingrese la contraseña"
+							maxlength="30" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- PARA CORREO DE ENVIO -->
+	<div th:fragment="formServCorreoEnvio" class="col-md-12" style="padding: 0px;">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<label class="control-label"
+					th:text="${#messages.msg('correo.reporte.servidor.correo')}">servcorreo</label>
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<div class="col-md-12">
+						<label class="control-label" for="strRutaServCorreo"
+							th:text="${#messages.msg('correo.extraccion.col5')}">servidor</label>
+					</div>
+					<div class="col-md-12">
+						<input type="text" class="form-control" id="strRutaServCorreoEnv"
+							th:field="*{strRutaServCorreoEnv}"
+							data-toggle="tooltip" data-placement="below"
+							placeholder="SERVIDOR" title="Ingrese el servidor" maxlength="80" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-12 espaciado-superior">
+						<label class="control-label" for="lonPuerto"
+							th:text="${#messages.msg('correo.extraccion.col6')}">puerto</label>
+					</div>
+					<div class="col-md-12">
+						<input type="text" class="form-control" id="lonPuertoEnv" maxlength="6"
+							onkeypress="return MYAPPL.soloNumeros(event)"
+							th:field="*{lonPuertoEnv}" data-toggle="tooltip"
+							data-placement="below" placeholder="PUERTO"
+							title="Ingrese el puerto" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-12 espaciado-superior">
+						<label class="control-label" for="strUsuCorreo"
+							th:text="${#messages.msg('correo.extraccion.col15')}">correo</label>
+					</div>
+					<div class="col-md-12">
+						<input type="text" class="form-control" id="strUsuCorreoEnv"
+							th:field="*{strUsuCorreoEnv}" data-toggle="tooltip"
+							data-placement="below" placeholder="CORREO"
+							title="Ingrese el correo" maxlength="80" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-12 espaciado-superior">
+						<label class="control-label" for="strPassCorreo"
+							th:text="${#messages.msg('correo.extraccion.col10')}">password</label>
+					</div>
+					<div class="col-md-12">
+						<input type="text" class="form-control" id="strPassCorreoEnv"
+							th:field="*{strPassCorreoEnv}"
+							data-toggle="tooltip" data-placement="below"
+							placeholder="CONTRASEÑA" title="Ingrese la contraseña"
+							maxlength="30" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

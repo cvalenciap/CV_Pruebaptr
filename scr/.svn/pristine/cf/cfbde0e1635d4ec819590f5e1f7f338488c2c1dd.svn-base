@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="scr-1.0.0">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module archiveName="sed-seg-ws-cliente-1.0.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sed-seg-ws-cliente/sed-seg-ws-cliente">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sed-seg-core-beans-1.0.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sed-seg-core-beans/sed-seg-core-beans">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="scr-core-1.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/scr-core/scr-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="scr-correo-core-bean-1.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/scr-correo-core-bean/scr-correo-core-bean">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="scr-core-bean-1.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/scr-core-bean/scr-core-bean">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="common.core-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/common-core/common-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="scr-correo-1.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/scr-correo/scr-correo">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="scr-correo-core-1.0.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/scr-correo-core/scr-correo-core">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="scr"/>
+        <property name="java-output-path" value="/scr/target/classes"/>
+    </wb-module>
+</project-modules>

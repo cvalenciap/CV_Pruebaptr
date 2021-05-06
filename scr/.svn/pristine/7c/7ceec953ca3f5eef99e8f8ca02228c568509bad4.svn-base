@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('punto.subactividad.title')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+	
+	
+			<!-- Modal -->
+		<div id="modal-registra-clima" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			</div>
+		</div>
+	
+	
+		<form name="formInactivaclima" id="form-inactiva-clima" style="display:none;" 
+			  th:action="@{/clima/inactivar}" method="post">
+			<input type="hidden" id="inacIdclima" name="inacIdclima" />
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>	
+		
+		<h3 class="text-center" th:text="${#messages.msg('punto.subactividad.title')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<br/>
+			<form name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<div class="col-md-1 col-sm-1 col-xs-1"></div>
+							<label class="control-label col-md-1 col-sm-1 col-xs-1"  style="text-align:left" th:text="${#messages.msg('punto.subactividad.codigo')}"></label>
+							<div class="col-md-3col-sm-3 col-xs-3">
+								<input type="text" id="cpDesc" name="cpDesc" class="form-control" disabled="disabled" ></input>
+							</div>
+							<div class="col-md-2 col-sm-2 col-xs-2"></div>
+							<label class="control-label col-md-1 col-sm-1 col-xs-1" style="text-align:left" th:text="${#messages.msg('punto.subactividad.label')}"></label>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<select class="form-control" id="cboSubactividades" name="cboSubactividades" style="height: 33px;"></select>
+							</div>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		
+			<div class="container_12">
+				<div th:replace="puntoXSubactividad/puntoXSubactividadTable :: resultsList" class="grid_10 height800" id="idClimaTable"></div>
+			</div>
+			<script type="text/javascript" th:src="@{/js/puntoXSubactividad.js}"></script>
+	</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('plan.operativo.title')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+			<!-- Modal -->
+		
+		
+		
+		
+		<div id="modal-registra-planoperativo-bandeja" class="modal fade" role="dialog" data-backdrop="static" >
+			<!--div class="grid_10 modal-dialog" style="width: 80%;"-->
+			<div class="modal-dialog" style="width: 90%;">
+				<!-- Modal content-->
+ 			    <div class="modal-content" id="id-modal-bandeja" th:replace="planOperativo/planOperativoBandejaTableEdit :: form-edit-tablaPoisson">
+ 			    </div> 
+			    
+			    <!--div class="modal-content" id="id-modal-plan-bandeja"></div-->
+			</div>
+		</div>
+		
+		<div class="modal-content" id="id-modal-plan-bandeja-inactivar"></div>
+		<div id="modal-registra-planoperativo-agregar" class="modal fade" role="dialog" data-backdrop="static" ></div>
+		<h3 class="text-center" th:text="${#messages.msg('plan.operativo.title')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+<!-- 			<form name="form-search-tp" id="form-search-tp" action="#" -->
+<!-- 				 method="post" class="form-horizontal" role="form"> -->
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('actividad.area.label')}"></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<select class="form-control" id="cboAreasPlan" name="cboAreas" style="height: 33px;" th:if="${!(codigoArea == 1 || codigoArea == 2)}"></select>
+								<input type="text" id="cboAreasPlan" class="form-control" name="cboAreas" th:value="${descripcionArea}" 
+								th:if="${codigoArea == 1 || codigoArea == 2}" th:attr="data-codigoArea=${codigoArea}" disabled="disabled"/>
+								
+							</div>
+							<div class="col-md-3 col-sm-3 col-xs-3"></div>
+							<div class="col-md-3 col-sm-3 col-xs-3 ">
+							
+								<button type="button" id="idBtnBuscarTablaPoisson"  onclick="refrescarPlanXArea();" class="btn btn-primary" th:if="${!(codigoArea == 1 || codigoArea == 2)}" 
+								style="marging-left:2px"><span class="glyphicon glyphicon-search"></span><label>Buscar</label></button>
+								<button type="button" class="btn btn-info btn-crear-mant-correo" style="marging-right:2px" data-toggle="modal" onclick="modificarPlanOperativo(0)"><span class="glyphicon glyphicon-plus"></span><label>Agregar</label></button>
+
+							</div>
+							
+						</div>
+					</div>
+				</fieldset>
+<!-- 			</form> -->
+				<br/>
+		</div>
+		
+		<div class="panel panel-info">
+			<div class="container_12" id="tablaBandeja">
+				<div th:replace="planOperativo/planOperativoBandejaTable :: resultsList" ></div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:src="@{/js/planOperativoBandeja.js}"></script>
+		
+	</div>
+</body>
+</html>

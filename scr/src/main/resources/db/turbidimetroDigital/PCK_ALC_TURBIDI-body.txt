@@ -1,0 +1,362 @@
+create or replace PACKAGE BODY PCK_ALC_TURBIDI AS
+    
+    PROCEDURE PRC_BUSCA_TURBIDI_DIGITAL(
+       --Parametros de la busqueda
+       PAR_NCODIGO_EQUIPO             IN ALC_FORMULARIO3.C_CODEQU%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER,
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+    V_QUERY VARCHAR2(4000);
+    V_QUERY_FROM VARCHAR2(4000);
+    V_QUERY_COUNT VARCHAR2(4000);
+ 
+    BEGIN
+    
+          V_QUERY_COUNT := 'select count(*) '; 
+ 
+          V_QUERY := 'select * 
+                      from (select a.*, rownum rn
+                            from (select  d.c_ddcatl,  c.c_codequ, c.c_noequi,c.c_marequ, c.c_modequ, c.n_codfo3, c.n_mescal, c.n_proxmc' ;
+        
+          IF(PAR_NCODIGO_EQUIPO <> '0')THEN
+            V_QUERY_FROM := ' from alc_formulario3 c inner join alc_detcatlg d on c.n_ubicac=TO_NUMBER(d.c_valcat) and n_ccatlg=13
+                              where c.n_estado = 1 and UPPER(c.c_codequ) like UPPER(''%' || PAR_NCODIGO_EQUIPO || '%'')';
+          ELSE
+            V_QUERY_FROM := ' from alc_formulario3 c inner join alc_detcatlg d on c.n_ubicac=TO_NUMBER(d.c_valcat) and n_ccatlg=13
+                              where c.n_estado = 1';
+          END IF;
+          
+        
+          V_QUERY := V_QUERY || V_QUERY_FROM;
+         
+          V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+        
+          V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+    
+    
+             
+          OPEN par_out_cursor FOR v_query;
+          
+          execute immediate v_query_count into par_out_quantity;
+    
+    END;
+    
+    PROCEDURE PRC_GET_TURBIDI_DIGITAL(
+       --Parametros de la busqueda
+        PAR_NID_EQUIPO  IN ALC_FORMULARIO3.N_CODFO3%TYPE,
+       --Parametros de retorno
+       par_out_cursor OUT SYS_REFCURSOR)
+    IS
+        v_query VARCHAR2(4000); 
+        BEGIN
+          v_query := ' select  c.n_ubicac,  c.c_codequ, c.c_noequi,c.c_marequ, c.c_modequ, c.n_mescal, c.n_codfo3,  c.n_proxmc, '   ||
+                     ' c.c_rannt1, c.c_maxnt1, c.c_minnt1, c.c_rannt2, c.c_maxnt2, c.c_minnt2, c.c_rannt3, c.c_maxnt3, c.c_minnt3, '   ||
+                     ' c.c_rannt4, c.c_maxnt4, c.c_minnt4, c.c_rannt5, c.c_maxnt5, c.c_minnt5 '   ||
+                     ' from alc_formulario3 c where c.n_estado = 1 and c.n_codfo3 = ' || PAR_NID_EQUIPO;
+          OPEN par_out_cursor FOR v_query;
+         
+    END;
+    
+    PROCEDURE PRC_INSERT_TURBIDI_DIGITAL(
+       PAR_NCODIGO_EQUIPO        IN ALC_FORMULARIO3.C_CODEQU%TYPE,
+       PAR_CUBICACION            IN ALC_FORMULARIO3.N_UBICAC%TYPE,
+       PAR_CNOMBRE_EQUIPO        IN ALC_FORMULARIO3.C_NOEQUI%TYPE,
+       PAR_CMARCA                IN ALC_FORMULARIO3.C_MAREQU%TYPE,
+       PAR_CMODELO               IN ALC_FORMULARIO3.C_MODEQU%TYPE,
+       PAR_NMES_CALIBRACION      IN ALC_FORMULARIO3.N_MESCAL%TYPE,
+       PAR_NPROX_MES_CALIBR      IN ALC_FORMULARIO3.N_PROXMC%TYPE,        
+       PAR_CRANGO1               IN ALC_FORMULARIO3.C_RANNT1%TYPE,
+       PAR_CRANGO_MAX1           IN ALC_FORMULARIO3.C_MAXNT1%TYPE,
+       PAR_CRANGO_MIN1           IN ALC_FORMULARIO3.C_MINNT1%TYPE,
+       PAR_CRANGO2              IN ALC_FORMULARIO3.C_RANNT2%TYPE,
+       PAR_CRANGO_MAX2          IN ALC_FORMULARIO3.C_MAXNT2%TYPE,
+       PAR_CRANGO_MIN2          IN ALC_FORMULARIO3.C_MINNT2%TYPE,
+       PAR_CRANGO3              IN ALC_FORMULARIO3.C_RANNT3%TYPE,
+       PAR_CRANGO_MAX3          IN ALC_FORMULARIO3.C_MAXNT3%TYPE,
+       PAR_CRANGO_MIN3          IN ALC_FORMULARIO3.C_MINNT3%TYPE,
+       PAR_CRANGO4              IN ALC_FORMULARIO3.C_RANNT4%TYPE,
+       PAR_CRANGO_MAX4          IN ALC_FORMULARIO3.C_MAXNT4%TYPE,
+       PAR_CRANGO_MIN4          IN ALC_FORMULARIO3.C_MINNT4%TYPE,
+       PAR_CRANGO5              IN ALC_FORMULARIO3.C_RANNT5%TYPE,
+       PAR_CRANGO_MAX5          IN ALC_FORMULARIO3.C_MAXNT5%TYPE,
+       PAR_CRANGO_MIN5          IN ALC_FORMULARIO3.C_MINNT5%TYPE,
+       PAR_NESTADO              IN ALC_FORMULARIO3.N_ESTADO%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION     IN ALC_FORMULARIO3.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI         IN ALC_FORMULARIO3.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_FORMULARIO3.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN        OUT INTEGER
+     )IS
+       
+         BEGIN         
+            
+            SELECT COUNT(c_codequ) INTO PAR_OUT_RETURN FROM ALC_FORMULARIO3 WHERE UPPER(c_codequ) = UPPER(PAR_NCODIGO_EQUIPO);
+            
+            IF (PAR_OUT_RETURN = 0) THEN
+               PAR_OUT_RETURN := SQ_ALC_FORMULARIO3.NEXTVAL;  
+            
+                INSERT INTO ALC_FORMULARIO3 (
+                           A_USUCRE,
+                           A_FECCRE,
+                           A_USUMOD,
+                           A_FECMOD,
+                           A_NOMPRG,
+                           N_CODFO3,
+                           C_CODEQU, 
+                           C_NOEQUI,
+                           C_MAREQU,
+                           C_MODEQU,
+                           N_MESCAL,
+                           N_PROXMC,
+                           N_UBICAC,
+                           C_RANNT1,
+                           C_MAXNT1,
+                           C_MINNT1,
+                           C_RANNT2,
+                           C_MAXNT2,
+                           C_MINNT2,
+                           C_RANNT3,
+                           C_MAXNT3,
+                           C_MINNT3,
+                           C_RANNT4,
+                           C_MAXNT4,
+                           C_MINNT4, 
+                           C_RANNT5,
+                           C_MAXNT5,
+                           C_MINNT5,
+                           N_ESTADO)
+                    VALUES(
+                           PAR_CUSUARIO_CREACION,
+                           SYSDATE,
+                           PAR_CUSUARIO_MODI,
+                           SYSDATE,
+                           PAR_CPROGRAMA,
+                           PAR_OUT_RETURN,
+                           PAR_NCODIGO_EQUIPO,
+                           PAR_CNOMBRE_EQUIPO,
+                           PAR_CMARCA,
+                           PAR_CMODELO,
+                           PAR_NMES_CALIBRACION,
+                           PAR_NPROX_MES_CALIBR,
+                           PAR_CUBICACION,
+                           PAR_CRANGO1,
+                           PAR_CRANGO_MAX1,
+                           PAR_CRANGO_MIN1,
+                           PAR_CRANGO2,
+                           PAR_CRANGO_MAX2,
+                           PAR_CRANGO_MIN2,
+                           PAR_CRANGO3,
+                           PAR_CRANGO_MAX3,
+                           PAR_CRANGO_MIN3,
+                           PAR_CRANGO4,
+                           PAR_CRANGO_MAX4,
+                           PAR_CRANGO_MIN4,
+                           PAR_CRANGO5,
+                           PAR_CRANGO_MAX5,
+                           PAR_CRANGO_MIN5,
+                           PAR_NESTADO
+                        ); 
+            ELSE            
+                PAR_OUT_RETURN := -1;
+            END IF;  
+     
+    END;
+    
+    PROCEDURE PRC_UPDATE_TURBIDI_DIGITAL(
+       PAR_NID_EQUIPO            IN ALC_FORMULARIO3.N_CODFO3%TYPE,
+       PAR_NCODIGO_EQUIPO        IN ALC_FORMULARIO3.C_CODEQU%TYPE,
+       PAR_CUBICACION            IN ALC_FORMULARIO3.N_UBICAC%TYPE,
+       PAR_CNOMBRE_EQUIPO        IN ALC_FORMULARIO3.C_NOEQUI%TYPE,
+       PAR_CMARCA                IN ALC_FORMULARIO3.C_MAREQU%TYPE,
+       PAR_CMODELO               IN ALC_FORMULARIO3.C_MODEQU%TYPE,
+       PAR_NMES_CALIBRACION      IN ALC_FORMULARIO3.N_MESCAL%TYPE,
+       PAR_NPROX_MES_CALIBR      IN ALC_FORMULARIO3.N_PROXMC%TYPE,        
+       PAR_CRANGO1               IN ALC_FORMULARIO3.C_RANNT1%TYPE,
+       PAR_CRANGO_MAX1           IN ALC_FORMULARIO3.C_MAXNT1%TYPE,
+       PAR_CRANGO_MIN1           IN ALC_FORMULARIO3.C_MINNT1%TYPE,
+       PAR_CRANGO2              IN ALC_FORMULARIO3.C_RANNT2%TYPE,
+       PAR_CRANGO_MAX2          IN ALC_FORMULARIO3.C_MAXNT2%TYPE,
+       PAR_CRANGO_MIN2          IN ALC_FORMULARIO3.C_MINNT2%TYPE,
+       PAR_CRANGO3              IN ALC_FORMULARIO3.C_RANNT3%TYPE,
+       PAR_CRANGO_MAX3          IN ALC_FORMULARIO3.C_MAXNT3%TYPE,
+       PAR_CRANGO_MIN3          IN ALC_FORMULARIO3.C_MINNT3%TYPE,
+       PAR_CRANGO4              IN ALC_FORMULARIO3.C_RANNT4%TYPE,
+       PAR_CRANGO_MAX4          IN ALC_FORMULARIO3.C_MAXNT4%TYPE,
+       PAR_CRANGO_MIN4          IN ALC_FORMULARIO3.C_MINNT4%TYPE,
+       PAR_CRANGO5              IN ALC_FORMULARIO3.C_RANNT5%TYPE,
+       PAR_CRANGO_MAX5          IN ALC_FORMULARIO3.C_MAXNT5%TYPE,
+       PAR_CRANGO_MIN5          IN ALC_FORMULARIO3.C_MINNT5%TYPE,       
+       PAR_CUSUARIO_MODI        IN ALC_FORMULARIO3.A_USUMOD%TYPE,
+       PAR_CPROGRAMA            IN ALC_FORMULARIO3.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN        OUT INTEGER
+     )IS 
+         BEGIN
+         UPDATE ALC_FORMULARIO3
+            SET A_USUMOD  = PAR_CUSUARIO_MODI,
+                A_FECMOD  = SYSDATE,
+                A_NOMPRG  = PAR_CPROGRAMA,
+                C_NOEQUI  = PAR_CNOMBRE_EQUIPO,
+                C_CODEQU  = PAR_NCODIGO_EQUIPO,
+                C_MODEQU  = PAR_CMODELO,
+                N_PROXMC  = PAR_NPROX_MES_CALIBR,
+                N_MESCAL  = PAR_NMES_CALIBRACION,
+                N_UBICAC  = PAR_CUBICACION,
+                C_MAREQU  = PAR_CMARCA,
+                C_RANNT1 = PAR_CRANGO1,
+                C_MAXNT1 = PAR_CRANGO_MAX1,
+                C_MINNT1 = PAR_CRANGO_MIN1,
+                C_RANNT2 = PAR_CRANGO2,
+                C_MAXNT2 = PAR_CRANGO_MAX2,
+                C_MINNT2 = PAR_CRANGO_MIN2, 
+                C_RANNT3 = PAR_CRANGO3,
+                C_MAXNT3 = PAR_CRANGO_MAX3,
+                C_MINNT3 = PAR_CRANGO_MIN3,
+                C_RANNT4 = PAR_CRANGO4,
+                C_MAXNT4 = PAR_CRANGO_MAX4,
+                C_MINNT4 = PAR_CRANGO_MIN4,
+                C_RANNT5 = PAR_CRANGO5,
+                C_MAXNT5 = PAR_CRANGO_MAX5,
+                C_MINNT5 = PAR_CRANGO_MIN5
+         WHERE 
+               N_CODFO3 = PAR_NID_EQUIPO;
+                
+         PAR_OUT_RETURN := 0;       
+           
+    END;
+    
+    PROCEDURE PRC_INACTIVA_TURBIDI_DIGITAL(       
+       --Parametros de la busqueda
+      PAR_NID_EQUIPO  IN ALC_FORMULARIO3.N_CODFO3%TYPE,
+      PAR_NESTADO              IN ALC_FORMULARIO3.N_ESTADO%TYPE
+    )IS
+     BEGIN
+        UPDATE ALC_FORMULARIO3 
+        SET N_ESTADO = PAR_NESTADO
+        WHERE  N_CODFO3 = PAR_NID_EQUIPO;
+      
+      END;
+      
+    PROCEDURE PRC_BUSCA_VERIFICA_TURBDIG(
+       --Parametros de la busqueda
+       PAR_NCODIGO             IN ALC_VERIFICAFRM3.N_CODFO3%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER,
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER,
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+    V_QUERY VARCHAR2(4000);
+    V_QUERY_FROM VARCHAR2(4000);
+    V_QUERY_COUNT VARCHAR2(4000);
+ 
+    BEGIN
+    
+          V_QUERY_COUNT := 'select count(*) '; 
+ 
+          V_QUERY := 'select * 
+                      from (select a.*, rownum rn
+                            from (select c.d_fecver, c.c_valv01, c.c_valv02, c.c_valv03, c.c_valv04, c.c_valv05, c.c_respon, c.c_observ, 
+                                            c.n_codver, c.n_codfo3 ' ;
+        
+          IF(PAR_NCODIGO <> 0)THEN
+            V_QUERY_FROM := ' from alc_verificafrm3 c where c.n_estado = 1 and c.n_codfo3 =' || PAR_NCODIGO;
+          ELSE
+            V_QUERY_FROM := ' from alc_verificafrm3 c where c.n_estado = 1';
+          END IF;
+          
+        
+          V_QUERY := V_QUERY || V_QUERY_FROM;
+          
+          V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+        
+          V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+    
+    
+             
+          OPEN par_out_cursor FOR v_query;
+          
+          execute immediate v_query_count into par_out_quantity;
+    
+    END;
+    
+    PROCEDURE PRC_INSERT_VERIFICA_TURBDIG(
+       PAR_NID_EQUIPO               IN ALC_VERIFICAFRM3.N_CODFO3%TYPE,
+       PAR_CFECHA_VERIFI            IN ALC_VERIFICAFRM3.D_FECVER%TYPE,
+       PAR_CVALOR1                  IN ALC_VERIFICAFRM3.C_VALV01%TYPE,
+       PAR_CVALOR2                  IN ALC_VERIFICAFRM3.C_VALV02%TYPE, 
+       PAR_CVALOR3                  IN ALC_VERIFICAFRM3.C_VALV03%TYPE,
+       PAR_CVALOR4                  IN ALC_VERIFICAFRM3.C_VALV04%TYPE,
+       PAR_CVALOR5                  IN ALC_VERIFICAFRM3.C_VALV05%TYPE,
+       PAR_CRESPONSABLE             IN ALC_VERIFICAFRM3.C_RESPON%TYPE,
+       PAR_COBSERVACION             IN ALC_VERIFICAFRM3.C_OBSERV%TYPE,
+       PAR_NESTADO                  IN ALC_VERIFICAFRM3.N_ESTADO%TYPE,
+       --Campos de Auditoria
+       PAR_CUSUARIO_CREACION        IN ALC_VERIFICAFRM3.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI            IN ALC_VERIFICAFRM3.A_USUMOD%TYPE,
+       PAR_CPROGRAMA                IN ALC_VERIFICAFRM3.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN        OUT INTEGER
+     )IS
+       
+         BEGIN         
+
+             INSERT INTO ALC_VERIFICAFRM3 (
+                           A_USUCRE,
+                           A_FECCRE,
+                           A_USUMOD,
+                           A_FECMOD,
+                           A_NOMPRG,
+                           N_CODFO3,
+                           N_CODVER,
+                           D_FECVER,                           
+                           C_VALV01,
+                           C_VALV02,
+                           C_VALV03,
+                           C_VALV04,
+                           C_VALV05,
+                           C_RESPON,
+                           C_OBSERV,
+                           N_ESTADO)
+                    VALUES(
+                           PAR_CUSUARIO_CREACION,
+                           SYSDATE,
+                           PAR_CUSUARIO_MODI,
+                           SYSDATE,
+                           PAR_CPROGRAMA,
+                           PAR_NID_EQUIPO,
+                           SQ_ALC_VERIFICAFRM3.NEXTVAL,
+                           PAR_CFECHA_VERIFI,
+                           PAR_CVALOR1,
+                           PAR_CVALOR2,
+                           PAR_CVALOR3,
+                           PAR_CVALOR4,
+                           PAR_CVALOR5,
+                           PAR_CRESPONSABLE,
+                           PAR_COBSERVACION,
+                           PAR_NESTADO
+                        ); 
+              PAR_OUT_RETURN := 0;    
+      
+    END;
+    
+    PROCEDURE PRC_INACTIVA_VERIFICA_TURBDIG(       
+       --Parametros de la busqueda
+      PAR_NID_VERIFICA         IN ALC_VERIFICAFRM3.N_CODVER%TYPE,
+      PAR_NESTADO              IN ALC_VERIFICAFRM3.N_ESTADO%TYPE
+    )IS
+     BEGIN
+        UPDATE ALC_VERIFICAFRM3 
+        SET    N_ESTADO = PAR_NESTADO
+        WHERE  N_CODVER = PAR_NID_VERIFICA;
+          
+      END;
+    
+END PCK_ALC_TURBIDI;

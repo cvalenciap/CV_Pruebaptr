@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+<script th:inline="javascript">
+/*<![CDATA[*/    
+    var mensajeRespuestaServer = /*[[${mensajeRespuesta}]]*/ ;
+    var estadoRespuestaServer = /*[[${estadoRespuesta}]]*/ ;
+    var ltaAnalista =  /*[[${ltaAnalista}]]*/ ;   
+    var descripcionPtar = /*[[${descripcionPtar}]]*/ ;   
+    var idPtarSector = /*[[${idPtarSector}]]*/ ;
+    var idParametro = /*[[${idParametro}]]*/ ;
+    var ltaRegParasitologico = /*[[${ltaRegParasitologico}]]*/ ;    
+    var ltaPuntoMuestra = /*[[${ltaPuntoMuestra}]]*/ ;
+    var ltaMicroorganismo = /*[[${ltaMicroorganismo}]]*/ ;
+    var fechaActual = /*[[${fechaActual}]]*/ ;
+    var modo = /*[[${modo}]]*/ ;
+    var ltaSubParametrosTodo = /*[[${ltaSubParametrosTodo}]]*/ ;
+    var estadoAprobacionParasitologico = /*[[${estadoAprobacionParasitologico}]]*/ ;
+    var observacionParasitologico = /*[[${observacionParasitologico}]]*/;
+/*]]>*/
+</script>
+</head>
+<body class="skin-gym bar-white">    
+	<div class="" role="document">   
+		<div class="">
+		    <div class="box-wrap-header">
+				<div class="pull-left col-sm-9">
+					<div class="title-main">
+						<label class="control-label col-sm-5" ><span id="lblTitulo">Registro Parasitologico</span></label>
+						<label class="control-label col-sm-1" ><strong>Fecha: </strong></label>
+						<label class="control-label col-sm-2" style="text-align: left !important;" th:text="${fechaActual}" for="txtFecha"></label>
+						<label class="control-label col-sm-3" style="text-align: right !important;"><strong>Fecha Monitoreo: </strong></label>
+						<label class="control-label col-sm-1" style="text-align: left !important;" id="fechaMonitoreo" for="txtFechaMonitoreo"></label>
+					</div>
+				</div>
+				<div class="pull-right">					
+					<div id="toolbar" style="margin-top: 7px;">
+							<button id="btnVerAnalistaRegParasitologico" style="display: none;" title="Analista" class="btn-s btn-agregar">
+								Ver Analista
+							</button>	
+							&nbsp;	
+							<button id="btnAdjuntarRegParasitologico" title="adjuntar" class="btn-s btn-agregar">
+								<i class="fa fa-paperclip"></i>
+							</button>	
+							&nbsp;									
+							<button id="btnNuevoRegParasitologico" title="Agregar" class="btn-s btn-agregar">+</button>							
+					</div>
+				</div>
+			</div>	          
+			<div class="modal-body">
+					<div class="box-form" style="display: none;">	
+				    	<div class="row">
+					      <div class="col-md-4">
+					        <div class="row">
+					              <form class="form-horizontal">
+									  <div class="form-group">
+									    <label class="control-label col-sm-4" ><strong>Fecha : </strong></label>
+										<label class="control-label col-sm-8" style="text-align: left !important;" th:text="${fechaActual}" for="txtFecha"></label>
+									  </div>
+								  </form>											              
+							 </div>
+					      </div>
+					      <div class="col-md-4">
+					        <div class="row">  													 	             
+								<form class="form-horizontal">
+									  <div class="form-group">
+									    <label class="control-label col-sm-4" ><strong>Ptar : </strong></label>	
+									    <label class="control-label col-sm-8" style="text-align: left !important;" id="txtPtar" th:text="${descripcionPtar}" ></label>
+									  </div>
+								 </form>
+							 </div>
+					      </div>
+					      <div class="col-md-4">
+					          <div class="row"> 
+					            <form class="form-horizontal">
+									  <div class="form-group">
+									    <label class="control-label col-sm-4" ><strong>Sector : </strong></label>	
+									    <label class="control-label col-sm-8" style="text-align: left !important;" th:text="${descripcionSector}" id="txtSector"></label>
+									  </div>
+								 </form>
+							 </div>
+					      </div>
+				    	</div>				    	
+					</div>
+                	<div class="panel-body" style="padding: 0px !important;">
+						<div class="table-responsive">
+							<table id="tblResultadoRegistroParasitologico" 
+								class="table table-striped table-bordered table-hover text-center text-middle" 
+								data-flat="true"  data-cache="false">
+							</table>
+						</div>		
+					</div>
+			</div>
+			<div class="modal-footer">
+				<div class="pull-left">
+					<div id="divMensajeInformacion"></div>
+				</div>
+                <div class="pull-right">
+                	<button id="btnMostrarFRegistroParasitologico" style="display: none;" class="btn-s btn-add">Ver Formulas</button>
+                	<button id="btnHabilitarRegistroParasitologico" style="display: none;" class="btn-s btn-add">Habilitar</button>      
+                	<button id="btnAprobarRegistroParasitologico" style="display: none;" class="btn-s btn-add">Aprobar</button>        
+                    <button id="btnGuardarTodoRegistroParasitologico" class="btn-s btn-add">Guardar</button>
+                    <button id="btnBorrarMultipleRegistroParasitologico" class="btn-s btn-add">Borrar Varios</button>
+                </div>
+            </div>
+<!--             cambio -->
+            <div class="box-wrap-body">
+				<div class="box-form" id="divFormulasParasitologico" style="display: none">
+					<h4 class="title">Edici&oacute;n de F&oacute;rmulas</h4>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="control-label col-sm-1" id="lblFormulaParasitologico1">
+										<font class="text-danger"> (*) :</font>
+									</label>
+									<div class="col-md-2">
+										<input type="text" valor="" disabled="disabled" class="form-control input-sm" maxlength="100" id="txtFormulaParasitologico1" />
+									</div>
+									<div class="col-md-1">
+										<button type="button" id="btnEditarFormulaParasitologico1" class="btn-s btn-EditarFormula">
+											<i class="fa fa-pencil-square-o"></i>
+										</button>
+										<button type="button" id="btnGuardarFormulaParasitologico1" style="display: none" class="btn-s btn-EditarFormula">
+											<i class="glyphicon glyphicon-floppy-disk"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="box-form" id="divVariablesParasitologico" style="display: none">
+					<h4 class="title">Leyenda de Variables</h4>
+					<div class="row">
+						<div class="col-md-3">
+							<div>
+								<div class="table-responsive">
+									<table id="tblVariables1Parasitologico"
+										class="table table-striped table-bordered table-hover text-center text-middle"
+										data-flat="true" data-cache="false">
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div>
+								<div class="table-responsive">
+									<table id="tblVariables2Parasitologico"
+										class="table table-striped table-bordered table-hover text-center text-middle"
+										data-flat="true" data-cache="false">
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div>
+								<div class="table-responsive">
+									<table id="tblVariables3Parasitologico"
+										class="table table-striped table-bordered table-hover text-center text-middle"
+										data-flat="true" data-cache="false">
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div>
+								<div class="table-responsive">
+									<table id="tblVariables4Parasitologico"
+										class="table table-striped table-bordered table-hover text-center text-middle"
+										data-flat="true" data-cache="false">
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--             inicio adecuacion texto observacion -->			
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<b class="accordeon_heading">Observaci&oacute;n</b>
+							</h3>
+						</div>
+						<div class="panel-body">
+							<div class="box-form">
+								<div class="row">
+									<div class="col-md-12">
+										<label><font class="text-danger">(*) Agrega observaciones al Registro de Laboratorio para el par&aacute;metro Parasitol&oacute;gico</font></label>
+										<textarea id="txtObservacionRegistro" maxlength="500" class="form-control" rows="5" style="overflow:auto; resize:none" th:text="${observacionParasitologico}"></textarea>
+										<div class="modal-footer">
+											<div class="pull-left">
+												<div id="divMensajeInformacionObservacionRegistro"></div>
+											</div>
+							                <div class="pull-right">  
+							                	<button id="btnEditarObservacionRegistro" class="btn-s btn-add">Editar</button>
+							                	<button id="btnGuardarObservacionRegistro" class="btn-s btn-add">Guardar</button>
+							                	<button id="btnRegresarObservacionRegistro" class="btn-s btn-add">Regresar</button>            
+							                </div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+	<script type="text/javascript" th:src="@{/js/registroParasitologico.js}"></script>
+</body>
+</html>

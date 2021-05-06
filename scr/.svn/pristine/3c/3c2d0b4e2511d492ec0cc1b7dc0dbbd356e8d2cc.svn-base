@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('rio.title')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+	
+	
+		<!-- Modal -->
+		<div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
+		  	<div class="modal-dialog" style="width: 90%;">
+		
+				<!-- Modal content-->
+			    <div class="modal-content" th:replace="tipoProcesoEdit :: formEdit" id="id-modal-content">
+			    	
+			    </div>
+		 	</div>
+		</div>
+	
+	
+		<form name="formInactivaTipoProceso" id="formInactivaTipoProceso" style="display:none;" 
+			  th:action="@{/tipoProcesoInactivar}" method="post">
+			<input type="hidden" id="inacIdTipoProceso" name="inacIdTipoProceso" />
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>	
+
+		<div th:replace="fragments/menu :: menu"></div>
+		
+		<h3 class="text-center" th:text="${#messages.msg('home.rio')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+			<form name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-md-2 col-sm-2 col-xs-3 text-right no-padding" th:text="${#messages.msg('rio.nombre')}"></label>
+							<div class="col-md-10 col-sm-10 col-xs-9">
+								<input type="text" id="cpDesc" name="cpDesc" class="form-control" th:placeholder="${#messages.msg('rio.nombre')}"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-2 col-sm-2 col-xs-3 text-right no-padding" th:text="${#messages.msg('rio.abreviatura')}"></label>
+							<div class="col-md-4 col-sm-4 col-xs-3">
+								<input type="text" id="cpAbrev" name="cpAbrev" class="form-control" th:placeholder="${#messages.msg('rio.abreviatura')}"/>
+							</div>
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('rio.estado')}"></label>
+							<div class="col-md-4 col-sm-4 col-xs-4">
+								<select id="cpEstado" name="cpEstado" class="form-control">
+								    <option value="-1">Todos</option>
+									<option value="1">Activo</option>
+									<option value="2">Inactivo</option>
+									<option value="3">Anulado</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+					<button type="button" class="btn btn-info btn-create-proceso" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('tipoProceso.agregar')}"></label></button>
+				</div>
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-right">
+					<button type="button" class="btn btn-default btn-limpiar"><span class="glyphicon glyphicon-trash" ></span><label th:text="${#messages.msg('tipoProceso.limpiar')}"></label></button> &nbsp;
+					<button type="button" id="idBtnFormBuscaProceso" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span><label th:text="${#messages.msg('tipoProceso.buscar')}"></label></button>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="container_12">
+				<div th:replace="rioTable :: resultsList" class="grid_10 height800" id="idTipoProcesoTable"></div>
+			</div>
+			<script type="text/javascript" th:src="@{/js/tipoProceso.js}"></script>
+		</div>
+	</div>
+</body>
+</html>

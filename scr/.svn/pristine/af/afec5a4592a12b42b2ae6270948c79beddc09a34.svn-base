@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsListResultSecond" class="grid_10 height800" id="idMuestraResultSecondTable">
+		
+		<table  class="fancyTable" id="myTableMuestraResultSecond" cellpadding="0" cellspacing="0" style="width: 70%">
+			<thead>
+				<tr>		
+					<th th:text="${#messages.msg('muestraResult.table.col0')}" style="width: 50px;"></th>			
+					<th th:text="${#messages.msg('muestraResult.table.col1')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestraResult.table.col2')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestraResult.table.col3')}" style="width: 50px;"></th>	
+					<th th:text="${#messages.msg('muestraResult.table.col4')}"></th>	
+					<th th:text="${#messages.msg('muestraResult.table.col4')}"></th>							
+				</tr>
+			</thead>
+		</table>
+		<br/>
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTableMuestraResultSecond').DataTable({
+					"bProcessing": true,
+					"serverSide": false,
+					"searching": false,
+					"lengthChange":   false,
+					"bPaginate": false,
+					"bInfo": false,
+					"ajax":{
+						url :"muestraResultSecond/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTableMuestraResultSecond_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	
+			            	d.idCabecera = $('#intIdHide').val();
+			            }
+					},
+					"order": [ 5, 'asc' ],
+					"columnDefs": [ 
+						///{ targets: '_all', visible: true,  },
+			            {"width": "40px",
+		        			className: "dt-body-center",
+		                "targets": 1                
+		            	},
+			            {"width": "30px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": [2,3,4]                
+			            },
+			            {  
+			            	visible: false,
+			                "targets": 5                
+			            },
+			            {  
+			            	visible: false,
+			                "targets": 0                
+			            }
+					]
+				});
+			}); 
+			
+			
+		</script>	
+	</div>
+</body>
+</html>

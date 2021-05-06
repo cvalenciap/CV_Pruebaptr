@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-edit-form222">
+	
+		
+	
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('formulario222.Header.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('formulario222.Header.titulo')}">Crear texto html</span>
+		</div>
+		
+		
+		<div class="modal-footer">
+		
+			<form name="form-edit-form" id="form-edit-formularioHeader222" method="post" 
+				  th:action="@{/formularioHeaderSave222}" th:object="${formularioHeader222}"
+				  role="form">
+					<input type="hidden" id="codigo" name="codigo" th:value="${formularioHeader222.codigoHeader}" />		
+				  	<input type="hidden" id="codigoTipo" name="codigoTipo" th:value="${codigoTipoDocumento}" />
+				  	<input type="hidden" id="tipArchDocumento" name="tipArchDocumento" th:value="${tipArchDocumento}" />
+				  	<input type="hidden" id="tamMaxArchDocumento" name="tamMaxArchDocumento" th:value="${tamMaxArchDocumento}" />
+				  	<input type="hidden" id="page" name="page" th:value="${formularioHeader222.page}" /> 
+					<input type="hidden" id="codHeader" th:field="*{codigoHeader}" />																
+				
+				<!-- div class="col-md-12 col-sm-12 col-xs-12" th:if="${cantidad > 0}">
+							<input type="text" readonly="readonly" id="strFechaMuestreo"  class="form-control letraMayuscula" style="text-align: center;"
+							       maxlength="19" th:field="*{strfechaMuestreo}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>
+				</div-->
+				
+				<div class="col-md-12 col-sm-12 col-xs-12">
+						<label class="control-label col-md-2 col-sm-2 col-xs-2" th:text="${#messages.msg('formulario222.Edit.fechaMuestreo')}"></label>
+				        <div class="col-md-2 col-sm-2 col-xs-2">
+				        		<input type="text" readonly="readonly" id="strFechaMuestreo"  class="form-control letraMayuscula" style="text-align: center;"
+							       maxlength="19" th:field="*{strfechaMuestreo}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>
+				        </div>
+						
+				</div>
+				<br/><br/>
+				<div class="panel panel-success">
+				<div class="col-md-12 col-sm-12 col-xs-12 panel-heading texto-left" >
+				        <div class="col-md-3 col-sm-3 col-xs-3">
+							<b class="main_heading">
+				               EJECUTADO POR
+			               </b>
+						</div>
+				</div>
+				<br/>
+				<div class="panel-body">
+				<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:10px">
+						<div id="idOculto1">
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Muestreo')}"></label>
+							</div>
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<select class="form-control" id="cboMuestrea" name="cboMuestrea" th:field="*{perMuestrea}" style="height: 33px;"></select>
+									<input type="hidden" id="cboMuestreaHidden" th:value="*{perMuestrea}" />	
+							</div>
+							
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Parametros')}"></label>
+							</div>
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<select class="form-control" id="cboMuestrea2" name="cboMuestrea2" th:field="*{perMuestrea2}" style="height: 33px;"></select>
+							    <input type="hidden" id="cboMuestreaHidden2" th:value="*{perMuestrea2}" />
+							</div>
+						</div>
+				</div>
+				</div>
+				
+				</div>
+				
+				<div id="idOculto2">
+					<div class="panel panel-success">
+						<div class="col-md-12 col-sm-12 col-xs-12 panel-heading texto-left">
+				        	<div class="col-md-3 col-sm-3 col-xs-3">
+								<b class="main_heading">
+				               		RECIBIDO POR
+			               		</b>
+							</div>
+						</div>
+				
+				<div class="panel-body">
+				<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:10px" >
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Area')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboRecepcion" name="cboRecepcion" th:field="*{perRecepciona}" style="height: 33px;"></select>
+								<input type="hidden" id="cboRecepcionHidden" th:value="*{perRecepciona}" />	
+						</div>
+						
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.FisicoQuimica')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboRecepcion2" name="cboRecepcion2" th:field="*{perRecepciona2}" style="height: 33px;"></select>
+						    <input type="hidden" id="cboRecepcionHidden2" th:value="*{perRecepciona2}" />
+						</div>
+						
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Organicos')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboRecepcion3" name="cboRecepcion3" th:field="*{perRecepciona3}" style="height: 33px;"></select>
+						    <input type="hidden" id="cboRecepcionHidden3" th:value="*{perRecepciona3}" />
+						</div>
+				</div>
+				</div>
+				
+				</div>
+				
+				<div class="col-md-6 col-sm-6 col-xs-6">
+						
+						<div class="panel panel-success">
+						<div class="col-md-12 col-sm-12 col-xs-12 panel-heading texto-left">
+				        	<div class="col-md-6 col-sm-6 col-xs-6">
+								<b class="main_heading">
+				               		APROBADO POR
+			               		</b>
+							</div>
+						</div>
+						<div class="panel-body" >
+						<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:10px">
+						<div class="col-md-4 col-sm-4 col-xs-4">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Especialista')}"></label>
+						</div>
+						<div class="col-md-6 col-sm-6 col-xs-6">
+							<select class="form-control" id="cboAnalista" name="cboAnalista" th:field="*{perAnalista}" style="height: 33px;"></select>
+						    <input type="hidden" id="cboAnalistaHidden" th:value="*{perAnalista}" />
+						</div>
+						</div>
+						</div>
+						
+						</div>
+				</div>
+				<div class="col-md-6 col-sm-6 col-xs-6 form-group" >
+						
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Observacion')}"></label>
+						</div>
+						<div class="col-md-6 col-sm-2 col-xs-2">
+						    <textarea id="observacion" class="form-control" rows="2" th:field="*{observacion}" maxlength="400"></textarea> 
+						</div>
+				</div>
+				
+				<div class="col-md-12 col-sm-12 col-xs-12">
+						
+						<div class="col-md-12 espaciado-superior">
+						
+
+						
+							<div class="col-md-2">
+								<div class="col-md-12" style="padding: 0px;">
+									<div class="panel panel-success">
+										<div class="panel-heading texto-left">
+											<label class="control-label" th:text="${#messages.msg('formulario222.Edit.codigo')}"></label>
+										</div>
+										<div class="panel-body">
+											<div class="row">	
+											    <div class="form-group col-md-10 col-sm-4 col-xs-4  ">
+													<input type="text"  class="form-control letraMayuscula" id="codMuestra" maxlength="8"
+													       th:field="*{codMuestra}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>			                    	 		                    	 	   			                    	 
+							                    </div>										                    						                    			                    
+								 			</div>
+								 			<div class="row">										                    
+							                    <div class="form-group col-md-10 col-sm-4 col-xs-4  ">
+													<input type="text"  class="form-control letraMayuscula" maxlength="8"
+													       th:field="*{codMuestra2}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>			                    	 		                    	 	   			                    	 
+							                    </div>										                    													                    			                    
+								 			</div>
+								 			<div class="row">										                    
+							                     <div class="form-group col-md-10 col-sm-4 col-xs-4  ">
+													<input type="text"  class="form-control letraMayuscula"  maxlength="8"
+													       th:field="*{codMuestra3}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>			                    	 		                    	 	   			                    	 
+							                    </div>										                    										                    			                    
+								 			</div>																			
+										</div>
+									</div>
+								</div>	
+							</div>
+							
+							<div class="col-md-10">
+								<div class="col-md-12" style="padding: 0px;">
+									<div class="panel panel-success">
+										<div class="panel-heading texto-left">
+											<label class="control-label" th:text="${#messages.msg('formulario222.Edit.aseguramiento')}"></label>
+										</div>
+										<div class="panel-body">
+											
+											<div class="row">										                    
+							                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left" for="nombre"><span th:text="${#messages.msg('formulario222.Edit.duplicado')}"></span></label>
+												<div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+													<input type="text"  class="form-control letraMayuscula" 
+													       maxlength="8" th:field="*{dup}" onkeypress="return MYAPPL.soloNumerosPunto(event)"  />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula" 
+													       maxlength="8" th:field="*{dup2}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula" 
+													       maxlength="8" th:field="*{dup3}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula" 
+													       maxlength="8" th:field="*{dup4}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula" 
+													       maxlength="8" th:field="*{dup5}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>											                    			                    
+								 			</div>
+								 			<div class="row">										                    
+							                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left" for="nombre"><span th:text="${#messages.msg('formulario222.Edit.promedio')}"></span></label>
+												<div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+													<input type="text"  class="form-control letraMayuscula" 
+													       maxlength="8" th:field="*{pro}" onkeypress="return MYAPPL.soloNumerosPunto(event)"  />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula" 
+													       maxlength="8" th:field="*{pro2}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula"  
+													       maxlength="8" th:field="*{pro3}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula"  
+													       maxlength="8" th:field="*{pro4}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />		                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula"  
+													       maxlength="8" th:field="*{pro5}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>												                    			                    
+								 			</div>
+								 			<div class="row">										                    
+							                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left" for="nombre"><span th:text="${#messages.msg('formulario222.Edit.rds')}"></span></label>
+												<div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+													<input type="text"  class="form-control letraMayuscula"  
+													       maxlength="8" th:field="*{rds}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula"  
+													       maxlength="8" th:field="*{rds2}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula"  
+													       maxlength="8" th:field="*{rds3}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula"  
+													       maxlength="8" th:field="*{rds4}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>	
+							                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+													<input type="text"  class="form-control letraMayuscula"  
+													       maxlength="8" th:field="*{rds5}" onkeypress="return MYAPPL.soloNumerosPunto(event)" />			                    	 		                    	 	   			                    	 
+							                    </div>												                    			                    
+								 			</div>
+								 																						
+										</div>
+									
+									</div>
+								
+								</div>	
+							</div>
+							
+							
+						</div>
+					</div>
+					
+					
+					
+				</div>   
+				
+				<fieldset class="col-md-12">
+					<div class="panel panel-info">
+						<div class="panel-body">
+							<div class="row">
+								<div class="form-horizontal">
+									<div id="upload_files_cade_cust">
+											<div th:replace="/COMM/subidaArchivos :: fileUpload"></div>
+										</div>
+								</div>
+							</div>
+						</div>
+					</div>			
+				</fieldset>	
+				
+					 <div class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</div>  			
+					<script type="text/javascript" th:src="@{/js/subidaArchivos.js}"></script>							
+					<script th:inline="javascript">
+						MYAPPL.LOGIC.CADE_CUST.initUpload();
+						MYAPPL.removeInputEnter();
+						MYAPPL.removePasteIntoBody();
+					</script>
+			</form>
+
+<!-- 			 <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons"> -->
+<!-- 				<div id="idTableVerificacion"> -->
+<!-- 					<div class="container_12">					  -->
+<!-- 					 	<button type="button" class="btn btn-info btn-crear-mant-correo" data-toggle="modal" onclick="modificarDetalle()"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('tipoProceso.agregar')}"></label></button> -->
+<!-- 					</div> -->
+<!-- 					<div class="container_12"> -->
+<!-- 						<div th:replace="formulario242/formulario242TableDetalle :: resultsListDetalle" class="grid_10 height800" id="idFormularioTableDetalle"></div> -->
+<!-- 					</div>	 -->
+<!-- 				</div>	 -->
+<!-- 			</fieldset> -->
+
+			
+		</div>
+	</div>
+</body>
+</html>

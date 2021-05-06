@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('subactividad.grupo.title')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+	
+	
+			<!-- Modal -->
+		<div id="modal-registra-clima" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+			</div>
+		</div>
+	
+	
+		<form name="formInactivaclima" id="form-inactiva-clima" style="display:none;" 
+			  th:action="@{/clima/inactivar}" method="post">
+			<input type="hidden" id="inacIdclima" name="inacIdclima" />
+			<button id="form-button-delete-proceso" type="submit">Delete</button>
+		</form>	
+		
+		<h3 class="text-center" th:text="${#messages.msg('subactividad.grupo.title')}"></h3>
+		
+			<div class="container_12">
+				<div th:replace="subactividadXGrupo/subactividadXGrupoTable :: resultsList" class="grid_10 height800" id="idClimaTable"></div>
+			</div>
+			<script type="text/javascript" th:src="@{/js/subactividadXGrupo.js}"></script>
+	</div>
+</body>
+</html>

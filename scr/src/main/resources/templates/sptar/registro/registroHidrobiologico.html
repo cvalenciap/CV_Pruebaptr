@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+<script th:inline="javascript">
+/*<![CDATA[*/    
+    var mensajeRespuestaServer = /*[[${mensajeRespuesta}]]*/ ;
+    var estadoRespuestaServer = /*[[${estadoRespuesta}]]*/ ;
+    var ltaAnalista =  /*[[${ltaAnalista}]]*/ ;   
+    var descripcionPtar = /*[[${descripcionPtar}]]*/ ;   
+    var idPtarSector = /*[[${idPtarSector}]]*/ ;
+    var idParametro = /*[[${idParametro}]]*/ ;
+    var ltaRegHidrobiologico = /*[[${ltaRegHidrobiologico}]]*/ ;    
+    var ltaPuntoMuestra = /*[[${ltaPuntoMuestra}]]*/ ;
+    var ltaMicroorganismo = /*[[${ltaMicroorganismo}]]*/ ;
+    var fechaActual = /*[[${fechaActual}]]*/ ;
+    var modo = /*[[${modo}]]*/ ;
+    var ltaSubParametrosTodo = /*[[${ltaSubParametrosTodo}]]*/ ;
+    var ltaTipoConteo = /*[[${ltaTipoConteo}]]*/ ;
+    var estadoAprobacionHidrobiologico = /*[[${estadoAprobacionHidrobiologico}]]*/ ;
+    var ltaVariableGeneral = /*[[${ltaVariableGeneral}]]*/ ;
+    var observacionHidrobiologico = /*[[${observacionHidrobiologico}]]*/;
+/*]]>*/
+</script>
+</head>
+<body class="skin-gym bar-white">    
+	<div class="" role="document">   
+		<div class="">
+		    <div class="box-wrap-header">
+				<div class="pull-left col-sm-9">
+					<div class="title-main">						
+						<label class="control-label col-sm-5" ><span id="lblTitulo">Registro Hidrobiologico</span></label>
+						<label class="control-label col-sm-1" ><strong>Fecha: </strong></label>
+						<label class="control-label col-sm-2" style="text-align: left !important;" th:text="${fechaActual}" for="txtFecha"></label>
+						<label class="control-label col-sm-3" style="text-align: right !important;"><strong>Fecha Monitoreo: </strong></label>
+						<label class="control-label col-sm-1" style="text-align: left !important;" id="fechaMonitoreo" for="txtFechaMonitoreo"></label>
+					</div>
+				</div>
+				<div class="pull-right">			
+					<div id="toolbar" style="margin-top: 7px;">
+							<button id="btnVerAnalistaRegHidrobiologico" style="display: none;" title="Analista" class="btn-s btn-agregar">
+								Ver Analista
+							</button>	
+							&nbsp;	
+							<button id="btnAdjuntarRegHidrobiologico" title="adjuntar" class="btn-s btn-agregar">
+								<i class="fa fa-paperclip"></i>
+							</button>	
+							&nbsp;									
+							<button id="btnNuevoRegHidrobiologico" title="Agregar" class="btn-s btn-agregar">+</button>							
+					</div>
+				</div>
+			</div>	          
+			<div class="modal-body">
+					<div class="box-form" style="display: none;">	
+				    	<div class="row">
+					      <div class="col-md-4">
+					        <div class="row">
+					              <form class="form-horizontal">
+									  <div class="form-group">
+									    <label class="control-label col-sm-4" ><strong>Fecha : </strong></label>
+										<label class="control-label col-sm-8" style="text-align: left !important;" th:text="${fechaActual}" for="txtFecha"></label>
+									  </div>
+								  </form>											              
+							 </div>
+					      </div>
+					      <div class="col-md-4">
+					        <div class="row">  													 	             
+								<form class="form-horizontal">
+									  <div class="form-group">
+									    <label class="control-label col-sm-4" ><strong>Ptar : </strong></label>	
+									    <label class="control-label col-sm-8" style="text-align: left !important;" id="txtPtar" th:text="${descripcionPtar}" ></label>
+									  </div>
+								 </form>
+							 </div>
+					      </div>
+					      <div class="col-md-4">
+					          <div class="row"> 
+					            <form class="form-horizontal">
+									  <div class="form-group">
+									    <label class="control-label col-sm-4" ><strong>Sector : </strong></label>	
+									    <label class="control-label col-sm-8" style="text-align: left !important;" th:text="${descripcionSector}" id="txtSector"></label>
+									  </div>
+								 </form>
+							 </div>
+					      </div>
+				    	</div>				    	
+					</div>
+                	<div class="panel-body" style="padding: 0px !important;">
+						<div class="table-responsive">
+							<table id="tblResultadoRegistroHidrobiologico" 
+								class="table table-striped table-bordered table-hover text-center text-middle" 
+								data-flat="true"  data-cache="false">
+							</table>
+						</div>		
+					</div>
+			</div>
+			<div class="modal-footer">
+				<div class="pull-left">
+					<div id="divMensajeInformacion"></div>
+				</div>
+                <div class="pull-right">
+                	<button id="btnMostrarFRegistroHidrobiologico" style="display: none;" class="btn-s btn-add">Ver Formulas</button>
+                	<button id="btnHabilitarRegistroHidrobiologico" style="display: none;" class="btn-s btn-add">Habilitar</button>      
+                	<button id="btnAprobarRegistroHidrobiologico" style="display: none;" class="btn-s btn-add">Aprobar</button>        
+                    <button id="btnGuardarTodoRegistroHidrobiologico" class="btn-s btn-add">Grabar</button>
+                    <button id="btnBorrarMultipleRegistroHidrobiologico" class="btn-s btn-add">Borrar Varios</button>
+                </div>
+            </div>
+<!--             cambio -->
+			<div class="box-wrap-body">
+				<div class="box-form" id="divFormulasHidrobiologico" style="display: none">
+					<h4 class="title">Edici&oacute;n de F&oacute;rmulas</h4>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="control-label col-sm-1" >Campo Fito.</label>
+									<div class="col-md-2">
+										<input type="text" valor="" disabled="disabled" class="form-control input-sm" maxlength="100" id="txtFormulaHidrobiologico1" />
+									</div>
+									<label class="control-label col-sm-1" >Campo Zoo.</label>
+									<div class="col-md-2">
+										<input type="text" valor="" disabled="disabled" class="form-control input-sm" maxlength="100" id="txtFormulaHidrobiologico2" />
+									</div>
+									<label class="control-label col-sm-1" >Franja Fito.</label>
+									<div class="col-md-2">
+										<input type="text" valor="" disabled="disabled" class="form-control input-sm" maxlength="100" id="txtFormulaHidrobiologico3" />
+									</div>
+									<label class="control-label col-sm-1" >Franja Zoo.</label>
+									<div class="col-md-2">
+										<input type="text" valor="" disabled="disabled" class="form-control input-sm" maxlength="100" id="txtFormulaHidrobiologico4" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="box-form" id="divVariablesHidrobiologico" style="display: none">
+					<h4 class="title">Leyenda de Variables</h4>
+					<div class="row">
+						<div class="col-md-3">
+							<div>
+								<div class="table-responsive">
+									<table id="tblVariables1Hidrobiologico"
+										class="table table-striped table-bordered table-hover text-center text-middle"
+										data-flat="true" data-cache="false">
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div>
+								<div class="table-responsive">
+									<table id="tblVariables2Hidrobiologico"
+										class="table table-striped table-bordered table-hover text-center text-middle"
+										data-flat="true" data-cache="false">
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div>
+								<div class="table-responsive">
+									<table id="tblVariables3Hidrobiologico"
+										class="table table-striped table-bordered table-hover text-center text-middle"
+										data-flat="true" data-cache="false">
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div>
+								<div class="table-responsive">
+									<table id="tblVariables4Hidrobiologico"
+										class="table table-striped table-bordered table-hover text-center text-middle"
+										data-flat="true" data-cache="false">
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--             inicio adecuacion texto observacion -->			
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<b class="accordeon_heading">Observaci&oacute;n</b>
+							</h3>
+						</div>
+						<div class="panel-body">
+							<div class="box-form">
+								<div class="row">
+									<div class="col-md-12">
+										<label><font class="text-danger">(*) Agrega observaciones al Registro de Laboratorio para el par&aacute;metro Hidrobiol&oacute;gico</font></label>
+										<textarea id="txtObservacionRegistro" maxlength="500" class="form-control" rows="5" style="overflow:auto; resize:none" th:text="${observacionHidrobiologico}"></textarea>
+										<div class="modal-footer">
+											<div class="pull-left">
+												<div id="divMensajeInformacionObservacionRegistro"></div>
+											</div>
+							                <div class="pull-right">  
+							                	<button id="btnEditarObservacionRegistro" class="btn-s btn-add">Editar</button>
+							                	<button id="btnGuardarObservacionRegistro" class="btn-s btn-add">Guardar</button>
+							                	<button id="btnRegresarObservacionRegistro" class="btn-s btn-add">Regresar</button>            
+							                </div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+	<script type="text/javascript" th:src="@{/js/registroHidrobiologico.js}"></script>
+</body>
+</html>

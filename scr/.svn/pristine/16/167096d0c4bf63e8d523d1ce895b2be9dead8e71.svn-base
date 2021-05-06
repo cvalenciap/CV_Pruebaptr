@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsListPlanta2" class="grid_10 height800" id="idPlanta2Table">
+		
+		<table  class="fancyTable" id="myTablePlanta2" cellpadding="0" cellspacing="0" style="width: 100%; table-layout : auto;">
+			<thead>
+				
+				<tr>						
+					<th th:text="${#messages.msg('muestrForm25.table.col00')}" colspan="7" class="alto_div"></th>
+													
+				</tr>
+				<tr>						
+					<th th:text="${#messages.msg('muestrForm25.table.col1')}"  rowspan="2"></th>
+					<th th:text="${#messages.msg('muestrForm25.table.col2')}" class="alto_div"></th>
+					<th th:text="${#messages.msg('muestrForm25.table.col3')}" ></th>
+					<th th:text="${#messages.msg('muestrForm25.table.col4')}" ></th>	
+					<th th:text="${#messages.msg('muestrForm25.table.col5')}" ></th>
+					<th th:text="${#messages.msg('muestrForm25.table.col6')}"  class="hidden-xs"></th>	
+					<th th:text="${#messages.msg('muestrForm25.table.col6')}"  class="hidden-xs"></th>								
+				</tr>
+				<tr>						
+					
+					<th th:text="${#messages.msg('muestrForm25.table.NMP')}" ></th>
+					<th th:text="${#messages.msg('muestrForm25.table.UFC')}" ></th>
+					<th th:text="${#messages.msg('muestrForm25.table.UFC')}" ></th>	
+					<th th:text="${#messages.msg('muestrForm25.table.UFC')}" ></th>
+					<th th:text="${#messages.msg('muestrForm25.table.UFC')}"  class="hidden-xs"></th>	
+					<th th:text="${#messages.msg('muestrForm25.table.UFC')}"  class="hidden-xs"></th>								
+				</tr>
+			</thead>
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTablePlanta2').DataTable({
+					"bProcessing": true,
+					"serverSide": false,
+					"searching": false,
+					"lengthChange":   false,
+					"ordering": false,
+					"bPaginate": false,
+					"bInfo": false,
+					"ajax":{
+						url :"planta2/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTablePlanta2_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	
+			            	d.idCabecera = $('#intIdHide').val();
+			            	//d.idCabecera = 80;
+			            }
+					},
+					"order": [ 6, 'asc' ],
+					"columnDefs": [ 
+			            {  
+			            	"width": "194px",
+			            	className: "dt-body-left",
+			                "targets": 0                
+			            },
+						{"width": "84px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": 1,
+		              		"render": function ( data, type, row) {
+		              			return ''+row[1].replace(",", "."); ;
+		              		}
+			            },
+			            {"width": "84px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": 2,
+		              		"render": function ( data, type, row) {
+		              			return ''+row[2].replace(",", "."); ;
+		              		}
+			            },
+			            {"width": "84px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": 3,
+		              		"render": function ( data, type, row) {
+		              			return ''+row[3].replace(",", "."); ;
+		              		}
+			            },
+			            {"width": "84px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": 4,
+		              		"render": function ( data, type, row) {
+		              			return ''+row[4].replace(",", "."); ;
+		              		}
+			            },
+			            {  
+			            	"width": "0px",
+			            	visible: false,
+			                "targets": [5,6]                
+			            }			           
+					]
+				});
+			}); 
+			
+			
+		</script>	
+	</div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsList" class="grid_10 height800" id="idRioTable">
+		
+		<table  class="fancyTable" id="myRio" cellpadding="0" cellspacing="0" >
+			<thead>
+				<tr>
+					<th th:text="${#messages.msg('rio.table.col1')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('rio.table.col2')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('rio.table.col3')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('rio.table.col4')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('rio.table.col5')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('rio.table.col6')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('rio.table.col7')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('rio.table.col8')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('rio.table.col9')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('rio.table.col10')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('rio.table.col11')}" style="width: 50px;"></th>
+				</tr>
+			</thead>
+			
+		</table>
+		
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myRio').DataTable({
+					"bProcessing": true,
+					"serverSide": true,
+					"searching": false,
+					"lengthChange":   false,
+					"scrollX": true,
+					"bJQueryUI": true,
+					"ajax":{
+						url :"rio/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myRio_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	d.nombreRio = $('#cpDesc').val();
+			            	d.abreviatura = $('#cpAbrev').val();
+			            	d.estado = $('#cpEstado').val();
+			            	d.perteneceAforo = $('#cbxAforo').val();
+			            }
+					},
+					"order": [ 1, 'asc' ],
+					"columnDefs": [ 
+						{ targets: '_all', visible: true,  },
+			            {"width": "50px",
+			        		className: "dt-body-center",
+			                "targets": 1                
+			            },
+			            {"width": "100px",
+		        		  	className: "dt-body-center",
+		                  	"targets": 2
+		              	},
+			            {"width": "200px",
+		        		  	className: "dt-body-center",
+		                  	"targets": 3
+		              	},
+		              	{"width": "280px",
+		        		  	className: "dt-body-center",
+		                  	"targets": 4
+		              	},
+		              	{"width": "120px",
+		        		  	className: "dt-body-center",
+		                  	"targets": 5
+		              	},
+		              	{"width": "80px",
+		        		  	className: "dt-body-center",
+		                  	"targets": 6
+		              	},
+		              	{"width": "120px",
+		        		  	className: "dt-body-center",
+		                  	"targets": [7, 8, 9, 10]
+		              	},
+		              	{"width": "80px",
+		              		className: "dt-body-center",
+		              		"orderable": false,
+		              		"targets": 0,
+		              		visible: true,
+		              		"data": 1,
+		              		"render": function ( data, type, row) {
+		              			return '<table><tr>' +
+		              				'<td style="border:none; width:46px;"><button class="btn btn-info btn-modif-punto" title="Editar" onclick="modificarRio('+row[1]+')"><span class="glyphicon glyphicon-pencil"></span></button></td>'+
+		              			 ((row[6]==='INACTIVO')?'<td style="border:none; width:46px;"></td>':'<td style="border:none; width:46px;"><button class="btn btn-danger btn-delete-punto" title="Inactivar" onclick="inactivarRio('+row[1]+')"><span class="glyphicon glyphicon-erase"></span></button></td>') +
+		              			'</tr></table>';
+		              		}
+		              	}
+					]
+				});
+			}); 
+		</script>	
+		
+	</div>
+</body>
+</html>

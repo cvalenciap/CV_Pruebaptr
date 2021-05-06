@@ -1,0 +1,139 @@
+create or replace PACKAGE BODY PCK_ALC_FORMULA AS
+    PROCEDURE PRC_BUSCA_FORMULA_MUESTRA(
+       --Parametros de la busqueda
+       PAR_nCODIGO_GRUPO             IN ALC_MUESTRAFORM.N_CODGRP%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER, 
+       PAR_CANTIDAD_PAG     IN INTEGER, 
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER,
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    ) IS 
+    V_QUERY VARCHAR2(4000);
+    V_QUERY_FROM VARCHAR2(4000);
+    V_QUERY_COUNT VARCHAR2(4000);
+
+    BEGIN
+    
+          V_QUERY_COUNT := 'select count(*) '; 
+ 
+          V_QUERY := 'select * 
+                      from (select a.*, rownum rn
+                            from (select d.c_ddcatl, c.c_formul, c.n_idform, c.c_nomfor, c.c_funcio, c.n_codgrp ';
+        
+          IF(PAR_NCODIGO_GRUPO <> 0)THEN
+            V_QUERY_FROM := ' FROM alc_muestraform C INNER JOIN ALC_DETCATLG D ON c.n_codgrp = d.n_cdcatl and d.n_ccatlg=1 
+                              WHERE c.n_codgrp = ' || PAR_NCODIGO_GRUPO;
+          ELSE
+            V_QUERY_FROM := ' FROM alc_muestraform C INNER JOIN ALC_DETCATLG D ON c.n_codgrp = d.n_cdcatl and d.n_ccatlg=1';
+          END IF;
+          
+        
+          V_QUERY := V_QUERY || V_QUERY_FROM;
+         
+          V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+        
+          V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                
+          OPEN par_out_cursor FOR v_query;
+          
+          execute immediate v_query_count into par_out_quantity;
+    
+    END;
+    
+    PROCEDURE PRC_GET_FORMULA_MUESTRA( 
+       --Parametros de la busqueda 
+       PAR_NID_FORMU  IN ALC_MUESTRAFORM.N_IDFORM%TYPE,
+       --Parametros de retorno
+       par_out_cursor OUT SYS_REFCURSOR 
+    )IS
+        v_query VARCHAR2(4000);
+        BEGIN
+          v_query := ' select  c.n_idform, c.n_codgrp, c.c_formul, c.c_nomfor, c.c_funcio'   ||
+                     ' FROM alc_muestraform c  where c.n_idform = ' || PAR_NID_FORMU;
+          OPEN par_out_cursor FOR v_query;        
+      
+    END;
+    
+    PROCEDURE PRC_INSERT_FORMULA_MUESTRA(
+       PAR_NCODIGO_GRUPO        IN ALC_MUESTRAFORM.N_CODGRP%TYPE,
+       PAR_CFORMULARIO             IN ALC_MUESTRAFORM.C_FORMUL%TYPE,
+       PAR_CNOMBRE_FORM                IN ALC_MUESTRAFORM.C_NOMFOR%TYPE,
+       PAR_CNOMBRE_FUNC                IN ALC_MUESTRAFORM.C_FUNCIO%TYPE,
+       --Campos de Auditoria
+       PAR_CUSUARIO_CREACION     IN ALC_POISSON.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI     IN ALC_POISSON.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_POISSON.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN        OUT INTEGER
+     )IS
+       
+         BEGIN         
+
+             INSERT INTO ALC_MUESTRAFORM (
+                           A_USUCRE,
+                           A_FECCRE,
+                           A_USUMOD,
+                           A_FECMOD,
+                           A_NOMPRG,
+                           N_IDFORM,
+                           N_CODGRP,
+                           C_FORMUL,
+                           C_NOMFOR,
+                           C_FUNCIO)
+                    VALUES(
+                           PAR_CUSUARIO_CREACION,
+                           SYSDATE,
+                           PAR_CUSUARIO_MODI,
+                           SYSDATE,
+                           PAR_CPROGRAMA,
+                           SQ_ALC_MUESTRAFORM.NEXTVAL,
+                           NVL(PAR_NCODIGO_GRUPO, 0),
+                           NVL(PAR_CFORMULARIO, ' '),
+                           NVL(PAR_CNOMBRE_FORM,' '),
+                           NVL(PAR_CNOMBRE_FUNC,' ') 
+                        );
+              PAR_OUT_RETURN := 0;    
+     END;
+    
+    PROCEDURE PRC_UPDATE_FORMULA_MUESTRA(
+       PAR_NID_FORMULARIO        IN ALC_MUESTRAFORM.N_IDFORM%TYPE,
+       PAR_NCODIGO_GRUPO        IN ALC_MUESTRAFORM.N_CODGRP%TYPE,
+       PAR_CFORMULARIO             IN ALC_MUESTRAFORM.C_FORMUL%TYPE,
+       PAR_CNOMBRE_FORM                IN ALC_MUESTRAFORM.C_NOMFOR%TYPE,
+       PAR_CNOMBRE_FUNC                IN ALC_MUESTRAFORM.C_FUNCIO%TYPE,
+       --Campos de Auditoria
+       PAR_CUSUARIO_CREACION     IN ALC_POISSON.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI     IN ALC_POISSON.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_POISSON.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN        OUT INTEGER
+     )IS 
+         BEGIN
+         UPDATE ALC_MUESTRAFORM
+            SET A_USUMOD = PAR_CUSUARIO_MODI,
+                A_FECMOD = SYSDATE,
+                A_NOMPRG = PAR_CPROGRAMA,
+                N_CODGRP = PAR_NCODIGO_GRUPO,
+                C_FORMUL = NVL(PAR_CFORMULARIO, ' '),
+                C_NOMFOR = NVL(PAR_CNOMBRE_FORM,' '),
+                C_FUNCIO = NVL(PAR_CNOMBRE_FUNC,' ')
+         WHERE 
+               N_IDFORM = PAR_NID_FORMULARIO;
+               
+         PAR_OUT_RETURN := 0; 
+    
+    END;
+    
+    PROCEDURE PRC_INACTIVA_FORMULA_MUESTRA(       
+       --Parametros de la busqueda
+       PAR_NID_FORMULARIO  IN ALC_MUESTRAFORM.N_IDFORM%TYPE
+    )IS
+     BEGIN
+        DELETE ALC_MUESTRAFORM 
+        WHERE  N_IDFORM = PAR_NID_FORMULARIO;
+    
+    
+      END;
+    
+END PCK_ALC_FORMULA;

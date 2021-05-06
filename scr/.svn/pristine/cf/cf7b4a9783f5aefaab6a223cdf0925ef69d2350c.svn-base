@@ -1,0 +1,35 @@
+create or replace PACKAGE PCK_CARGA IS 
+
+PROCEDURE PRC_BUSCA_ULTIMA_CARGA (
+    --Parametro de retorno
+    PAR_OUT_CURSOR OUT SYS_REFCURSOR
+);
+
+PROCEDURE PRC_BUSCA_CARGA (
+   --Parametros de la paginacion
+   par_col_order_by IN integer, par_col_order_by_dir IN varchar2 , 
+   par_pag_desde IN integer, par_cantidad_pag IN integer,
+   --Parametros de retorno
+   par_out_quantity OUT integer,
+   par_out_cursor OUT SYS_REFCURSOR  
+);
+
+PROCEDURE PRC_INSERT_CARGA(
+   PAR_V_NOMCAR               		SCR_CARGA.V_NOMCAR%TYPE,
+   PAR_V_NOMARC                 	SCR_CARGA.V_NOMARC%TYPE,
+   PAR_V_RUTA                      	SCR_CARGA.V_RUTA%TYPE,
+   PAR_D_FECHOR						SCR_CARGA.D_FECHOR%TYPE,
+   PAR_V_ESTCAR                     SCR_CARGA.V_ESTCAR%TYPE,
+   PAR_V_DESCRI                     SCR_CARGA.V_DESCRI%TYPE,
+
+   --Campos de Auditoria
+   PAR_A_USUINS            			SCR_CARGA.A_USUINS%TYPE,
+   PAR_A_PROGRA                    	SCR_CARGA.A_PROGRA%TYPE,
+   PAR_A_CODARE                 	SCR_CARGA.A_CODARE%TYPE,
+   PAR_A_CODSIS              		SCR_CARGA.A_CODSIS%TYPE,
+   
+   --Campos de Salida
+   PAR_OUT_COD_CAR		OUT 		INTEGER
+);
+
+END PCK_CARGA;

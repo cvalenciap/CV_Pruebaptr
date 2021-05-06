@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	
+	<div th:fragment="resultSearchXFecha" class="" >
+	
+	<div class="modal-content">
+	<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" id="buttonCloseDetail">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" ></span>
+			</h4>
+	</div>
+	<div class="modal-footer">
+ 	<div class="container_save"></div>
+	<div th:object="${registroReporteDetalle}" >
+			
+			<div class="dataTables_scroll">
+			<div class="dataTables_scrollHead ui-state-default" style="overflow: auto; position: relative; border: 0px; width: 100%;">
+			<div class="dataTables_scrollHeadInner" style="box-sizing: content-box; width: 1902px; padding-right: 0px;">
+			<table  class="fancyTable form-prueba" id="tablaReporteHidroBiologicoDetalle" cellpadding="0" cellspacing="0" >
+			<thead id="head-detalles">
+				<tr>
+					<th class="th-table" style="width: 100px;"><div th:text="${#messages.msg('reporte.ensayo.column01')}" class="cabecera-texto"></div></th>
+					<th class="th-table"  style="width: 80px;"><div th:text="${#messages.msg('reporte.ensayo.column02')}" class="cabecera-texto"></div></th>
+					<th class="th-table" style="width: 50px;"><div  th:text="${#messages.msg('reporte.ensayo.column03')}" class="cabecera-texto"></div></th>
+					<th class="th-table"  style="width: 100px;"><div th:text="${#messages.msg('reporte.ensayo.column04')}" class="cabecera-texto"></div></th>
+					<th class="th-table"  style="width: 100px;"><div th:text="${#messages.msg('reporte.ensayo.column05')}" class="cabecera-texto"></div></th>
+					<th class="th-table"  style="width: 130px;"><div th:text="${#messages.msg('reporte.ensayo.column06')}" class="cabecera-texto"></div></th>
+					<th class="th-table"  style="width: 100px;"><div th:text="${#messages.msg('reporte.ensayo.column07')}" class="cabecera-texto"></div></th>
+					<th class="th-table"  style="width: 80px;"><div th:text="${#messages.msg('reporte.ensayo.column08')}" class="cabecera-texto"></div></th>
+					<th class="th-table"  style="width: 70px;"><div th:text="${#messages.msg('reporte.ensayo.column09')}" class="cabecera-texto"></div></th>
+					<th class="th-table hidden"  style="width: 80px;"><div th:text="${#messages.msg('reporte.ensayo.column10')}" class="cabecera-texto"></div></th>
+					<th class="th-table"  style="width: 80px;"><div th:text="${#messages.msg('reporte.ensayo.column11')}" class="cabecera-texto"></div></th>
+					<th class="th-table"  style="width: 60px;"><div th:text="${#messages.msg('reporte.ensayo.column12')}" class="cabecera-texto"></div></th>
+					<th class="th-table"  style="width: 80px;"><div th:text="${#messages.msg('reporte.ensayo.column13')}" class="cabecera-texto"></div></th>
+					
+				</tr>
+			</thead>
+			<tbody id="body-detalles">
+				 <tr  th:each="detalle,stat : *{detalles}"  >
+						<td><div class="form-group negrita" th:text="${detalle.puntoMuestreoDesc}" ></div></td>
+                   		<td><div class="form-group" th:text="${detalle.temperatura}" ></div></td>
+                   		<td><div class="form-group" th:text="${detalle.ph}" ></div></td>
+                   		<td><div class="form-group" th:text="${detalle.dosis}" ></div></td>
+                   		<td><div class="form-group" th:text="${detalle.cloroLibre}" ></div></td>
+                   		<td><div class="form-group" th:text="${detalle.cloroTotal}" ></div></td>
+                   		<td><div class="form-group" th:text="${detalle.demandaCloro}" ></div></td>
+                   		<td><div class="form-group" th:text="${detalle.fechaMuestreo}" ></div></td>
+                   		<td><div class="form-grou" th:text="${detalle.horaMuestreo}" ></div></td>
+                   		<td class="hidden"><div class="form-group" th:text="${detalle.planMuestreo}" ></div></td>
+                   		<td><div class="form-group metodos" th:text="${detalle.metodoMuestreo}" ></div></td>
+                   		<td><div class="form-group analistas" th:text="${detalle.analista}" ></div></td>
+                   		<td><div class="form-group muestreadores" th:text="${detalle.muestreador}" ></div></td>
+           		 </tr>
+<!--            		 N_PUNMUE,N_TEMPER,N_PH,N_DOSIS,N_CLORLI,N_CLORTO,N_CLORDE , D_FECMUE, C_HORMUE, C_PLAMUE,C_METMUE,N_PERANA,N_PRECEP -->
+           	</tbody>
+			</table>
+			</div>
+			</div>
+			</div>
+      </div>
+	</div>
+	</div>
+    </div>
+		
+</body>
+</html>

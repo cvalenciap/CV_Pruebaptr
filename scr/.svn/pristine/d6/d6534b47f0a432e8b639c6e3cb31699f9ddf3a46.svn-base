@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsList" class="grid_10 height800" id="idTipoProcesoTable">
+		
+		<table  class="fancyTable" id="myTableBandejaCaudales" cellpadding="0" cellspacing="0" style="width: 100%!important">
+			<thead>
+				<tr>
+					<th th:text="${#messages.msg('bandeja.table.col1')}" style="width: 20px;"></th>
+					<th th:text="${#messages.msg('bandeja.table.col2')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('bandeja.table.col3')}" style="width: 80px;"></th>
+					<th th:text="${#messages.msg('bandeja.table.col4')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('bandeja.table.col5')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('bandeja.table.col6')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('bandeja.table.col7')}" style="width: 50px;"></th>
+				</tr>
+			</thead>
+			
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTableBandejaCaudales').DataTable({
+					"bProcessing": true,
+					"serverSide": true,
+					"searching": false,
+					"lengthChange":   false,
+					"bJQueryUI": true,
+					"scrollX": true,
+					"ajax":{
+						url :"bandejaCaudales/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            complete: function(data) {
+						},
+			            error: function(){
+			              $("#myTableBandejaCaudales_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	d.nombreLargo = $('#rioNombreLargo').val();
+			                d.codTipoProceso = $('#tipoProcesoHide').val();
+			                d.periodo = $('#txtPeriodoHide').val();
+			            }
+					},
+					"order": [ 1, 'desc' ],
+					"columnDefs": [ 
+						{ targets: '_all', visible: true},
+						{"width": "50px",
+			        		className: "dt-body-center",
+			                "targets": [0, 1]                 
+			            },
+			            {"width": "200px",
+		        		  	className: "dt-body-center",
+		                  	"targets": 2,
+		                  
+		              	},
+		              	{"width": "100px",
+		        		  	className: "dt-body-center",
+		                  	"targets": [3,4,5,6],
+		                  
+		              	},
+		              	{"width": "95px",
+		              		className: "dt-body-center",
+		              		"orderable": false,
+		              		"targets": 0,
+		              		visible: true,
+		              		"data": 1,
+		              		"render": function ( data, type, row ) {
+		              			return '<form action="'+contextPath+'bandejaCaudalesDetalle" method="GET">'+
+		              			'<input type="hidden" name="caudalId" value="'+row[7]+'"/>' +
+		              			'<input type="hidden" name="rioId" value="'+row[8]+'"/>' +
+		              			'<input type="hidden" name="periodo" value="'+row[1]+'"/>' +
+		              			'<button class="btn btn-warning" title="Ver Detalle"><span class="glyphicon glyphicon-search"></span></button></form>';
+		              		}
+		              	}
+					]
+				});
+			}); 
+		</script>	
+	</div>
+</body>
+</html>

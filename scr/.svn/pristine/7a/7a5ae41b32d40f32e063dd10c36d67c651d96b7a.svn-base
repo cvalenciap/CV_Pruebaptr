@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsList" class="grid_10 containerform" id="resultadoDetalleHidro" >		
+		
+		<p class="main_heading">
+				<legend>Agregar Detalle de Reporte</legend>
+		</p>
+	
+		<form name="form-edit-reporte-hidro-detalle" id="form-edit-reporte-hidro-detalle" method="post" 
+				  th:action="@{/reporteAnalisisHidroBiologicoSave}" th:object="${reporteAnalisisHidroMain}"
+				  role="form">
+	 	<div class="center col-md-12 col-sm-12 col-xs-12" style="padding-top:10px">
+	
+		
+		<!--fieldset-->
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+						
+							<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" th:text="${#messages.msg('analisis.hidrobiologico.fecha.muestreo')}"   >Fecha</label>
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<!--div class="input-group input-append date"  -->
+               					 <input type="text" class="form-control fondo-blanco"  id="idFechaAnalisisHidro" th:field="*{fechaMuestreo}" name="fechaMuestreo"  readonly="readonly"
+               					 style="padding-right: 0px;"/>
+            					<!--/div-->
+							</div>
+						</div>
+						<div class="form-group">	
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right"   th:text="${#messages.msg('analisis.hidrobiologico.persona.muestra')}" >MUESTREADOR</label>
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<input type="text" class="form-control "  id="inputMuestrador" th:attr="value=${reporteAnalisisHidroMain.personaMuestra}" readonly="readonly" style="display:none"/>
+								<select class="form-control" id="cboMuestrador" name="cboMuestrador" th:field="*{personaMuestra}"></select>
+							</div>
+						</div>	
+						
+						<div class="form-group">	
+							<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" th:text="${#messages.msg('analisis.hidrobiologico.analista')}" >ANALISTA</label>
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<input type="text" class="form-control"  id="inputAnalista" th:attr="value=${reporteAnalisisHidroMain.analista}" readonly="readonly" style="display:none"/>
+								<select class="form-control" id="cboAnalista" name="cboAnalista" th:field="*{analista}" ></select>
+							</div>
+							
+							<div class="btn-group col-md-1 col-sm-1 col-xs-1">
+								<button type="button"  class="btn btn-info btn-crear-mant-correo" id="buttonAgregar"  onclick="agregarFilaVacia();"><span class="glyphicon glyphicon-plus"></span><label>Agregar</label></button>
+							</div>
+						</div>
+					</div>
+		<!--/fieldset-->
+
+		
+		<table  class="fancyTable" id="tablaReporteHidroBiologicoDetalle" cellpadding="0" cellspacing="0" >
+			<thead>
+				<tr>
+					<th rowspan="3"  style="width: 100px;">ACCIONES</th>
+					<th rowspan="3"  th:text="${#messages.msg('reporte.hidrobiologico.column.punto.muestreo')}" style="width: 250px;"></th>
+					<th colspan="2"  th:text="${#messages.msg('reporte.hidrobiologico.column.fitoplancton')}" style="width: 200px;"></th>
+					<th colspan="2"  th:text="${#messages.msg('reporte.hidrobiologico.column.zooplancton')}" style="width: 200px;"></th>
+					<th rowspan="3" th:text="${#messages.msg('reporte.hidrobiologico.column.total')}" class="headww" style="width: 100px;white-space: normal;"></th>
+					<th rowspan="3" th:text="${#messages.msg('reporte.hidrobiologico.column.minam')}" class="headww" style="width: 100px;white-space: normal;"></th>
+					<th rowspan="3" th:text="${#messages.msg('reporte.hidrobiologico.column.acciones')}" class="headww" style="width: 100px;white-space: normal;"></th>
+				</tr>
+				
+				<tr>
+					<th  th:text="${#messages.msg('reporte.hidrobiologico.column.algas')}" class="headww" style="width: 200px;height: 35px;"></th>
+					<th  th:text="${#messages.msg('reporte.hidrobiologico.column.cianobacterias')}" class="headww" style="width: 200px;height: 35px;"></th>
+					<th  th:text="${#messages.msg('reporte.hidrobiologico.column.nematodes')}" class="headww" style="width: 200px;height: 35px;white-space: normal;"></th>
+					<th  th:text="${#messages.msg('reporte.hidrobiologico.column.otros')}" class="headww" style="width: 200px;height: 35px;white-space: normal;"></th>
+				</tr>
+				
+				<tr>
+					<th  th:text="${#messages.msg('reporte.hidrobiologico.column.organismos')}" style="width: 150px;"></th>
+					<th  th:text="${#messages.msg('reporte.hidrobiologico.column.organismos')}" style="width: 150px;"></th>
+					<th  th:text="${#messages.msg('reporte.hidrobiologico.column.organismos.l')}" style="width: 150px;"></th>
+					<th  th:text="${#messages.msg('reporte.hidrobiologico.column.organismos.l')}" style="width: 150px;"></th>
+				</tr>
+			</thead>
+			
+			<tbody id="detalleReporteAnalisis" >
+			<tr th:each="detalle,stat : *{detalles}">
+				
+				<td class="text-center">
+					<button type="button" class="btn btn-danger btn-delete-punto inactivar-registro-detalle"  disabled="disabled" title="Eliminar"><span class="glyphicon glyphicon-erase"></span></button>
+				</td>
+				
+				<td>
+<!-- 					<select class="cboLocalidades form-control"  name="cboMeses" th:attr="indiceRow=${stat.index}, idpunto=${detalle.codsub} " th:field="*{detalles[__${stat.index}__].codsub}"></select> -->
+					<input type="text" class="cboLocalidades form-control"  name="cboMeses" th:attr="indiceRow=${stat.index}, idpunto=${detalle.codsub} " th:field="*{detalles[__${stat.index}__].codsub}"></input>
+				</td>
+				
+				<td class="text-center" th:text="${detalle.algas}"></td>
+				<td class="text-center" th:text="${detalle.cianobacterias}"></td>
+				<td class="text-center" th:text="${detalle.nematodes}"></td>
+				<td class="text-center" th:text="${detalle.otros}"></td>
+				<td class="text-center" th:text="${detalle.total}"></td>
+				<td class="text-center"></td>
+				<td class="text-center"></td>
+				
+					<input type="hidden" th:field="*{detalles[__${stat.index}__].algas}"/>
+					<input type="hidden" th:field="*{detalles[__${stat.index}__].cianobacterias}"/>
+					<input type="hidden" th:field="*{detalles[__${stat.index}__].nematodes}"/>
+					<input type="hidden" th:field="*{detalles[__${stat.index}__].otros}"/>
+					<input type="hidden" th:field="*{detalles[__${stat.index}__].total}"/>
+					<input type="hidden" th:field="*{detalles[__${stat.index}__].minam}"/>
+			</tr>
+			</tbody>			
+		</table>
+		
+		  <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal" onclick="limpiarDetalle();">Cancelar</button>
+								</div>
+							</div>
+						</div>
+     	  </fieldset>
+		</div>
+		</form>	
+		
+		<style>
+		.bootstrap-datetimepicker-widget{
+			 z-index: 1000!important;
+		}
+		.ui-datepicker-div { z-index: 999999!important; }
+		</style>
+		
+	</div>
+	
+	<div>
+		<tr th:fragment="registroDetalle" th:object="${registroReporteDetalle}" th:attr="indiceRow=${indiceDetalle}" >
+		<td class="text-center">
+			<button type="button" class="btn btn-danger btn-delete-punto inactivar-registro-detalle" onclick="eliminarRegistroIndex(this)" title="Eliminar"  th:attr="indiceRow=${indiceDetalle}"><span class="glyphicon glyphicon-erase"></span></button>
+		</td>
+		<td>
+				<select class="cboLocalidades form-control" th:attr="name=detalles[__${indiceDetalle}__].codsub, indiceRow=${indiceDetalle} , idpunto=${registroReporteDetalle.codsub} , value=${registroReporteDetalle.codsub}" >
+				</select>
+		</td>
+		<td class="text-center" th:text="${registroReporteDetalle.algas}"></td>
+		<td class="text-center" th:text="${registroReporteDetalle.cianobacterias}"></td>
+		<td class="text-center" th:text="${registroReporteDetalle.nematodes}"></td>
+		<td class="text-center" th:text="${registroReporteDetalle.otros}"></td>
+		<td class="text-center" th:text="${registroReporteDetalle.total}"></td>
+		<td class="text-center" ></td>
+		<td class="text-center" disabled="disabled"></td>
+	
+		<input type="hidden" id="detalles1.algas" th:attr="name=detalles[__${indiceDetalle}__].algas , value=${registroReporteDetalle.algas} " />
+		<input type="hidden" id="detalles1.cianobacterias" th:attr="name=detalles[__${indiceDetalle}__].cianobacterias , value=${registroReporteDetalle.cianobacterias}" />
+		<input type="hidden" id="detalles1.nematodes" th:attr="name=detalles[__${indiceDetalle}__].nematodes , value=${registroReporteDetalle.nematodes}" />
+		<input type="hidden" id="detalles1.otros"  th:attr="name=detalles[__${indiceDetalle}__].otros , value=${registroReporteDetalle.otros}" />
+		<input type="hidden" id="detalles1.total" th:attr="name=detalles[__${indiceDetalle}__].total , value=${registroReporteDetalle.total}" />
+		<input type="hidden" id="detalles1.minam" th:attr="name=detalles[__${indiceDetalle}__].minam , value=${registroReporteDetalle.minam}" />
+		
+		</tr>
+	</div>
+	
+	
+</body>
+</html>

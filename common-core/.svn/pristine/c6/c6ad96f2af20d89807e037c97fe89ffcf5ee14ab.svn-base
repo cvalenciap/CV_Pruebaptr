@@ -1,0 +1,99 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+	<div th:fragment="header-menu" th:with="view=${#httpServletRequest.getServletPath()}">
+		<nav class="navbar navbar-default" sec:authorize="isAuthenticated()"  >
+			<div class="container">
+				<div class="navbar-collapse collapse" style="padding-left:0px!important;">
+					<ul class="nav navbar-nav" th:with="menuItemsList=${session.segUserMenuOptions}" sec:authorize="!hasAuthority('restablecerClave')" >
+						<li th:each="menuItem : ${menuItemsList}">
+							<div th:if="${#lists.isEmpty(menuItem.menuOptionsHijos) and menuItem.nivelFormulario==1}"
+								 th:remove="tag">
+								<a th:href="@{${menuItem.urlFormulario}}"
+									th:text="${menuItem.descripcion}"
+									th:if="${#lists.isEmpty(menuItem.menuOptionsHijos) and menuItem.nivelFormulario==1}">
+								</a>
+							</div>
+							<div th:if="${not #lists.isEmpty(menuItem.menuOptionsHijos) and menuItem.nivelFormulario==1}"
+								 th:remove="tag">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+									<span th:text="${menuItem.descripcion}" th:remove="tag"></span><b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu multi-level">
+									<!-- NIVEL 2 -->
+									<li th:each="subMenuItem : ${menuItem.menuOptionsHijos}"
+										th:classappend="${#lists.size(subMenuItem.menuOptionsHijos) != 0 ? 'dropdown-submenu' : 'claseeee'}">
+										<div th:if="${#lists.isEmpty(subMenuItem.menuOptionsHijos) and subMenuItem.nivelFormulario==2}"
+											 th:remove="tag">
+											<a th:href="@{${subMenuItem.urlFormulario}}" th:text="${subMenuItem.descripcion}"></a>
+										</div>
+										<div th:if="${not #lists.isEmpty(subMenuItem.menuOptionsHijos) and subMenuItem.nivelFormulario==2}"
+											 th:remove="tag">
+											<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+												<span th:text="${subMenuItem.descripcion}" th:remove="tag"></span>
+											</a>
+											<ul class="dropdown-menu">
+												<!-- NIVEL 3 -->
+												<section layout:include="@{fragments/menuFragment} :: menu"
+													th:with="menuItemsList=${subMenuItem.menuOptionsHijos}"
+													th:remove="tag"></section>
+											</ul>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right"
+						th:if="${#httpServletRequest.userPrincipal!=null}"
+						style="margin-right:0px!important;">
+						
+						<li class="dropdown">
+							<a class="dropdown-toggle"	data-toggle="dropdown" href="#"> 
+								<span class="glyphicon glyphicon-info-sign"></span> 
+								<span th:text="#{navbar.options}"></span> <span class="caret" ></span>
+							</a>
+
+							<ul class="dropdown-menu" role="menu">
+								<!--li><a href="#"
+									th:href="@{/changepwd(username=${#httpServletRequest.userPrincipal.name})}">
+										<span class="glyphicon glyphicon-lock"></span> <span
+										th:text="#{navbar.changepwd}" class="text-default" />
+								</a></li-->
+								<!--li sec:authorize-url="/admin"><a href="admin"
+									th:href="@{/admin}"> <span
+										class="glyphicon glyphicon-exclamation-sign" /> <span
+										th:text="#{navbar.admin}" /></a></li-->
+								<li sec:authorize="!hasAuthority('restablecerClave')">
+									<a th:href="@{/cambioClave}">
+										<span class="glyphicon glyphicon-lock"></span> 
+										<span th:text="#{menu.cambiarClave}"></span> 
+									</a>
+								</li>
+								<li class="divider" role="separator" sec:authorize="!hasAuthority('restablecerClave')"></li>
+								<li>
+									<a th:href="@{/logout}">
+										<span class="glyphicon glyphicon-off"></span> 
+										<span th:text="#{menu.cerrarSesion}"></span> 
+									</a>
+								</li>
+
+								<!--li class="divider" role="separator"></li>
+								<li class="dropdown-submenu disabled"><a href="#"
+									id="help_opener2"> <span class="glyphicon glyphicon-leaf" />
+										<span th:text="#{navbar.help.system}" />
+								</a></li-->
+							</ul></li>
+						
+						
+					</ul>
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+		</nav>
+
+	</div>
+
+</body>
+</html>

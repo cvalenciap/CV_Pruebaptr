@@ -1,0 +1,25 @@
+<html>
+<section layout:fragment="menu" th:remove="tag">
+	<li th:each="subMenuItem : ${menuItemsList}" th:classappend="${#lists.size(subMenuItem.menuOptionsHijos) != 0 ? 'dropdown-submenu' : ''}">
+		<div th:if="${#lists.isEmpty(subMenuItem.menuOptionsHijos) and subMenuItem.nivelFormulario&gt;2}" th:remove="tag">
+			<a th:href="@{${subMenuItem.urlFormulario}}" th:text="${subMenuItem.descripcion}"></a>
+		</div>
+		<div th:if="${not #lists.isEmpty(subMenuItem.menuOptionsHijos) and subMenuItem.nivelFormulario&gt;2}" th:remove="tag">
+			<a	href="#"
+				class="dropdown-toggle"
+				data-toggle="dropdown">
+				<span th:text="${subMenuItem.descripcion}" th:remove="tag">
+				</span>
+				<span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu">
+				<!-- NIVEL 3 -->
+				<section layout:include="@{fragments/menuFragment} :: menu" 
+						 th:with="menuItemsList=${subMenuItem.menuOptionsHijos}"
+						 th:remove="tag">
+				</section>
+			</ul>
+		</div>
+	</li>
+</section>
+</html>

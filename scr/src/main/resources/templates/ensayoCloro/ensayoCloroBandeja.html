@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsList" class="grid_10 height800" >
+		
+		<table  class="fancyTable" id="ensayoCloroBandeja" cellpadding="0" cellspacing="0" >
+			<thead>
+				<tr>
+					<th th:text="${#messages.msg('reporte.ensayo.bandeja.column1')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('reporte.ensayo.bandeja.column2')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('reporte.ensayo.bandeja.column3')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('reporte.ensayo.bandeja.column4')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('reporte.ensayo.bandeja.column5')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('reporte.ensayo.bandeja.column6')}" style="width: 50px;"></th>
+				</tr>
+			</thead>
+		</table>
+
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				setTimeout(function(){
+					console.log("cargando tabla de reportes")
+					cargarEnsayoCloro();	
+				},1000);
+			}); 
+		</script>	
+	</div>
+</body>
+</html>

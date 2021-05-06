@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+<script th:inline="javascript">
+/*<![CDATA[*/
+    var idPtarSector = /*[[${idPtarSector}]]*/ ;
+    var idParametro = /*[[${idParametro}]]*/ ;
+    var idRegistroLaboratorio = /*[[${idRegistroLaboratorio}]]*/ ;
+    var descripcionPtar = /*[[${descripcionPtar}]]*/ ;
+    var descripcionSector = /*[[${descripcionSector}]]*/ ;
+    var mensajeRespuestaServer = /*[[${mensajeRespuesta}]]*/ ;
+    var estadoRespuestaServer = /*[[${estadoRespuesta}]]*/ ; 
+    var ltaParametrosFisicoQuimico = /*[[${ltaParametrosFisicoQuimico}]]*/ ; 
+/*]]>*/
+</script>
+</head>
+<body class="skin-gym bar-white">
+	<div class="main-content view-wrap">
+			<input type="hidden" id="idRegistroLaboratorio" name="idRegistroLaboratorio"/>
+			<div class="main-colum">
+				<div class="box-wrap-body">
+					<div class="box-form">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="right-colum" style="width: 100%;">
+									<div class="filter-title">
+										<div id="divBotonesParametrosFisicoQuimico" class="form-inline pull-left">
+										</div>
+										<div class="pull-right">
+									    	<div id="divMensajeInformacionFisicoQuimico"></div>
+									    </div>
+									</div>
+									<div class="box-wrap-main">
+										<div id="idCargaNuevaPantallaFisicoQuimico"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+	<script type="text/javascript" th:src="@{/js/registroFisicoQuimico.js}"></script>
+</body>
+</html>

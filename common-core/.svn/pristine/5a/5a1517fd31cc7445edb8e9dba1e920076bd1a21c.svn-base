@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('application.subtitle')}"></title>
+
+<script th:inline="javascript">
+/*<![CDATA[*/    
+
+    var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+    var linkActionEdit = /*[[@{/puntoDistribucionGet}]]*/ 'ninguno';
+   
+/*]]>*/
+</script>
+
+</head>
+<body>
+
+	<div layout:fragment="content">
+
+		<!-- Modal -->
+		<div id="modal-registra-punto-distribucion" class="modal fade" role="dialog" data-backdrop="static">
+			<div class="modal-dialog" style="width: 90%;">
+				<!-- Modal content-->
+				<div class="modal-content" id="id-modal-content"></div>
+			</div>
+		</div>
+
+		<h3 class="text-center" th:text="${#messages.msg('home.title')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+		</div>
+
+	</div>
+
+</body>
+</html>

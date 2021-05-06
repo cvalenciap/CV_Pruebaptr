@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">	
+<head></head>
+<body>
+	<div th:fragment="resultsList" class="grid_10 height800" id="idRepresasTable">		
+		<table  class="fancyTable" id="myRepresas">
+			<thead>
+				<tr>
+					<th th:text="${#messages.msg('represas.data.col1')}" style="width: 120px;"></th>
+					<th th:text="${#messages.msg('represas.data.col2')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col3')}" style="width: 140px;"></th>					
+					<th th:text="${#messages.msg('represas.data.col4')}" style="width: 140px;"></th>
+					<th th:text="${#messages.msg('represas.data.col5')}" style="width: 140px;"></th>
+					<th th:text="${#messages.msg('represas.data.col6')}" style="width: 140px;"></th>
+					<th th:text="${#messages.msg('represas.data.col7')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col8')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col9')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col10')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col11')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col12')}" style="width: 120px;"></th>
+					<th th:text="${#messages.msg('represas.data.col13')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col14')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col15')}" style="width: 140px;"></th>
+					<th th:text="${#messages.msg('represas.data.col16')}" style="width: 140px;"></th>
+					<th th:text="${#messages.msg('represas.data.col17')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col18')}" style="width: 120px;"></th>
+					<th th:text="${#messages.msg('represas.data.col19')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col20')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col21')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col22')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('represas.data.col23')}" style="width: 100px;"></th>					
+					<th th:text="${#messages.msg('represas.data.col24')}" style="width: 120px;"></th>
+					<th th:text="${#messages.msg('represas.data.col25')}" style="width: 120px;"></th>
+					<th th:text="${#messages.msg('represas.data.col26')}" style="width: 120px;"></th>
+					<th th:text="${#messages.msg('represas.data.col27')}" style="width: 120px;"></th>					
+				</tr>
+			</thead>			
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myRepresas').DataTable({
+					"bProcessing": true,
+					"serverSide": true,
+					"searching": false,
+					"lengthChange":   false,
+			        "scrollX": true,
+          			"bJQueryUI": true,
+					"ajax":{
+						url :"represas/pagination",
+			            type: "post",
+			            error: function(){
+			              $("#myRepresas_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	d.nombreRepresa = $('#cpNomRep').val();
+			            	d.numeroPrecipitacion = $('#cpNumPre').val();			            	
+			            }
+					},
+					"order": [ 2, 'desc' ],
+					"columnDefs": [ 
+						{ targets: '_all', visible: true },			            			            
+						{"width": "100px",
+			        		className: "dt-body-center",
+			                "targets": [1, 6, 7, 8, 9, 10, 12, 13, 16, 18, 19, 22]              
+			            },
+			            {"width": "150px",
+			        		className: "dt-body-center",
+			                "targets": [11, 17, 20, 21, 23, 24, 25, 26]              
+			            },
+			            {"width": "140px",
+			        		className: "dt-body-center",
+			                "targets": [2, 3, 4, 5, 14, 15]              
+			            },
+		              	{"width": "120px",
+		              		className: "dt-body-center",
+		              		"orderable": false,
+		              		"targets": 0,
+		              		visible: true,
+		              		"data": 1,
+		              		"render": function (data, type, row) {
+		              			return '<table><tr>' +
+			              			'<td style="border:none; width:44px;"><button class="btn btn-info" title="Editar" onclick="modificarRepresas('+row[27]+')"><span class="glyphicon glyphicon-pencil"></span></button></td>'+
+			              			'<td style="border:none; width:44px;"><button class="btn btn-success" title="Maniobras" onclick="buscarManiobras('+row[27]+',\''+row[2]+'\')"><span class="glyphicon glyphicon-plus"></span></button></td>'+
+			              			 ((row[1]==='INACTIVO')?'<td style="border:none; width:44px;"></td>':'<td style="border:none; width:44px;"><button class="btn btn-danger" title="Inactivar" onclick="inactivarRepresas('+row[27]+')"><span class="glyphicon glyphicon-erase"></span></button></td>')+
+			              		    '</tr></table>';
+		              		}
+		              	}
+					]
+				});
+			}); 
+		</script>		
+	</div>
+</body>
+</html>

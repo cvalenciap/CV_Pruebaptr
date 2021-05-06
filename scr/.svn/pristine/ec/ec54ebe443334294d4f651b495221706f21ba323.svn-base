@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content-detalle" th:fragment="form-edit-Detalle222">
+	
+	
+<!-- 		<input type="hidden" id="idPadre" value=""/> -->
+	
+				
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" th:text="${#messages.msg('formulario222.HDetalle.titulo')}">Registrar Detalle Formulario GPFO222</span> 
+			</h4>
+			
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('')}">Crear texto html</span>
+		</div>
+				
+		<div class="modal-footer">
+			<form name="form-edit-HDetalle" id="form-edit-HDetalle-id" method="post" 
+				  th:object="${formularioHeader222}" th:action="@{/formularioHeaderSave222InDetail}"
+				  role="form">	
+				  		  			
+		  	<fieldset class="col-md-12 col-sm-12 col-xs-12">
+				        <div class="col-md-3 col-sm-2 col-xs-2"></div>
+				        <div class="col-md-3 col-sm-2 col-xs-2">
+
+						</div>
+						
+						<div class="col-md-3 col-sm-2 col-xs-2"></div>
+						<div class="col-md-3 col-sm-2 col-xs-2"> </div>
+						<div class="col-md-6 col-sm-2 col-xs-2"></div>
+				</fieldset>
+				<fieldset class="col-md-12 col-sm-12 col-xs-12">
+				        <div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.fechaMuestreo')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<input type="text" id="strFechaMuestreo"  class="form-control"
+									name="strfechaMuestreo"   
+							       th:value="*{strfechaMuestreo}"
+								   th:placeholder="${#messages.msg('muestra.seleccion')}"
+								   style="text-align: center;" />
+							<input type="hidden" id="fecha_header" th:value="*{strfechaMuestreo}" />
+							<input type="hidden" id="codigo" name="codigo" th:value="${formularioHeader222.codigoHeader}" />	   
+							<input type="hidden" id="codHeader" th:field="*{codigoHeader}" />
+							<input type="hidden" id="idModificarDetalle2" value="0" />
+							
+						</div>
+						
+						<div id="idOculto3">
+						
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Muestreo')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboMuestrea_"  th:field="*{perMuestrea}" style="height: 33px;"></select>
+						    <input type="hidden" id="cboMuestreaHidden_" th:value="*{perMuestrea}" />
+						</div>
+						
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Parametros')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboMuestrea2_"  th:field="*{perMuestrea2}" style="height: 33px;"></select>
+						    <input type="hidden" id="cboMuestreaHidden2_" th:value="*{perMuestrea2}" />
+						</div>
+						
+						</div>
+					
+				</fieldset>
+				
+				<div id="idOculto4">
+				
+				<fieldset class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-3 col-sm-2 col-xs-2"></div>
+						<div class="col-md-3 col-sm-2 col-xs-2">
+						    <b class="main_heading">
+				               RECIBIDO POR
+			               </b>
+						</div>
+						<div class="col-md-3 col-sm-2 col-xs-2"></div>
+						<div class="col-md-3 col-sm-2 col-xs-2"> </div>
+						<div class="col-md-6 col-sm-2 col-xs-2"></div>
+				</fieldset>
+				
+				<fieldset class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Area')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboRecepcion_"  th:field="*{perRecepciona}" style="height: 33px;"></select>
+							<input type="hidden" id="cboRecepcionHidden_" th:value="*{perRecepciona}" />
+						</div>
+						
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.FisicoQuimica')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboRecepcion2_"  th:field="*{perRecepciona2}" style="height: 33px;"></select>
+						    <input type="hidden" id="cboRecepcionHidden2_" th:value="*{perRecepciona2}" />
+						</div>
+						
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Organicos')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboRecepcion3_"  th:field="*{perRecepciona3}" style="height: 33px;"></select>
+						    <input type="hidden" id="cboRecepcionHidden3_" th:value="*{perRecepciona3}" />
+						</div>
+						
+				</fieldset>
+				
+				<fieldset class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-3 col-sm-2 col-xs-2"></div>
+						<div class="col-md-3 col-sm-2 col-xs-2">
+						   <b class="main_heading">
+				               APROBADO POR
+			               </b>
+						</div>
+						<div class="col-md-6 col-sm-2 col-xs-2"></div>
+				</fieldset>
+				<fieldset class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Especialista')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboAnalista_"  th:field="*{perAnalista}" style="height: 33px;"></select>
+						    <input type="hidden" id="cboAnalistaHidden_" th:value="*{perAnalista}" />
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario222.Edit.Observacion')}"></label>
+						</div>
+						<div class="col-md-6 col-sm-2 col-xs-2">
+						    <textarea id="observacion_" class="form-control" rows="2" th:field="*{observacion}"></textarea> 
+						</div>
+						
+				</fieldset>
+				<fieldset class="col-md-12 col-sm-12 col-xs-12">
+						<p></p>
+				</fieldset>
+			
+				</div>
+			
+			
+			
+			<fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+				<div id="idTableDetalleForm222">
+					<div class="container_12">					 
+					 	<button type="button" class="btn btn-info btn-crear-mant-correo" id="idBtnModDet2" data-toggle="modal" onclick="modificarDetalle2(-1)"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('tipoProceso.agregar')}"></label></button>
+					</div>
+					
+					<div><p></p></div>
+					
+					<div class="container_12">
+						<div th:replace="formulario222/formulario222TableDetalle :: resultsListDetalle" class="grid_10 height800" id="idFormularioTableDetalle"></div>
+					</div>	
+				</div>	
+			</fieldset>		
+			
+			 <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+				<span><br /></span>
+				<div class="form-group col-sm-12">
+					<div class="wrapper text-center">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-primary btn-sm"
+								id="guardarButton" th:value="actualizar">Guardar</button>
+						</div>
+						<div class="btn-group">							
+							<button type="button" class="btn btn-default btn-sm"
+								data-dismiss="modal">Cancelar</button>
+						</div>
+					</div>
+				</div>
+			</fieldset>  				       								
+			</form>
+		</div>
+	</div>
+</body>
+</html>

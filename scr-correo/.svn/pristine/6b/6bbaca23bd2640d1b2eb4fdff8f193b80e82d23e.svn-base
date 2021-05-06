@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_grafico" pageWidth="842" pageHeight="700" orientation="Landscape" columnWidth="822" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="54fbe531-2437-4d53-b78e-9ab3a57371d8">
+	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+SUBSTR(C.C_PERIOD,1,4)||'-'||
+CASE SUBSTR(C.C_PERIOD,5)
+WHEN '01' THEN 'Enero'
+WHEN '02' THEN 'Febrero'
+WHEN '03' THEN 'Marzo'
+WHEN '04' THEN 'Abril'
+WHEN '05' THEN 'Mayo'
+WHEN '06' THEN 'Junio'
+WHEN '07' THEN 'Julio'
+WHEN '08' THEN 'Agosto'
+WHEN '09' THEN 'Setiembre'
+WHEN '10' THEN 'Octubre'
+WHEN '11' THEN 'Noviembre'
+WHEN '12' THEN 'Diciembre'
+ELSE ''
+END PERIODO,
+R.C_NOMRIO NOMRIO,
+CD.C_DIA DIA,
+CD.N_PROMED PROMED
+FROM
+ALC_MANT_RIO R INNER JOIN ALC_CAUDAL C ON R.N_CODIGO = C.N_CODRIO
+INNER JOIN ALC_CAUDAL_DET CD ON C.N_CODIGO = CD.N_CODCAU
+WHERE
+C.C_PERIOD = '201709' and C.N_CODRIO not in (1)
+
+ Union
+      SELECT
+        SUBSTR(C.c_period,1,4)||'-'||
+        CASE SUBSTR(C.c_period,5)
+            WHEN '01' THEN 'Enero'
+            WHEN '02' THEN 'Febrero'
+            WHEN '03' THEN 'Marzo'
+            WHEN '04' THEN 'Abril'
+            WHEN '05' THEN 'Mayo'
+            WHEN '06' THEN 'Junio'
+            WHEN '07' THEN 'Julio'
+            WHEN '08' THEN 'Agosto'
+            WHEN '09' THEN 'Setiembre'
+            WHEN '10' THEN 'Octubre'
+            WHEN '11' THEN 'Noviembre'
+            WHEN '12' THEN 'Diciembre'
+        ELSE ''
+        END AS PERIODO,
+        'CAUDAL RIO RIMAC (CHEQUE + TAMBORAQUE) m3/s ' NOMRIO, CD.C_DIA DIA,
+                sum(CD.N_PROMED) PROMED
+    FROM
+         AGLC.ALC_CAUDAL_DET CD inner join
+        AGLC.ALC_CAUDAL C on cd.n_codcau=c.n_codigo  inner join
+        AGLC.ALC_MANT_RIO R on r.n_codigo=c.n_codrio
+    WHERE
+        R.N_CODIGO in(4,5)
+        AND CD.N_CODCAU = C.N_CODIGO
+        AND C.c_period = '201709'
+        group by C.c_period,CD.C_DIA]]>
+	</queryString>
+	<field name="PERIODO" class="java.lang.String"/>
+	<field name="NOMRIO" class="java.lang.String"/>
+	<field name="DIA" class="java.lang.String"/>
+	<field name="PROMED" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<staticText>
+				<reportElement x="672" y="26" width="37" height="20" uuid="e8de9ef8-ad9b-48d5-ba6e-4cf00d03d804"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Hora:  ]]></text>
+			</staticText>
+			<textField pattern="h:mm:ss a">
+				<reportElement x="716" y="26" width="74" height="20" uuid="89353e31-995a-4c50-a30e-96e705e8f035"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="716" y="6" width="74" height="20" uuid="5af159bd-422e-4a74-89e5-2140c4f92d6b"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="672" y="6" width="37" height="20" uuid="2927ee4e-40ab-4814-83eb-44f1eceb61e7"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Fecha:  ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="802" height="50" uuid="9fd3bf86-89ff-4839-a6d9-276a2c2496b5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte Gráfico Caudales de Ríos]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="50">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="15" width="842" height="24" forecolor="#3289FA" backcolor="#93B8D9" uuid="d8c47cf4-e060-40cf-8025-0366ed672164"/>
+				<rectangle>
+					<reportElement mode="Opaque" x="21" y="0" width="58" height="24" backcolor="#0071B1" uuid="2eda163b-f1d0-4288-9f49-f62ae54a945d"/>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
+				<staticText>
+					<reportElement x="28" y="3" width="46" height="20" forecolor="#FFFFFF" uuid="6625c7a1-503e-4f3c-9d8b-031b0f9968c0"/>
+					<textElement>
+						<font isItalic="true"/>
+					</textElement>
+					<text><![CDATA[Período:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="93" y="4" width="100" height="20" uuid="a2ad91ca-556f-4622-98e3-f9873d1fd54b"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PERIODO}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</columnHeader>
+	<summary>
+		<band height="289">
+			<lineChart>
+				<chart>
+					<reportElement isPrintRepeatedValues="false" x="1" y="0" width="814" height="279" uuid="40310085-072f-4f96-8883-b2f1d2bd6b92"/>
+					<chartTitle position="Top"/>
+					<chartSubtitle/>
+					<chartLegend position="Bottom"/>
+				</chart>
+				<categoryDataset>
+					<dataset resetType="Column"/>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{NOMRIO}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{DIA}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{PROMED}]]></valueExpression>
+						<labelExpression><![CDATA[$F{DIA}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisLabelExpression><![CDATA["DÍA"]]></categoryAxisLabelExpression>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisLabelExpression><![CDATA["PROMEDIO"]]></valueAxisLabelExpression>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
+</jasperReport>

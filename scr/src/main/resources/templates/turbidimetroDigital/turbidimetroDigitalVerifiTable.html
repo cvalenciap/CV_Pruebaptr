@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+
+<script type="text/javascript" language="javascript" src="js/dataTables.editor.js"></script>
+
+<body>
+	<div th:fragment="resultsListVerif" class="grid_10 height800" id="idTurbidimetroDigitalVerifTable">
+		
+		<table  class="fancyTable display" id="myTableTurbidimetroDigitalVerif" cellpadding="0" cellspacing="0" style="width: 100%!important">
+			<thead style="width: 100%!important">
+				<tr style="width: 100%!important">
+					<th th:text="${#messages.msg('turbidimetroDigital.table.col6')}" class="dt-body-width-150" ></th>
+					<th th:text="${#messages.msg('turbidimetroDigital.table.col7')}" ></th>
+					<th th:text="${#messages.msg('turbidimetroDigital.table.col81')}" ></th>
+					<th th:text="${#messages.msg('turbidimetroDigital.table.col82')}" ></th>
+					<th th:text="${#messages.msg('turbidimetroDigital.table.col83')}" ></th>
+					<th th:text="${#messages.msg('turbidimetroDigital.table.col84')}" ></th>
+					<th th:text="${#messages.msg('turbidimetroDigital.table.col85')}" ></th>
+					<th th:text="${#messages.msg('turbidimetroDigital.table.col9')}" ></th>
+					<th th:text="${#messages.msg('turbidimetroDigital.table.col10')}" ></th>					
+				</tr>
+			</thead>
+			
+
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTableTurbidimetroDigitalVerif').DataTable({
+					"bProcessing": true,
+					"serverSide": true,
+					"searching": false,
+					"lengthChange":   false,
+					//"scrollX": true,
+          			"bJQueryUI": true,
+					"ajax":{
+						url :"turbidimetroDigitalVerif/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTableTurbidimetroDigitalVerif_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	
+			                d.codigo = $('#codigoVerif').val();
+			            }
+					},
+					"order": [ 3, 'desc' ],
+					"columnDefs": [ 
+
+			            {
+			        		className: "dt-body-center dt-body-width-200",
+			        		visible: true,
+			                "targets": 8                
+			            },
+			            {
+			        		className: "dt-body-center dt-body-width-125",
+			        		visible: true,
+			                "targets": [1, 2, 3, 4, 5, 6, 7, 8]                
+			            },
+		              	{
+		              		className: "dt-body-center dt-body-width-150",
+		              		visible: true,
+		              		"orderable": false,
+		              		"targets": 0,
+		              		"data": 1,
+		              		"render": function ( data, type, row) {
+		              			return ''+
+		              			 '<button class="btn btn-danger btn-delete-punto" title="Eliminar" onclick="inactivarTurbidimetroDigitalVerificacion('+row[9]+')"><span class="glyphicon glyphicon-erase"></span></button>';
+		              		}
+		              	}
+					]
+				});
+				
+				//var counter = 0;
+				 
+			  			    
+			 
+			    // Automatically add a first row of data
+			    //$('#addRow').click();
+				
+			}); 
+			
+			
+			
+			function addFila(){
+				console.log("accede");
+				var t = $('#myTableTurbidimetroDigitalVerif').DataTable();
+
+	    	       t.row.add( [
+			            "hhdfh",
+			            "dfdfg",
+			            "dfgdf",
+			            "dsfg",
+			            "sdfg",
+			        ] ).draw( false );
+			}
+		</script>	
+	</div>
+</body>
+</html>

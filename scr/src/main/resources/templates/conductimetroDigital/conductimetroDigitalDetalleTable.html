@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsListDetalle" class="grid_10 height800" id="idConductimetroDigitalDetalleTable">
+		
+		<table  class="fancyTable" id="myTableConductimetroDigitalDetalle" cellpadding="0" cellspacing="0" style="width: 100%">
+			<thead>
+				<tr>		
+					<th th:text="${#messages.msg('conductimetroDigital.table.col0')}" style="width: 50px;"></th>			
+					<th th:text="${#messages.msg('conductimetroDigital.table.col5')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('conductimetroDigital.table.col6')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('conductimetroDigital.table.col7')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('conductimetroDigital.table.col8')}" style="width: 50px;"></th>		
+					<th th:text="${#messages.msg('conductimetroDigital.table.col9')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('conductimetroDigital.table.col10')}" style="width: 0px; " class="hidden-xs"></th>	
+					<th th:text="${#messages.msg('conductimetroDigital.table.col11')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('conductimetroDigital.table.col11')}"></th>
+				</tr>
+			</thead>
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTableConductimetroDigitalDetalle').DataTable({
+					"bProcessing": true,
+					"serverSide": true,
+					"searching": false,
+					"lengthChange":   false,
+
+          			"bJQueryUI": true,
+					"ajax":{
+						url :"conductimetroDigitalDetalle/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTableConductimetroDigitalDetalle_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	
+			            	d.codigo = $('#intIdConductimetro').val();
+			            }
+					},
+					"order": [ 8, 'desc' ],
+					"columnDefs": [ 
+						//{ targets: '_all', visible: true,  },
+						{"width": "50px",
+			        		className: "dt-body-center",
+			                "targets": 0                 
+			            },		            
+			            {"width": "50px",
+			        		className: "dt-body-center",
+			                "targets": [1,2,3,4,5,7]                
+			            },
+			            { 	visible: false,
+			                "targets": 8                 
+			            },
+			            {   visible: false,
+			                "targets": 6                 
+			            },	
+		              	{"width": "95px",
+		              		className: "dt-body-center",
+		              		"orderable": false,
+		              		"targets": 0,
+		              		visible: true,
+		              		"data": 1,
+		              		"render": function ( data, type, row) {
+		              			return '<button class="btn btn-danger btn-delete-punto" title="Eliminar" onclick="inactivarConductimetroDigitalDetalle('+row[8]+')"><span class="glyphicon glyphicon-erase"></span></button>';
+		              		}
+		              	}
+					]
+				});
+			}); 
+		</script>	
+	</div>
+</body>
+</html>

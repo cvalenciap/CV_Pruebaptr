@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	
+	<div th:fragment="resultsList" class="container" id="idClimaTable">
+	
+	<div id="id-modal-content"></div>
+	
+		
+	<div id="myClima">
+	 <br/>
+	 	<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			<br/>
+			<form name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('actividad.area.codigo')}"></label>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<input type="text" id="cpDesc" name="cpDesc" class="form-control" disabled="disabled"></input>
+							</div>
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('actividad.area.label')}"></label>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<select class="form-control" id="cboAreas" name="cboAreas" style="height: 33px;"></select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right no-padding" th:text="${#messages.msg('subactividad.grupo.actividad.label')}"></label>
+							<div class="col-md-8 col-sm-8 col-xs-8">
+								<select class="form-control" id="cboActividades" name="cboAreas" style="height: 33px;"></select>
+							</div>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+			
+			
+		</div>
+	 	
+	 	<div class="espaciado-superior"></div>	
+			
+			<div id="pickList">
+				<div class="row" onselectstart="return false" unselectable="on">
+					<div class="col-lg-5 col-md-5 col-sm-5" >
+						<label for="comment" th:text="${#messages.msg('subactividad.grupo.listado')}"></label>
+						<select id="cboActPosibles" class="form-control pickListSelect pickData scrolls" multiple="">
+						</select>
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-2 pickListButtons verticalPick">
+						<button class="pRemove btn btn-primary btn-sm">&lt; Remover</button>
+						<button class="pAdd btn btn-primary btn-sm">Asignar ></button>
+					</div>
+					<div class="col-lg-5 col-md-5 col-sm-5">
+						<label for="comment" th:text="${#messages.msg('subactividad.grupo.listado.asignados')}"></label>
+						<select id="cboActAsignadas" class="form-control pickListSelect pickListResult scrolls"
+							multiple="">
+						</select>
+					</div>
+				</div>
+			</div>
+			
+	<br/>
+
+	<br/>
+
+	
+    </div>
+    
+		
+	</div>
+</body>
+</html>

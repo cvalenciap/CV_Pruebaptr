@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title>${#messages.msg('connections.title')}</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<h3 class="text-center" th:text="#{exception.title}"></h3>
+		
+		<div class="panel panel-default">
+			<div class="panel-title">
+				<h4 class="panel-title text-center" th:text="#{exception.subtitle}" />
+			</div>
+			<div class="panel-body">
+				<!--  As we are using Thymeleaf, you might consider using
+	      ${#httpServletRequest.requestURL}. But that returns the path
+	      to this error page.  Hence we explicitly add the url to the
+	      Model in some of the example code. -->
+				<div class="alert alert-success" th:if="${principal}">
+					<span th:text="#{exception.principal}" /> <span th:text="${principal.name}">Page
+						URL</span>
+				</div>
+
+				<div class="alert alert-success" th:if="${url}">
+					<span th:text="#{exception.url}" /> <span th:text="${url}">Page
+						URL</span>
+				</div>
+
+				<div class="alert alert-warning" th:if="${timestamp}" id='created'>
+					<span th:text="#{exception.timestamp}" /> <span
+						th:text="${#dates.format(timestamp, 'dd/MM/yyyy HH:mm')}">Timestamp</span>
+				</div>
+
+				<div class="alert alert-danger" th:if="${error}">
+					<span th:text="#{exception.error}" /> <span
+						th:text="'('+${error}+')'">error ...</span>
+				</div>
+
+				<div class="alert alert-info">
+					<span th:text="#{exception.instructions1}" />
+				</div>
+				<div class="alert alert-info">
+					<span th:text="#{exception.instructions2}" />
+				</div>
+			</div>
+		</div>
+
+		<!-- div class="well well-sm text-center">
+			<span th:text="#{exception.thanks}" />
+		</div-->
+
+		<!--
+      // Hidden Exception Details  - this is not a recommendation, but here is
+      // how you hide an exception in the page using Thymeleaf
+      -->
+		<div th:utext="'&lt;!--'" th:remove="tag"></div>
+		<div th:utext="'Failed URL: ' +  ${url}" th:remove="tag">${url}</div>
+		<div th:utext="'Exception: ' + ${exception.message}" th:remove="tag">${exception.message}</div>
+		<ul th:remove="tag">
+			<li th:each="ste : ${exception.stackTrace}" th:remove="tag"><span
+				th:utext="${ste}" th:remove="tag">${ste}</span></li>
+		</ul>
+		<div th:utext="'--&gt;'" th:remove="tag"></div>
+
+	</div>
+
+</body>
+</html>

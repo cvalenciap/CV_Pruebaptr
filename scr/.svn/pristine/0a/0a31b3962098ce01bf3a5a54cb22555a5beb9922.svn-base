@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsList" class="grid_10 height800" id="idTipoProcesoTable">
+		
+		<table  class="fancyTable data-present" id="myTableBandejaCaudales" cellpadding="0" cellspacing="0" >
+			<thead id="cabeceraDetalle">
+			</thead>
+			<tbody id="cuerpoDetalle">
+			</tbody>
+		</table>
+		
+	</div>
+</body>
+</html>

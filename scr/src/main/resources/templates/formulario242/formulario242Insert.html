@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-edit-form242">
+	
+		
+	
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('formulario242.registrar')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('formulario242.Edit')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('formulario242.Crear')}">Crear texto html</span>
+		</div>
+		
+		
+		<div class="modal-footer">
+		
+			<form name="form-edit-form" id="form-edit-turbidimetroDigital-id" method="post" 
+				  th:action="@{/formularioHeaderSave}" th:object="${formularioHeader242EditBean}"
+				  role="form">
+					<input type="hidden" id="codigo" name="codigo" th:value="${formularioHeader242EditBean.idHeader}" />		
+				  	<input type="hidden" id="codigoTipo" name="codigoTipo" th:value="${codigoTipoDocumento}" />
+				  	<input type="hidden" id="tipArchDocumento" name="tipArchDocumento" th:value="${tipArchDocumento}" />
+				  	<input type="hidden" id="tamMaxArchDocumento" name="tamMaxArchDocumento" th:value="${tamMaxArchDocumento}" />
+				  	<input type="hidden" id="page" name="page" th:value="${formularioHeader242EditBean.page}" />	  											
+				<fieldset class="col-md-12 col-sm-12 col-xs-12">
+					<div class="form-group">
+						<div class="col-md-1 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario242.Edit.fechaMuestreo')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<input type="text" id="strFechaMuestreo"  class="form-control fondo-blanco" 
+							       th:field="*{strFechaMuestreo}"
+								   th:placeholder="${#messages.msg('muestra.seleccion')}"
+								   style="text-align: center;" readonly="readonly"/>
+								   
+								   <input type="hidden" id="codHeader" th:field="*{idHeader}" />	
+						</div>
+					</div>	
+					<div class="form-group">
+						<div class="col-md-1 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario242.Edit.fechaRecepcion')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<input type="text" id="strFechaRecepcion"  class="form-control fondo-blanco" 
+							       th:field="*{strFechaRecepcion}"
+								   th:placeholder="${#messages.msg('muestra.seleccion')}"
+								   style="text-align: center;" maxlength="20" readonly="readonly" />
+						</div>
+			     	</div>	
+			     	<div class="form-group">
+						<div class="col-md-1 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario242.Edit.PersonaMuestrea')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboPersonaMuestrea" name="cboPersonaMuestrea" th:field="*{personaMuestrea}" style="height: 33px;"></select>
+								<input type="hidden" id="cboMuestreaHidden" th:value="*{personaMuestrea}" />	
+						</div>
+					</div>		
+					<div class="form-group">
+						<div class="col-md-1 col-sm-2 col-xs-2">
+							<label class="control-label" th:text="${#messages.msg('formulario242.Edit.PersonaRecepcion')}"></label>
+						</div>
+						<div class="col-md-2 col-sm-2 col-xs-2">
+							<select class="form-control" id="cboPersonaRecepcion" name="cboPersonaRecepcion" th:field="*{personaRecepcion}" style="height: 33px;"></select>
+						    <input type="hidden" id="cboRecepcionHidden" th:value="*{personaRecepcion}" />
+						</div>
+					</div>	
+				</fieldset>
+				<br/><br/>
+				
+				<div class="col-md-12 col-sm-12 col-xs-12 form-group" style="margin-top:10px">
+					    <label class="control-label col-md-2 col-sm-2 col-xs-2" th:text="${#messages.msg('formulario242.Edit.Observacion')}"></label>
+						<div class="col-md-10 col-sm-2 col-xs-10">
+						     <textarea id="observacion" class="form-control" maxlength="400" rows="3" th:field="*{observacion}"
+						     style="text-transform: uppercase;" onDrop="return false" onpaste="return false;"></textarea>
+					    </div>
+			    </div>
+			    <br/><br/>
+			    
+			     <div class="col-md-12 col-sm-12 col-xs-12 contenedor-check" style="margin-top:10px;argin-bottom:10px">
+			     	<div class="form-group">
+					    <label class="control-label col-md-2 col-sm-2 col-xs-2" th:text="${#messages.msg('formulario242.edit.unidad.transporte.chofer')}"></label>
+						<div class="col-md-5 col-sm-5 col-xs-5">
+						     <textarea id="transporte-chofer" class="form-control" maxlength="200" rows="3" th:field="*{transporteChofer}"
+						     style="text-transform: uppercase;" onDrop="return false" onpaste="return false;"></textarea>
+					    </div>
+					</div>
+					<div class="form-group">   
+					    <label class="control-label col-md-3 col-sm-3 col-xs-3" th:text="${#messages.msg('cumple.epp.epc')}"></label>
+						<div class="col-md-1 col-sm-1 col-xs-1">
+						   
+						   <input type="hidden" id="cumpleEppHidden"  th:field="*{cumpleEpp}" />
+						   <input type="checkbox"  value="" id="checkboxFlagEpp" onchange="cambioFlag();"/> 
+					    </div>
+					</div>    
+			    </div>
+			    
+			    <div class="col-md-12" style="padding-top:10px;">
+					<div class="panel panel-info">
+						<div class="panel-body">
+							<div class="row">
+								<div class="form-horizontal">
+									<div id="upload_files_param_campo">
+											<div th:replace="/COMM/subidaArchivos :: fileUpload"></div>
+										</div>
+								</div>
+							</div>
+						</div>
+					</div>			
+				</div>	
+			    
+			    <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset> 	 
+					 					       				
+			</form>
+			<fieldset class="col-md-12 col-sm-12 col-xs-12">
+						<p></p>
+			</fieldset>
+			
+			 	<fieldset class="col-md-12 col-sm-12 col-xs-12"  id="detalle-242" th:fragment="buttons">
+			    	<div class="panel panel-info">
+						<div id="idTableVerificacion" class="form-horizontal">
+							<div class="container_12 form-group" >	
+									
+								<div class="col-sm-10 left-align">
+									<label class="control-label">Detalle</label>
+								</div>			 
+							 	<button type="button" class="btn btn-info btn-crear-mant-correo" data-toggle="modal" onclick="modificarDetalle()"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('tipoProceso.agregar')}"></label></button>
+							
+							</div>
+							
+							<div><p></p></div>
+							
+		
+						</div>	
+			
+			
+						<div class="container_12">
+							<div th:replace="formulario242/formulario242TableDetalle :: resultsListDetalle" class="grid_10 height800" id="idFormularioTableDetalle"></div>
+						</div>	
+					</div>
+				</fieldset>	
+				<script th:inline="javascript">				
+					MYAPPL.LOGIC.PARAM_CAMPO.initUpload();
+					MYAPPL.removeInputEnter();
+				</script>
+			
+		</div>
+	</div>
+</body>
+</html>

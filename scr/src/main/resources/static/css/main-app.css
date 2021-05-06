@@ -1,0 +1,566 @@
+/* Colocar Hojas de Estilos compartido específico de la aplicacion web */
+
+label {
+	display: inline !important;
+}
+
+textarea {
+    resize: none;
+    white-space: normal;
+    /*overflow-x: hidden;*/
+}
+
+legend {
+	padding: 10px;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+/*  para tabla resumen */
+table.data-present>tbody>tr>th {
+    background-color: #016dac;
+    background-image: -moz-linear-gradient( top, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 51%, rgba(255,255,255,0.0) 100%);
+    background-image: -webkit-gradient( linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.4)), color-stop(50%,rgba(255,255,255,0.2)), color-stop(51%,rgba(255,255,255,0.1)), color-stop(100%,rgba(255,255,255,0.0)));
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    /* text-shadow: 0 1px 1px #e8ebee; */
+    text-align: center;
+}
+
+
+.right-align {
+	text-align: right !important;
+}
+
+.left-align {
+	text-align: left;
+}
+
+.center-align {
+	text-align: center;
+}
+
+/* PARA CENTRADO VERTICAL */
+.flex-parent{
+  display: -ms-flex;
+  display: -webkit-flex;
+  display: flex;
+}
+ 
+.flex-child{
+  display: -ms-flex;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/*Clases*/
+.espaciado-superior {
+	padding-top: 15px;
+}
+
+.espaciado-superior3 {
+	padding-top: 5px;
+}
+
+.mensaje-negrita {
+	font-weight: bold !important;
+}
+
+.celda-default {
+	text-align: center;
+	font-size: 10px !important;
+}
+
+.celda-sin-dato {
+	background: #c4c6cc !important;
+	font-size: 10px !important;
+}
+
+.celda-dato-igual {
+	color: white !important;
+	background: #5cb85c !important;
+	text-align: center;
+	font-size: 10px !important;
+}
+
+.celda-dato-diferente {
+	color: white !important;
+	background: #d9534f !important;
+	text-align: center;
+	font-size: 10px !important;
+}
+
+.label-name {
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+}
+
+.pickListButtons {
+  padding: 10px;
+  text-align: center;
+}
+
+.pickListButtons button {
+  margin-bottom: 5px;
+}
+
+.pickListSelect {
+  height: 200px !important;
+}
+
+/* @media (min-width: 1200px){ */
+/* 	.verticalPick { */
+/*    		 margin-top: 100px; */
+/* 	} */
+/* } */
+
+@media (min-width: 768px){
+
+	.verticalPick {
+   		 margin-top: 90px;
+	}
+}
+
+.ancho-Sub-DataTable {
+  width: 1100px !important;
+  align: center;
+}
+
+.letraMayuscula{
+    text-transform:uppercase;
+    padding-right: 10px !important;
+	padding-left: 10px !important;	
+}
+
+.numero{
+	padding-right: 3px !important;
+	padding-left: 3px !important;	
+}
+
+.espacioDiv{
+	padding-right: 10px !important;
+	padding-left: 10px !important;	
+}
+
+.container-fluid {
+  height: 247px !important;
+}
+
+.alineacionCentral {
+	    text-align: center !important;
+}
+
+.alineacionIzquierda {
+	    text-align: left !important;
+}
+
+.border-plan-operativo{
+	border: 1px solid #D8D8D8;
+}
+
+.border-plan-operativo{
+	border: 1px solid #D8D8D8;
+}
+
+.negrita{
+	font-weight: bold;
+}
+
+ .margen-reporte-plan{
+	 margin:3px 3px 0px;
+}
+
+.border-plan-operativo{
+	border: 1px solid #D8D8D8;
+}
+
+.border-plan-operativo{
+	border: 1px solid #D8D8D8;
+}
+
+.negrita{
+	font-weight: bold;
+}
+
+ .margen-reporte-plan{
+	 margin:3px 3px 0px;
+}
+
+.my_checkbox {
+    width:3vw !important;
+    height:3vh !important;
+}
+
+.modal-dialog{
+    overflow-y: initial !important
+}
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+
+.modal-upper input, .modal-upper textarea {
+	text-transform: uppercase;
+}
+
+.alto_imput {
+  height: 30px !important;
+}
+.modal{
+   overflow:auto !important;
+}
+.alto_div {
+  height: 33px !important;
+}
+
+.demo-placeholder {
+	height: 450px!important;
+}
+
+.tamanoTable {
+  height: 450px !important;
+}
+
+.espaciado-superior2 {
+	padding-top: 40px;
+}
+
+.espaciado-superior6 {
+	padding-top: 80px;
+}
+
+.espaciado-superior5 {
+	padding-top: 30px;
+}
+
+/*USO EXCLUSIVO DE CAUDALES*/
+
+	/* para tabla de historial de cargas */
+table#myTableHistorialCargas>tbody>tr {
+	height: 34px !important;
+}
+/* para tabla de maniobras */
+table#myManiobras>tbody>tr {
+	height: 34px !important;
+}
+
+	.espaciado-inferior {
+	padding-bottom: 15px;
+}
+
+.espaciado-inferior2 {
+	padding-bottom: 30px;
+}
+
+	.adjuste-inner-text {
+	word-wrap: break-word !important;
+}
+
+.fancyTable td, .fancyTable th{
+	min-height: 0px !important;
+	*min-height: 0px !important;
+	_min-height: 0px !important;
+}
+
+
+/*Para el alto de la cabecera de las tablas*/
+.DataTables_sort_wrapper { 
+	height: 25px!important;
+}
+
+table.dataTable tbody th {
+  vertical-align: middle !important;
+}
+
+/* PARA DIVISIONES DE INFO */
+.end-segment{
+	padding-bottom: 9px;
+    border-bottom: 1px solid #eee;
+}
+
+/* PARA LA TABLA DE RESUMEN REPRESAS  */
+#myTableReporteRepresas th:hover {
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-all;
+}
+
+.table-resumen {
+    height: 550px;
+	overflow-y: auto;
+	overflow-x: auto;
+}
+    
+.demo-placeholder {
+	height: 450px!important;
+}
+
+/* LEYENDA PARA GRAFICOS */
+#legendContainer {
+    background-color: #fff;
+    padding: 2px;
+    margin-bottom: 8px;
+    border-radius: 3px 3px 3px 3px;
+    border: 1px solid #E6E6E6;
+    display: inline-block;
+    margin: 0 auto;
+    padding-left: 50px;
+}
+
+/*BEGIN: PARA CENTRADO VERTICAL DE MODALES*/
+.modal {
+  text-align: center;
+  padding: 0!important;
+}
+
+.modal:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -4px;
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+/*END: PARA CENTRADO VERTICAL DE MODALES*/
+
+/*PARA ANCHO DE MULTISELECT*/
+.multiselect-container {
+   width: 100% !important;
+   overflow-x: auto !important;
+}
+
+/*PARA QUITAR X DE IE*/
+
+input[type=text]::-ms-clear {
+    display: none;
+}
+
+/*QUITAR ICONO DE ORDENAMIENTO EN DATATBLE JQUERY UI*/
+.DataTables_sort_icon  {
+	display: none !important;
+}
+
+.text-left{
+	align: left; !important;
+}
+
+.text-center{
+	align: left; !important;
+}
+
+
+table#myTableFormulaMuestra>tbody>tr {
+	height: 34px !important;
+}
+
+table#myTableAlmacenamientoPTAP>tbody>tr {
+	height: 34px !important;
+}
+
+table#myTableAnalisisBacteriologico>tbody>tr {
+	height: 34px !important;
+}
+
+table#myTableConductimetroDigital>tbody>tr {
+	height: 34px !important;
+}
+
+table#myTablePhmetroDigital>tbody>tr {
+	height: 34px !important;
+}
+
+table#myTableTurbidimetroDigital>tbody>tr {
+	height: 34px !important;
+}
+
+table#myTableMuestraSecond>tbody>tr {
+	height: 34px !important;
+}
+
+table#myTableMuestraThree>tbody>tr {
+	height: 34px !important;
+}
+
+table#myTableTablaPoisson>tbody>tr {
+	height: 34px !important;
+}
+
+table#myTablePhmetroDigitalDetalle>tbody>tr {
+	height: 34px !important;
+}
+
+.anchoCelda {
+	width : 50px !important;
+}
+
+/*Cambios laboratario (una parte)*/
+.ancho-180 {
+	width: 180px !important;
+}
+
+.ancho-100 {
+	width: 100px !important;
+}
+
+.ancho-150 {
+	width: 150px !important;
+}
+
+.ancho-200 {
+	width: 120px !important;
+}
+
+.scrolls {
+    overflow-x: scroll;
+    overflow-y: scroll;
+    height: 80px;
+    white-space:nowrap
+}
+
+.ancho-80 {
+	width: 80px !important;
+}
+
+.ancho-130 {
+	width: 130px !important;
+}
+
+.dt-body-width-40 {																												 
+	width: 40px !important;
+}
+
+.dt-body-width-5 {																												 
+	width: 5% !important;
+}
+.dt-body-width-10 {																												 
+	width: 10% !important;
+}
+.dt-body-width-20 {																												 
+	width: 20% !important;
+}
+
+.dt-body-width-25 {																												 
+	width: 25% !important;
+}
+
+.dt-body-width-5 {																												 
+	width: 5% !important;
+}
+
+.dt-body-width-30 {
+	width: 30px !important;
+}
+
+.dt-body-width-50 {
+	width: 50px !important;
+}
+
+.dt-body-width-70 {
+	width: 50px !important;
+}
+
+.dt-body-width-80 {
+    width: 80px !important;
+}
+
+.dt-body-width-95 {
+    width: 95px !important;
+}
+
+.dt-body-width-100 {
+    width: 100px !important;
+}
+
+.dt-body-width-125 {
+    width: 125px !important;
+}
+
+.dt-body-width-150 {
+    width: 150px !important;
+}
+
+.dt-body-width-175 {
+    width: 175px !important;
+}
+
+.dt-body-width-190 {
+    width: 190px !important;
+}
+
+.dt-body-width-200 {
+    width: 200px !important;
+}
+
+.dt-body-width-250 {
+    width: 250px !important;
+}
+
+.dt-body-width-275 {
+    width: 275px !important;
+}
+
+.dt-body-width-300 {
+    width: 300px !important;
+}
+
+.dt-body-width-350 {
+    width: 350px !important;
+}
+
+.dt-body-width-400 {
+    width: 400px !important;
+}
+
+.container-first-column:hover{
+	white-space: nowrap !important/*;;; */;
+}
+
+.container-first{
+	white-space: nowrap !important/*;;; */;
+}
+
+.container-parent-position-middle{
+overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+.container-position-middle{
+	
+  line-height: 42px;
+  text-align: center;
+
+	height: 100%;
+/* 	position: absolute; */
+/*     right: 0; */
+/*     top: 0; */
+}
+.margen-reporte-ensayo {
+    margin: 1px 0px 0px;
+}
+
+.cantidadmes {
+    width:113%;
+}
+
+.texto-left {
+    text-align:left;
+}
+
+.fondo-blanco {
+    background-color: white !important;
+}
+
+.headww:hover{
+    white-space: normal !important;
+    word-break: normal !important;	
+}

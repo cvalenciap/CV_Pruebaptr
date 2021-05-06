@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsListPTAPResult" class="grid_10 height800" id="idPTAPResultTable">
+		
+		<table  class="fancyTable" id="myTablePTAPResult" cellpadding="0" cellspacing="0" style="width: 130%">
+			<thead>
+				<tr>	
+					<th th:text="${#messages.msg('muestrFor299.table.col0')}" style="width: 70px;"></th>
+					<th th:text="${#messages.msg('muestrFor299.table.col1')}" style="width: 70px;"></th>
+					<th th:text="${#messages.msg('muestrFor299.table.col2')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestrFor299.table.col3')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestrFor299.table.col4')}" style="width: 50px;"></th>	
+					<th th:text="${#messages.msg('muestrFor299.table.col5')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestrFor299.table.col5')}" style="width: 0px;" class="hidden-xs"></th>	
+					<th th:text="${#messages.msg('muestrFor299.table.col6')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestrFor299.table.col7')}" style="width: 50px;"></th>
+				</tr>
+			</thead>
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTablePTAPResult').DataTable({
+					"bProcessing": true,
+					"serverSide": false,
+					"searching": false,
+					"lengthChange":   false,
+					"bPaginate": false,
+					"bInfo": false,
+					"ajax":{
+						url :"PTAPResult/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTablePTAPResult_processing").css("display","none");
+			            },
+			            "data": function ( d ) {			            	
+			            	d.idCabecera = $('#intIdHide').val();
+			            }
+					},
+					"order": [ 6, 'asc' ],
+					"columnDefs": [ 
+			            {	"width": "30px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": [2,3,4,5,7,8]                
+			            },
+			            {	className: "dt-body-left",
+			            	"width": "50px",			            
+			                "targets": 1                
+			            },
+			            {	"width": "0px",
+			            	visible: false,
+			                "targets": 6                
+			            },
+			            {	"width": "15px",
+		              		className: "dt-body-center",
+		              		"targets": 0,
+		              		visible: true,
+		              		"render": function ( data, type, row) {		              			
+		        					
+		        						var descripcion = '';
+		        						if(row[1] == 'ESCHERICHIA coli UFC/100mL' || row[1] == 'PSEUDOMONAS EURUGINOSA UFC/100mL' || row[1] == 'CODIGO DE LA MUESTRA'){							
+		        							 descripcion = '<button class="btn btn-info btn-modif-punto" title="Editar Equipo" onclick="modificarPTAPResultTable('+row[6]+')"><span class="glyphicon glyphicon-pencil"></span></button>';
+		        							
+		        						}	       					
+		        						return descripcion
+		              				  }
+		              	}
+					]
+				});
+			}); 
+			
+			
+		</script>	
+	</div>
+</body>
+</html>

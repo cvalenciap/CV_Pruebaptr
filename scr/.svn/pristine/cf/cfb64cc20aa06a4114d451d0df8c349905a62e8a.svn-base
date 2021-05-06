@@ -1,0 +1,187 @@
+$(document).ready(function() {
+			inicializarVariables();
+ 			cargarComponentes();
+ 			console.log("entrada");
+});
+var accion = false;
+function inicializarVariables() {
+	var divMensajeInformacion = null;
+	var btnBusquedaRegistro = null;
+	var btnReporte = null;
+	var btnAprobar = null;
+	var btnRechazar = null;
+	var btnLimpiar = null;
+	var tblResultados = null;
+	var mensajeRespuesta = null;
+	var estadoRespuesta = null;
+	var cboPtarxSector = null;
+	var cboTipoReporte = null;
+	var txtSector = null;
+	var dtpInicio = null;
+	var dtpFin = null;
+}
+
+function cargarComponentes() {
+	divMensajeInformacion = $('#divMensajeInformacion');
+	btnBusquedaRegistro = $('#btnBusquedaRegistro');
+	btnReporte = $('#btnReporte');
+	btnAprobar = $('#btnAprobar');
+	btnRechazar = $('#btnRechazar');
+	btnLimpiar = $('#btnLimpiar');
+	tblResultados = $('#tblResultados');
+	mensajeRespuesta = $('#mensajeRespuesta');
+	estadoRespuesta = $('#estadoRespuesta');	
+	cboPtarxSector = $("#cboPtarxSector");
+	cboTipoReporte = $("#cboTipoReporte");
+	txtSector = $("#txtSector");
+	dtpInicio = $('#dtpInicio');
+	dtpFin = $('#dtpFin');
+	
+	$('#datetimepickerInicio').datepicker({
+        autoclose: true,
+        format: 'dd/mm/yyyy'
+	});
+
+	$('#datetimepickerFin').datepicker({
+		autoclose: true,
+		format: 'dd/mm/yyyy'
+	});
+		
+	btnLimpiar.click(function(event){
+		limpiarParametrosBusqueda();
+	});
+	
+	btnReporte.click(function(event){
+		if(validarDatosEntrada()){
+			var html = 
+				'<div class="row">' + 
+					'<div class="col-sm-12">' + 
+						'<label class="control-label">¿Se imprimir&aacute; el Reporte. ¿Desea Continuar?</label>' + 
+					'</div>' + 
+				'</div>';
+			var titulo = 'Reporte Histórico de Registros de Laboratorio';
+			modal.defaultModal(html, 'buscarRegistroReporteHistorico()' , '', titulo, 'Aceptar', 'Cancelar');
+		}		
+	});
+	
+	agregarListaItem(cboPtarxSector, ltaPtarxSector, "idPtarxsector", "descripcionPtar");
+	cargarSector();
+	dtpInicio.val(fechaActual);
+	dtpFin.val(fechaActual);
+	var fechaInicio = dtpInicio.val();
+	var dateParts = fechaInicio.split("/");
+	var dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+	$(datetimepickerInicio).datepicker("setDate", dateObject);
+	$(datetimepickerFin).datepicker("setDate", dateObject);
+	
+	
+	cboPtarxSector.change(function(event){
+		cargarSector();
+    });
+	
+}
+
+function reporteRegistroLaboratorioHistorico(){
+	$.redirect("./reporteRegistroLaboratorioHistorico", {"fechaInicio" : dtpInicio.val(), "fechaFin" : dtpFin.val(), "idPtarxSector" : cboPtarxSector.val(), "descripcionPtar" : extraerTextoCombo("cboPtarxSector"), "descripcionSector" : txtSector.val()});
+}
+
+function validacionBotonesValidador(){
+	if(flagAnalistaValidador == ConstanteServices.ROL_VALIDADOR) {
+		$('#btnAprobar').show();
+		$('#btnRechazar').show();
+	}else{
+		$('#btnAprobar').hide();
+		$('#btnRechazar').hide();
+	}
+}
+
+function cargarSector() {	
+	for(i=0; i<ltaPtarxSector.length; i++){
+		if(cboPtarxSector.val() == ltaPtarxSector[i].idPtarxsector){
+			txtSector.val(ltaPtarxSector[i].descripcionSector);
+		}
+	}
+	if(cboPtarxSector.val()=="" || cboPtarxSector.val()==null){
+		txtSector.val("");
+	}
+}
+
+function validarDatosEntrada(){
+    var estado = true;
+    var fechaInicio = $(datetimepickerInicio).datepicker("getDate");
+    var fechaFin = $(datetimepickerFin).datepicker("getDate");
+    if(IsEmpty(dtpInicio.val())){           
+    	mostrarMensaje('Debe Seleccionar una Fecha de Inicio.', ConstanteServices.IMAGEN_DANGER);
+        estado = false; 
+    }
+    if(IsEmpty(dtpFin.val())){           
+     	mostrarMensaje('Debe Seleccionar una Fecha Fin', ConstanteServices.IMAGEN_DANGER);
+        estado = false; 
+    }
+    if(fechaInicio > fechaFin){
+    	mostrarMensaje('Las Fechas Ingresadas son Incorrectas.', ConstanteServices.IMAGEN_DANGER);
+        estado = false;
+    }
+    if(fechaFin < fechaInicio){
+    	mostrarMensaje('Las Fechas Ingresadas son Incorrectas.', ConstanteServices.IMAGEN_DANGER);
+        estado = false;
+    }
+    var idPtarxSector = $(cboPtarxSector).val();
+	if(IsEmpty(idPtarxSector)){
+		mostrarMensaje('Debe Seleccionar un PTAR.', ConstanteServices.IMAGEN_DANGER);
+		indicador = false;
+		return indicador;
+	}
+	var descripcionSector = $(txtSector).val();
+	if(IsEmpty(descripcionSector)){
+		mostrarMensaje('Debe Seleccionar un Sector', ConstanteServices.IMAGEN_DANGER);
+		indicador = false;
+		return indicador;
+	}
+    return estado;
+}
+
+function limpiarParametrosBusqueda(){
+	cboPtarxSector.val("");
+	cargarSector();
+	dtpInicio.val(fechaActual);
+	dtpFin.val(fechaActual);
+	var fechaInicio = dtpInicio.val();
+	var dateParts = fechaInicio.split("/");
+	var dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+	$(datetimepickerInicio).datepicker("setDate", dateObject);
+	$(datetimepickerFin).datepicker("setDate", dateObject);
+	mostrarMensaje();
+}
+
+function buscarRegistroReporteHistorico() {
+	if(validarDatosEntrada()) {
+		$.ajax({
+	        url : "./buscarRegistroReporteHistorico",
+	        type : "POST",
+	        dataType : "json",
+	        async:true,
+	        data : {
+	        	idPtarxSector: (!IsEmpty(cboPtarxSector.val()) ? cboPtarxSector.val() : null),
+	        	fechaInicio: (!IsEmpty(dtpInicio.val()) ? dtpInicio.val() : null),
+	        	fechaFin: (!IsEmpty(dtpFin.val()) ? dtpFin.val() : null)
+	        }
+	    }).done(function(respuestaBean) {
+	    	mostrarMensaje();
+	    	if(respuestaBean.estadoRespuesta ==  ConstanteServices.OK ){	      	
+	    		var ListaResultado = respuestaBean.parametros.ListaResultado;
+	    		console.log(ListaResultado);
+	        	if(ListaResultado != null && ListaResultado.length > 0 ) {		            		
+	        		mostrarMensaje(respuestaBean.mensajeRespuesta, ConstanteServices.IMAGEN_SUCCESS);
+	        		reporteRegistroLaboratorioHistorico();
+	        	}else{
+	        		mostrarMensaje("No se encontraron registros con los parametros ingresados", ConstanteServices.IMAGEN_DANGER);
+	        	}
+	        } else {
+	        	mostrarMensaje(respuestaBean.mensajeRespuesta, ConstanteServices.IMAGEN_DANGER);
+	        }
+	    }).fail(function(jqXHR, textStatus, errorThrown) {
+	    	validarFinDeSesion(jqXHR, textStatus, errorThrown, ConstanteServices.MENSAJE_SESION_EXPIRADA);
+	    });	
+	} 	
+}

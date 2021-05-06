@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	
+	<div th:fragment="resultsList" class="" id="idClimaTable">
+	<div class="container_save"></div>
+	
+	<div class="modal-content" id="id-modal-content">
+	
+	<div class="container_save_reporte"></div>
+	<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" id="buttonCloseDetail" >&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('ensayo.cloro.planta.title')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('tablaPoisson.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('tablaPoisson.crear')}">Crear texto html</span>
+	</div>
+	<div class="modal-footer" th:fragment="resultSearchXFecha">
+			<div id="reporteData"  ></div>
+	
+<!-- 			<form name="form-search-tp form-prueba" id="form-search-tp" action="#" -->
+<!-- 				 method="post" class="form-horizontal" role="form"> -->
+				 
+			
+			<form name="form-edit-tablaPoisson" id="form-edit-ensayo" method="post" 
+				  th:action="@{/ensayoCloroSave}" th:object="${ensayoCloroEditBean}" role="form">
+				 
+				<br/>
+<!-- 				DATOS CABECERA -->
+			 	<div class="form-group">
+					<input  type="text" class="hidden codigoInput form-control" maxlength="4" th:field="*{codigo}"  id="codigo" />
+				</div>
+
+			 <div class="content"> 
+							<div class="row">
+								<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.cloro.fecha.muestreo')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+<!-- 			                    <input  type="text" class="form-control" -->
+<!-- 			                    		   maxlength="60" th:field="*{fechaMuestreo}" -->
+<!-- 			                    	 	   th:placeholder="${#messages.msg('reporte.ensayo.cloro.fecha.muestreo')}"/> -->
+               					   <input type="text" class="form-control fondo-blanco"  th:field="*{fechaMuestreo}" readonly="readonly"/>
+               					   
+            					</div>
+								
+								<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.cloro.hora.muestreo')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2">
+			                    <input  type="text" class="form-control"
+			                    		   maxlength="60"   th:field="*{horaMuestreo}"
+			                    	 	   th:placeholder="${#messages.msg('reporte.ensayo.cloro.hora.muestreo')}"/>
+			                     </div>
+			                     
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.fecha.reporte')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2">
+<!-- 			                     <input type="text" class="form-control "  th:field="*{fechaReporte}" id="idFechaReporteEnsayo" readonly="readonly"/> -->
+			                    <input type="text" class="form-control fondo-blanco"  th:field="*{fechaReporte}" id="idFechaReporteEnsayo" readonly="readonly"/>
+			                    </div>
+			                     
+			                     <label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.cloro.muestreador')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2">
+									<label class="hidden"  th:text="${ensayoCloroEditBean.muestreador}" id="muestreadorInput"></label>
+			                    	<select class="form-control"  th:field="*{muestreador}" id="cboMuestreador"></select>
+			                                   	 	   
+			                     </div>
+			 			  </div>
+			 				
+			 			<div class="row">
+			 					 <label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.cloro.fecha.recepcion')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+			                   	 <input type="text" class="form-control fondo-blanco"  th:field="*{fechaRecepcion}" id="idFechaRecepcionEnsayo" readonly="readonly"/>
+			                     </div>
+			                     
+								<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.cloro.hora.recepcion')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2">
+			                    <input  type="text" class="form-control fondo-blanco"
+			                    		   maxlength="15" th:field="*{horaRecepcion}"
+			                    	 	   th:placeholder="${#messages.msg('reporte.ensayo.cloro.hora.recepcion')}"/>
+			                     </div>
+								
+								<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.cloro.fecha.inicio')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2">
+			                    	 <input type="text" class="form-control fondo-blanco" th:field="*{fechaInicioEnsayo}" id="idFechaInicioEnsayo" readonly="readonly"/>
+			                     </div>
+			                     
+								<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.cloro.hora.inicio')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2">
+			                    <input  type="text" class="form-control"
+			                    		   maxlength="15" th:field="*{horaInicioEnsayo}"
+			                    	 	   th:placeholder="${#messages.msg('reporte.ensayo.cloro.hora.inicio')}"/>
+			                     </div>
+			 			  </div>
+			 
+					 	  <div class="row">
+					 	  
+					 	  		<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.cloro.metodo.muestreo')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2">
+			                   	 <label class="hidden"  th:text="${ensayoCloroEditBean.metodoMuestreo}" id="metodoInput"></label>
+			                    <input  type="text" id="metodoMuestreo" class="form-control" style="height: 33px;"
+			                    		   maxlength="10" th:field="*{metodoMuestreo}" onkeypress="return MYAPPL.soloLetras(event)"
+			                    	 	   th:placeholder="${ensayoCloroEditBean.metodoMuestreo}"/>
+			                     </div>
+			                     
+					 	  
+					 	  		<label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.volumen.muestra')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2">
+			                    <input  type="text" class="form-control classDecimal"
+			                    		   maxlength="9" th:field="*{volumenMuestra}" onkeypress="return MYAPPL.soloNumerosSinPunto(event)"
+			                    	 	   th:placeholder="${#messages.msg('reporte.ensayo.volumen.muestra')}"/>
+			                     </div>
+			                     
+					 	  		 <label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.tiempo.contacto')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+			                    <input  type="text" class="form-control"
+			                    		   maxlength="10" th:field="*{tiempoContacto}" onkeypress="return MYAPPL.soloNumerosSinPunto(event)"
+			                    	 	   th:placeholder="${#messages.msg('reporte.ensayo.tiempo.contacto')}"/>
+			                     </div>
+					 	  	 
+			                    <label class="control-label  col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.analista')}"></span></label>
+								<div class="form-group  col-md-2 col-sm-2 col-xs-2">
+			                        <label class="hidden"  th:text="${ensayoCloroEditBean.analista}" id="analistaInput"></label>
+			                    	<select class="form-control" th:field="*{analista}" id="cboAnalista"></select>
+			                     </div>
+					 	  </div>  
+					 	  
+					 	  <div class="row">
+					 	  	    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-right" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.turno')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2">
+									<label class="hidden"  th:text="${ensayoCloroEditBean.turno}" id="turnoInput"></label>
+<!-- 			                    	<select class="form-control"  th:field="*{turno}" id="cboTurnos" ></select> -->
+			                    	<input type="text" class="form-control"  th:field="*{turno}" maxlength="10" ></input>
+			                     </div>
+			                     
+			                   
+					 	  </div>  	
+					 	  
+					 	  
+			 <!--  DATOS SODIO Y CLORO -->
+			<div class="row">	 	  
+			
+			 <div class="col-md-6 col-sm-6 col-xs-6 "> 	  
+			  <table  class="fancyTable" id="headerEnsayoCloro01" cellpadding="0" cellspacing="0" >
+			  <thead>
+				<tr>
+					<th colspan="3"  th:text="${#messages.msg('reporte.ensayo.header.estandar.sodio')}" style="width: 100px;"></th>
+				</tr>
+				
+				<tr>
+					<th rowspan="1" height="40" class="ajustable"  th:title="${#messages.msg('reporte.ensayo.header.01')}" th:text="${#messages.msg('reporte.ensayo.header.01')}" style="width: 100px;"></th>
+					<th rowspan="1" height="40" class="ajustable" th:title="${#messages.msg('reporte.ensayo.header.02')}" th:text="${#messages.msg('reporte.ensayo.header.02')}" style="width: 100px;"></th>
+					<th rowspan="1" height="40" class="ajustable" th:title="${#messages.msg('reporte.ensayo.header.03')}" th:text="${#messages.msg('reporte.ensayo.header.03')}" style="width: 100px;"></th>
+				</tr>
+				
+				<tr>
+					<th rowspan="1" height="40" class="ajustable"  th:title="${#messages.msg('reporte.ensayo.header.04')}" th:text="${#messages.msg('reporte.ensayo.header.04')}" style="width: 100px;"></th>
+					<th rowspan="1" height="40" class="ajustable" th:title="${#messages.msg('reporte.ensayo.header.05')}" th:text="${#messages.msg('reporte.ensayo.header.05')}" style="width: 100px;"></th>
+					<th rowspan="1" height="40" class="ajustable" th:title="${#messages.msg('reporte.ensayo.header.06')}" th:text="${#messages.msg('reporte.ensayo.header.06')}" style="width: 100px;"></th>
+				</tr>
+				
+			 </thead>
+			 
+			 <tbody>
+<!-- 			 		<tr> -->
+<!-- 			 			<td colspan="2"> -->
+<!-- 			 				<div class="col-md-12 col-sm-12 col-xs-12"> -->
+<!-- 			 					<div class="col-md-6 col-sm-6 col-xs-6" style="font-weight: bold"> -->
+<!-- 			 					<label style="font-weight: bold">Volumen mL Bicromato de Potasio: </label> -->
+<!-- 			 					</div> -->
+<!-- 			 					<div class="col-md-6 col-sm-6 col-xs-6 form-group"><input type="text" class="form-control" maxlength="6" id="bicromatoPotasio"  name="sodio1" th:value="${ensayoCloroEditBean.sodio1}"  th:placeholder="A" onkeyup="actualizarCamposEstandadares();"/></div> -->
+<!-- 			 				</div> -->
+<!-- 			 			</td> -->
+<!-- 			 			<td><input  type="text" class="form-control" maxlength="5" id="bicromatoPotasio"  name="sodio1" th:value="${ensayoCloroEditBean.sodio1}"  th:placeholder="A"/></td> -->
+<!-- 			 			<td rowspan="4" ><div class="form-group"><input  type="text" class="form-control "  id="estandarSodio" maxlength="6" disabled="disabled"/></div></td> -->
+<!-- 			 		</tr> -->
+			 		<tr>
+			 			<td><div class="form-group"><input  type="text" class="form-control bicromatos form-group" maxlength="5" th:field="*{bicromato1}" placeholder="Volumen A" onkeypress="return MYAPPL.soloNumerosSinPunto(event)"/></div></td>
+			 			<td><div class="form-group"><input  type="text" class="form-control estandarSodio form-group" maxlength="6" th:field="*{sodio2}" placeholder="A" onkeyup="actualizarCamposEstandadares();"/></div></td>
+			 			<td rowspan="3" ><div class="form-group"><input  type="text" class="form-control "  id="estandarSodio" maxlength="6" disabled="disabled"/></div></td>
+			 		</tr>
+			 		<tr>
+			 			<td><div class="form-group"><input  type="text" class="form-control bicromatos form-group" maxlength="5" th:field="*{bicromato2}" placeholder="Volumen B" onkeypress="return MYAPPL.soloNumerosSinPunto(event)"/></div></td>
+			 			<td><div class="form-group"><input  type="text" class=" form-control estandarSodio form-group"  maxlength="6" th:field="*{sodio3}" placeholder="B" onkeyup="actualizarCamposEstandadares();"/></div></td>
+			 		</tr>
+			 		<tr>
+			 			<td><div class="form-group"><input  type="text" class="form-control bicromatos form-group" maxlength="5" th:field="*{bicromato3}" placeholder="Volumen C" onkeypress="return MYAPPL.soloNumerosSinPunto(event)"/></div></td>
+			 			<td><div class="form-group"><input  type="text" class=" form-control estandarSodio form-group" maxlength="6" th:field="*{sodio4}" placeholder="C" onkeyup="actualizarCamposEstandadares();"/></div></td>
+			 		</tr>
+			 </tbody>
+			 
+			 </table>	 	  
+			 </div>	
+			 
+			 
+			<div class="col-md-6 col-sm-6 col-xs-6"> 	  
+			<table  class="fancyTable" id="headerEnsayoCloro02" cellpadding="0" cellspacing="0" >
+			<thead>
+				<tr>
+					<th colspan="3"  th:text="${#messages.msg('reporte.ensayo.header.estandar.cloro')}" style="width: 100px;"></th>
+				</tr>
+				
+				<tr>
+					<th rowspan="1"  height="40" class="ajustable"  colspan="1"  th:title="${#messages.msg('reporte.ensayo.header.07')}" th:text="${#messages.msg('reporte.ensayo.header.07')}" style="width: 100px;"></th>
+					<th rowspan="1"  height="40" class="ajustable"  colspan="1"  th:title="${#messages.msg('reporte.ensayo.header.08')}" th:text="${#messages.msg('reporte.ensayo.header.08')}" style="width: 100px;"></th>
+					<th rowspan="1"  height="40" class="ajustable"  colspan="1"  th:title="${#messages.msg('reporte.ensayo.header.09')}" th:text="${#messages.msg('reporte.ensayo.header.09')}" style="width: 100px;"></th>
+				</tr>
+				
+				<tr>
+					<th rowspan="1"  height="40" class="ajustable"  colspan="1"  th:title="${#messages.msg('reporte.ensayo.header.10')}"  th:text ="${#messages.msg('reporte.ensayo.header.10')}" style="width: 100px;"></th>
+					<th rowspan="1"  height="40" class="ajustable"  colspan="1"  th:title="${#messages.msg('reporte.ensayo.header.11')}"  th:text ="${#messages.msg('reporte.ensayo.header.11')}" style="width: 100px;"></th>
+					<th rowspan="1"  height="40" class="ajustable"  colspan="1"  th:title="${#messages.msg('reporte.ensayo.header.12')}"  th:text ="${#messages.msg('reporte.ensayo.header.12')}" style="width: 100px;"></th>
+				</tr>
+			 </thead>
+			 
+			 <tbody>
+<!-- 			 		<tr> -->
+<!-- 			 			<td colspan="2"> -->
+<!-- 			 				<div class="col-md-12 col-sm-12 col-xs-12"> -->
+<!-- 			 					<div class="col-md-6 col-sm-6 col-xs-6" style="font-weight: bold"> -->
+<!-- 			 					<label style="font-weight: bold">Volumen mL Bicromato de cloro: </label> -->
+<!-- 			 					</div> -->
+<!-- 			 					<div class="col-md-6 col-sm-6 col-xs-6 form-group"><input  type="text" class="form-control " id="tioSulfato" maxlength="6" th:field="*{cloro1}" th:placeholder="A"  onkeypress="return MYAPPL.soloNumeros(event)"/></div> -->
+<!-- 			 				</div> -->
+			 				
+<!-- 			 			</td> -->
+<!-- 			 			<td rowspan="4"><div class="form-group"><input  type="text" class="form-control" id="estandarCloro" maxlength="6" disabled="disabled"/></div></td> -->
+<!-- 			 		</tr> -->
+			 		<tr>
+			 			
+			 			<td><div class="form-group"><input  type="text" class="form-control soluciones form-group" maxlength="5" th:field="*{solucion1}" placeholder="Volumen A" onkeypress="return MYAPPL.soloNumerosSinPunto(event)"/></div></td>
+			 			<td><div class="form-group"><input  type="text" class="form-control estandarCloro" maxlength="6" th:field="*{cloro2}" placeholder="A" onkeyup="actualizarCamposEstandadares();"/></div></td>
+			 			<td rowspan="3"><div class="form-group"><input  type="text" class="form-control" id="estandarCloro" maxlength="6" disabled="disabled"/></div></td>
+			 		</tr>
+			 		<tr>
+			 			<td><div class="form-group"><input  type="text" class="form-control soluciones form-group" maxlength="5" th:field="*{solucion2}" placeholder="Volumen B" onkeypress="return MYAPPL.soloNumerosSinPunto(event)"/></div></td>
+			 			<td><div class="form-group"><input  type="text" class="form-control estandarCloro" maxlength="6" th:field="*{cloro3}" placeholder="B" onkeyup="actualizarCamposEstandadares();"/></div></td>
+			 		</tr>
+			 		<tr>
+			 			<td><div class="form-group"><input  type="text" class="form-control soluciones form-group" maxlength="5" th:field="*{solucion3}" placeholder="Volumen C" onkeypress="return MYAPPL.soloNumerosSinPunto(event)"/></div></td>
+			 			<td><div class="form-group"><input  type="text" class="form-control estandarCloro" maxlength="6" th:field="*{cloro4}" placeholder="C" onkeyup="actualizarCamposEstandadares();"/></div></td>
+			 		</tr>
+			 </tbody>
+			 
+			 </table>	 	  
+			</div>
+			
+			<br></br>
+			
+			  <!--  FIN DATOS SODIO Y CLORO -->					
+		
+			<!-- FIN DATOS CABECERA -->
+			
+			
+			
+<!-- 			<div class=" row border-plan-operativo margen-reporte-plan  " style="text-align:center;padding:5px"> -->
+				  
+<!-- 				  <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.header.punto')}"></span></label> -->
+<!-- 					<div class="form-group col-md-2 col-sm-2 col-xs-2"> -->
+<!-- 			        <select class="form-control col-md-2 col-sm-2 col-xs-2"  th:field="*{puntoMuestreo}" id="cboPuntoMuestreo" onchange="setValueToInputMuestreo()"></select> -->
+<!-- 			      </div> -->
+			
+<!-- 				 <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.result.column03')}"></span></label> -->
+<!-- 					<div class="form-group col-md-2 col-sm-2 col-xs-2"> -->
+<!-- 			        <input  type="text" class="form-control col-md-2 col-sm-2 col-xs-2" maxlength="5"  th:field="*{ph}" onkeyup="setValueToInputMuestreo();" th:placeholder="${#messages.msg('reporte.ensayo.result.column03')}"/> -->
+<!-- 			      </div> -->
+				
+<!-- 				<label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="parametro"><span th:text="${#messages.msg('reporte.ensayo.header.temperatura')}"></span></label> -->
+<!-- 					<div class="form-group col-md-2 col-sm-2 col-xs-2"> -->
+<!-- 			       <input  type="text" class="form-control col-md-2 col-sm-2 col-xs-2" maxlength="6" th:field="*{temperatura}"  id="inputTemperatura"  onkeyup="setValueToInputMuestreo();"  th:placeholder="${#messages.msg('reporte.ensayo.header.temperatura')}" /> -->
+<!-- 			      </div> -->
+<!-- 			      <div class="form-group"> -->
+<!-- 					<input  type="hidden" class=" form-control" maxlength="4" th:field="*{codigo}"  id="codigo" /> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+			
+		
+		
+			<br/>
+	<!-- FIN HEADER TABLE -->
+	
+	 <!--  INICIO 1ERA TABLA DE DATOS-->
+	<div class="tabla-datos-1">
+				 
+	<table  class="fancyTable form-prueba" id="tablaReporteHidroBiologicoDetalle" cellpadding="0" cellspacing="0" >
+			<thead id="head-detalles">
+				<tr>
+					<th rowspan="2" class="th-table" style="width: 200px;"><div  class="cabecera-texto"  th:text="${#messages.msg('reporte.ensayo.detalle.column01')}"></div></th>
+					<th rowspan="2" class="th-table" style="width: 100px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column02')}" class="cabecera-texto"></div></th>
+					<th colspan="2" class="th-table"  style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column34')}" class="cabecera-texto"></div></th>
+					<th colspan="3" class="th-table" style="width: 280px;"><div  th:text="${#messages.msg('reporte.ensayo.detalle.column57')}" class="cabecera-texto"></div></th>
+					<th colspan="2" class="th-table"  style="width: 220px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column89')}" class="cabecera-texto"></div></th>
+					<th rowspan="2" class="th-table"  style="width: 100px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column10')}" class="cabecera-texto"></div></th>
+				</tr>
+				
+				<tr>
+					<th  style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column03')}" ></div> </th>
+					<th   style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column04')}"></div></th>
+					<th   style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column05')}"></div></th>
+					<th   style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column06')}"></div></th>
+					<th   style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column07')}"> </div></th>
+					<th   style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column08')}"></div></th>
+					<th  style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column09')}" ></div></th>
+				</tr>
+				
+			</thead>
+			<tbody id="body-detalles">
+				 <tr  th:each="detalle,stat : *{detalles}" >
+<!-- 				 		<td><div class="form-group puntoMuestreo"><input type="text" class="form-control"  th:field="*{detalles[__${stat.index}__].puntoMuestreo}"/></div></td> -->
+						<td><div class="form-group "><input type="text" class="form-control"/></div></td>
+                   		<td><div class="form-group frasco"><input type="text" class="form-control" th:field="*{detalles[__${stat.index}__].frasco}" maxlength="5" onkeypress="return MYAPPL.soloNumerosSinPunto(event)" onkeyup="actualizarCampos()"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control volumen" th:field="*{detalles[__${stat.index}__].volumen}" onkeyup="actualizarCampos()"  /></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control  dosisClass negrita"  th:field="*{detalles[__${stat.index}__].dosis}" onkeyup="actualizarCampos()" readonly="readonly" /></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles[__${stat.index}__].cl2Libre}" onkeyup="actualizarCampos()"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control cl2CombClass negrita"  th:field="*{detalles[__${stat.index}__].cl2Comb}" readonly="readonly" /></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control cl2TotalClass"  th:field="*{detalles[__${stat.index}__].cl2Total}" onkeyup="actualizarCampos()"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles[__${stat.index}__].cloroLibre}" onkeyup="actualizarCampos()"/></div></td>
+                   	    <td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles[__${stat.index}__].cloroTotal}" onkeyup="actualizarCampos()"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control demandaClass negrita"  th:field="*{detalles[__${stat.index}__].demandaCloro}" readonly="readonly" onkeyup="actualizarCampos()" onclick="asignarSeleccionado(this)" th:attr="id=demanda-table1-__${stat.index}__"/></div></td>
+                   		<input type="hidden" class="form-control"  th:field="*{detalles[__${stat.index}__].idDetalle}"/>
+                   		<input type="text" class="hidden form-group puntoMuestreo"  th:field="*{detalles[__${stat.index}__].puntoMuestreo}"/>
+                   		<input type="text" class="hidden form-group phInput"  th:field="*{detalles[__${stat.index}__].ph}"/>
+                   		<input type="text" class="hidden form-group temperaturaInput"  th:field="*{detalles[__${stat.index}__].temperatura}"/>
+                   		<input type="text" class="hidden form-group seleccionado"  th:field="*{detalles[__${stat.index}__].seleccionado}"/>
+<!--                    		<input type="text" class="form-control"  th:field="*{detalles[__${stat.index}__].ph}"/> -->
+           		 </tr>
+           	</tbody>
+	</table>
+	 </div>
+	 <!--  FIN 1ERA TABLA DE DATOS-->
+	 
+<!-- 	 INICIO 2DA TABLA DE DATOS -->
+	 <div  class="tabla-datos-2" style="width: 100%;">
+	<table  class="fancyTable" id="tablaReporteHidroBiologicoDetalle2" cellpadding="0" cellspacing="0"  style="width: 100%;">
+			<thead id="head-detalles2">
+				<tr>
+					<th rowspan="2" class="th-table" style="width: 200px;"><div  class="cabecera-texto"  th:text="${#messages.msg('reporte.ensayo.detalle.column01')}"></div></th>
+					<th rowspan="2" class="th-table" style="width: 100px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column02')}" class="cabecera-texto"></div></th>
+					<th colspan="2" class="th-table"  style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column34')}" class="cabecera-texto"></div></th>
+					<th colspan="3" class="th-table" style="width: 280px;"><div  th:text="${#messages.msg('reporte.ensayo.detalle.column57')}" class="cabecera-texto"></div></th>
+					<th colspan="2" class="th-table"  style="width: 220px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column89')}" class="cabecera-texto"></div></th>
+					<th rowspan="2" class="th-table"  style="width: 100px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column10')}" class="cabecera-texto" id="resizer"></div></th>
+				</tr>
+				
+				<tr>
+					<th  style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column03')}" ></div> </th>
+					<th   style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column04')}"></div></th>
+					<th   style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column05')}"></div></th>
+					<th   style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column06')}"></div></th>
+					<th   style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column07')}"> </div></th>
+					<th   style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column08')}"></div></th>
+					<th  style="width: 200px;"><div th:text="${#messages.msg('reporte.ensayo.detalle.column09')}" ></div></th>
+				</tr>
+				
+			</thead>
+			<tbody id="body-detalles2">
+				 <tr  th:each="detalle2,stat2 : *{detalles2}" >
+				 		<td><div class="form-group "><input type="text" class="form-control"/></div></td>
+				 		<td><div class="form-group frasco"><input type="text" class="form-control" th:field="*{detalles2[__${stat2.index}__].frasco}"  onkeypress="return MYAPPL.soloNumerosSinPunto(event)" maxlength="5" onkeyup="actualizarCampos()"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control volumen" th:field="*{detalles2[__${stat2.index}__].volumen}" onkeyup="actualizarCampos()"  /></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control  dosisClass negrita"  th:field="*{detalles2[__${stat2.index}__].dosis}" onkeyup="actualizarCampos()" readonly="readonly" /></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles2[__${stat2.index}__].cl2Libre}" onkeyup="actualizarCampos()"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control cl2CombClass negrita"  th:field="*{detalles2[__${stat2.index}__].cl2Comb}" readonly="readonly" /></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control cl2TotalClass"  th:field="*{detalles2[__${stat2.index}__].cl2Total}" onkeyup="actualizarCampos()"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles2[__${stat2.index}__].cloroLibre}" onkeyup="actualizarCampos()"/></div></td>
+                   	    <td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles2[__${stat2.index}__].cloroTotal}" onkeyup="actualizarCampos()"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control demandaClass negrita"  th:field="*{detalles2[__${stat2.index}__].demandaCloro}" readonly="readonly" onkeyup="actualizarCampos()" onclick="asignarSeleccionado(this);"  th:attr="id=demanda-table2-__${stat2.index}__"/></div></td>
+                   		
+                   		<input type="hidden" class="form-control"  th:field="*{detalles2[__${stat2.index}__].idDetalle}" />
+                   		<input type="text" class="hidden form-group puntoMuestreo"  th:field="*{detalles2[__${stat2.index}__].puntoMuestreo}"/>
+                   		<input type="text" class="hidden form-group phInput"  th:field="*{detalles2[__${stat2.index}__].ph}"/>
+                   		<input type="text" class="hidden form-group temperaturaInput"  th:field="*{detalles2[__${stat2.index}__].temperatura}"/>
+                   		<input type="text" class="hidden form-group seleccionado"  th:field="*{detalles2[__${stat2.index}__].seleccionado}"  th:attr="data-index=${stat2.index}"/>
+           		 </tr>
+           		 
+           		 <tr  th:each="detalle3,stat3 : *{detalles3}" >
+				 		<td><div class="form-group "><input type="text" class="form-control"/></div></td>
+				 		<td><div class="form-group negrita text-center">BLANCO</div></td>
+				 		<td><div class="form-group frasco" style="padding:30px 0px 30px 0px;"><input type="text" class="form-control" th:field="*{detalles3[__${stat3.index}__].frasco}" onkeypress="return MYAPPL.soloNumerosSinPunto(event)" maxlength="10"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control" th:field="*{detalles3[__${stat3.index}__].volumen}" onkeypress="return MYAPPL.soloNumeros(event)" maxlength="10" /></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles3[__${stat3.index}__].dosis}" onkeypress="return MYAPPL.soloNumeros(event)" maxlength="10"  /></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles3[__${stat3.index}__].cl2Libre}" onkeypress="return MYAPPL.soloNumeros(event)" maxlength="10"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles3[__${stat3.index}__].cl2Comb}" onkeypress="return MYAPPL.soloNumeros(event)" maxlength="10"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles3[__${stat3.index}__].cl2Total}" onkeypress="return MYAPPL.soloNumeros(event)" maxlength="10"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles3[__${stat3.index}__].cloroLibre}" onkeypress="return MYAPPL.soloNumeros(event)" maxlength="10"/></div></td>
+                   	    <td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles3[__${stat3.index}__].cloroTotal}" onkeypress="return MYAPPL.soloNumeros(event)" maxlength="10"/></div></td>
+                   		<td><div class="form-group"><input type="text" class="form-control"  th:field="*{detalles3[__${stat3.index}__].demandaCloro}"  onkeypress="return MYAPPL.soloNumeros(event)" maxlength="10" /></div></td>
+                   		
+                   		<input type="hidden" class="form-control"  th:field="*{detalles3[__${stat3.index}__].idDetalle}" />
+                   		<input type="text" class="hidden form-group puntoMuestreo"  th:field="*{detalles3[__${stat3.index}__].puntoMuestreo}"/>
+                   		<input type="text" class="hidden form-group phInput"  th:field="*{detalles3[__${stat3.index}__].ph}"/>
+                   		<input type="text" class="hidden form-group temperaturaInput"  th:field="*{detalles3[__${stat3.index}__].temperatura}"/>
+                   		<input type="text" class="hidden form-group seleccionado"  th:field="*{detalles3[__${stat3.index}__].seleccionado}"  th:attr="data-index=${stat3.index}"/>
+           		 </tr>
+           		 
+           	</tbody>
+	</table>
+	 </div>
+<!-- 	  FIN 2DA TABLA DE DATOS -->
+	 
+         <br/><br/>
+     <div class="col-md-12 col-sm-12 col-xs-12">
+     			  <div class="col-lg-1 col-md-1 col-sm-1"></div>
+				  <label class="col-md-4 col-sm-4 col-xs-4 text-left negrita" style="font-weight: bold !important" id="resultadoLabel1">Demanda de Cloro (mg/L) en </label>
+				  <label class="col-md-1 col-sm-1 col-xs-1 text-left" id="resultadoTable1">0</label>
+				  <label class="col-md-4 col-sm-4 col-xs-4 negrita text-center" style="font-weight: bold !important" id="resultadoLabel2">Demanda de Cloro (mg/L) en </label>
+				  <label class="col-md-1 col-sm-1 col-xs-1 text-center"  id="resultadoTable2">0</label>
+				  <div class="col-lg-1 col-md-1 col-sm-1"></div>
+<!-- 				  <div class="form-group col-md-2 col-sm-2 col-xs-2"> -->
+<!-- 			      		<input  type="text" class="form-control col-md-2 col-sm-2 col-xs-2" maxlength="5"  th:field="*{ph}" onkeyup="setValueToInputMuestreo();" th:placeholder="${#messages.msg('reporte.ensayo.result.column03')}"/> -->
+<!-- 	       		  </div> -->
+	</div>
+	<br/><br/>
+	<div class="col-md-12 col-sm-12 col-xs-12">		
+		<div class="col-lg-1 col-md-1 col-sm-1"></div>
+    	<label class="col-lg-1 col-md-1 col-sm-1 negrita" for="comment" style="align-bottom:10px">Observaci&#243;n:</label>
+    	<div class="col-lg-9 col-md-9 col-sm-9 form-group">
+ 			<textarea class="form-control" rows="2" style="align-top:10px" id="observacion" th:field="*{observacion}" name="observacion" th:placeholder="Observaci&#243;n" maxlength="300"></textarea>
+    	</div>
+    </div>
+     
+     
+     <fieldset class="col-md-12 col-sm-12 col-xs-12 form-group"  th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-prueba col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+     </fieldset>
+    
+     </div>
+	</div>	
+	
+    </form>
+      </div>
+    </div>
+    </div>
+		
+</body>
+</html>

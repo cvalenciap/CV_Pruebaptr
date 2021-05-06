@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-edit-represas">
+	
+		<script type="text/javascript" th:inline="javascript">
+		    /*<![CDATA[*/
+		    $(document).ready(function() {
+		    	modelAttributeValue = [[${represasEditBean}]];
+		    });
+		    /*]]>*/
+		</script>
+	
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('represas.registrar')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('represas.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('represas.crear')}">Crear texto html</span>
+		</div>
+		<div class="modal-footer left-align">
+			<form name="form-edit-represas" id="form-edit-represas" method="post" 
+				  th:action="@{/represasSave}" th:object="${represasEditBean}"
+				  role="form">
+				  
+				<input type="hidden" id="codigo" name="codigo" th:value="*{intCodigo}" />
+
+			<div class="col-md-12">
+				<div class="form-group">                        
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.fecha.registro')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input id="inputFechaReg" type="text" class="form-control btn-prueba" maxlength="10" th:field="*{strFechaRegistro}" 
+                    	 	th:placeholder="${#messages.msg('registrar.represas.formato.fecha')}" readonly="readonly"/>                    	 	
+                    </div>
+                </div>  
+                <div class="form-group">                        
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.aforo.rio')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+						<div class="input-group">
+						    <span class="input-group-addon"><input type="checkbox" id="allowChangeAforo" title="Quite para autocalcular"/></span>
+						    <input type="text" class="form-control" maxlength="25" th:field="*{strAforoRio}"  readonly="readonly"    
+						        onkeypress="return MYAPPL.soloNumerosPunto(event)"                   		
+                    	 		th:placeholder="${#messages.msg('registrar.represas.aforo.rio')}"/>
+						</div>
+                    </div>
+				</div>	
+                <div class="form-group">
+					<label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.lluvias')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="7" th:field="*{strLluvia}"    
+                    		onkeypress="return MYAPPL.soloNumerosPunto(event)"                     		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.lluvias')}"/>
+                    </div>
+                </div>		                   
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">    
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.represa')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<select id="cbxRepresas" class="form-control" th:field="*{strCodigoRepresa}">
+                    	</select>
+                    </div>
+				</div>
+				
+				<div class="form-group">
+					<label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.colaborador.represa')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+						<select id="cbxColaboradores" class="form-control" th:field="*{strCodigoColaborador}">
+                    	</select>                    	
+                    </div>
+                </div>                
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.clima')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+						<select id="cbxClimas" class="form-control" th:field="*{strCodigoClima}">
+                    	</select>                    	
+                    </div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.cota')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="9" th:field="*{strCota}"    
+                    		onkeypress="return MYAPPL.soloNumerosPunto(event)"                   		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.cota')}"/>
+                    </div>
+                </div>
+                <div class="form-group">    
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.volumen')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="16" th:field="*{strVolumen}"      
+                    		onkeypress="return MYAPPL.soloNumerosPunto(event)"                 		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.volumen')}"/>
+                    </div>
+                </div>
+                
+                <div class="form-group">    
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.volumen.total')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="16" th:field="*{strVolumenTotal}"   
+                    		onkeypress="return MYAPPL.soloNumerosPunto(event)"   
+                    	 	th:placeholder="${#messages.msg('registrar.represas.volumen.total')}"/>
+                    </div>
+                </div>
+                
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">
+					<label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.caudal.trasvasado')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="11" th:field="*{strCaudalTrasvasado}"         
+                    		onkeypress="return MYAPPL.soloNumerosPunto(event)"             		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.caudal.trasvasado')}"/>
+                    </div>
+                </div>		
+                <div class="form-group">    
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.volumen.trasvasado')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="19" th:field="*{strVolumenTrasvasado}" readonly="readonly" 
+                    	 	th:placeholder="${#messages.msg('registrar.represas.volumen.trasvasado')}"/>
+                    </div>
+				</div>			
+                <div class="form-group">    
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.diferencia.nivel')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="14" th:field="*{strDiferenciaNivel}"    
+                    		onkeypress="return MYAPPL.soloNumerosReales(event)"                     		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.diferencia.nivel')}"/>
+                    </div>
+                </div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">                    
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.diferencia.volumen')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="14" th:field="*{strDiferenciaVolumen}"      
+                    		onkeypress="return MYAPPL.soloNumerosReales(event)"                   		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.diferencia.volumen')}"/>
+                    </div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.evaporacion')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="7" th:field="*{strEvaporacion}"     
+                    		onkeypress="return MYAPPL.soloNumerosPunto(event)"                    		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.evaporacion')}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.humedad.relativa')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="5" th:field="*{intHumedadRelativa}"   
+                    		onkeypress="return MYAPPL.soloNumerosSinPunto(event)"                     		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.humedad.relativa')}"/>
+                    </div>
+                </div>                				
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">
+					<label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.temperatura.maxima')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="6" th:field="*{strTemperaturaMaxima}"   
+                    	    onkeypress="return MYAPPL.soloNumerosReales(event)"                  		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.temperatura.maxima')}"/>
+                    </div>
+                </div>
+				<div class="form-group">                        
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.temperatura.minima')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="6" th:field="*{strTemperaturaMinima}"  
+                    		onkeypress="return MYAPPL.soloNumerosReales(event)"                       		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.temperatura.minima')}"/>
+                    </div>
+				</div>
+				<div class="form-group">
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.descarga')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="7" th:field="*{strDescarga}" readonly="readonly"                    		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.descarga')}"/>
+                    </div>
+                </div>				
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">
+					<label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.hy')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="7" th:field="*{strHy}"     
+                    		onkeypress="return MYAPPL.soloNumerosPunto(event)"                 		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.hy')}"/>
+                    </div>
+                </div>	
+				<div class="form-group">                        
+                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('registrar.represas.caudal')}"></span></label>
+					<div class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+                    	<input type="text" class="form-control" maxlength="7" th:field="*{strCaudal}"  
+                    		onkeypress="return MYAPPL.soloNumerosPunto(event)"                    		
+                    	 	th:placeholder="${#messages.msg('registrar.represas.caudal')}"/>
+                    </div>
+				</div>	
+				<div id="idEstado" class="label_name">
+	            	<label class="control-label col-md-2 col-sm-2 col-xs-2 text-left"><span th:text="${#messages.msg('represas.estado')}"></span></label>
+	                <div  class="form-group col-md-2 col-sm-2 col-xs-2 padding-left">
+	                	<select class="form-control" th:field="*{strEstado}" >
+							<option  value="1">ACTIVO</option> 
+							<option value="2">INACTIVO</option>
+						</select>
+					</div>
+				</div>	
+			</div>
+			
+				<div class="clearfix"></div>
+				<div class="ln_solid"></div>
+				<div class="form-group col-md-12 col-sm-12 col-xs-12">
+					<div class="wrapper text-center">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-primary btn-md" id="guardarButton">
+								<div  th:text="${#messages.msg('represas.guardar')}"></div>
+							</button>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-md" data-dismiss="modal">
+							<div  th:text="${#messages.msg('represas.cancelar')}"></div>
+							</button>
+						</div>
+					</div>
+				</div>
+				
+			</form>
+		</div>
+	</div>
+</body>
+</html>

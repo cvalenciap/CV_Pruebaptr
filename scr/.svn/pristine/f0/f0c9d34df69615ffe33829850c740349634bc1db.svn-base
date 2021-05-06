@@ -1,0 +1,201 @@
+create or replace package body PCK_CLIMA is
+
+ PROCEDURE PRC_BUSCA_CLIMA(
+   --Parametros de la busqueda
+   PAR_VNOMBRE_CLIMA      IN SCR_MANT_CLIMA.C_NOMCLI%TYPE,
+   PAR_VABREVIATURA_CLIMA     IN SCR_MANT_CLIMA.C_ABREVI%TYPE,
+   PAR_VESTADO_CLIMA          IN SCR_MANT_CLIMA.C_ESTADO%TYPE,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+
+BEGIN
+
+  v_query_count:= ' select count(*) ';
+    
+  v_query :=  'SELECT * FROM(SELECT a.*, rownum rn FROM( select  c.N_CODIGO,c.C_NOMCLI,DECODE (c.C_ESTADO, 1, ''ACTIVO'', 2, ''INACTIVO'', '' '') V_ESTADO, ' ||
+  ' c.A_USUINS, to_char(c.A_FECINS, ''DD/MM/YYYY''), c.A_USUMOD, to_char(c.A_FECMOD,''DD/MM/YYYY'')';
+
+  v_query_from := ' from scr_mant_clima c where ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := ' 1=1 ';
+  
+  
+   if(LENGTH(TRIM(PAR_VNOMBRE_CLIMA))>0) then
+     v_query_where :=  v_query_where || ' and  UPPER(c.C_NOMCLI) LIKE UPPER(''%' ||  PAR_VNOMBRE_CLIMA || '%'')';
+   end if;
+  
+  if(LENGTH(TRIM(PAR_VABREVIATURA_CLIMA))>0) then
+    v_query_where :=  v_query_where || ' and UPPER(c.C_ABREVI) LIKE UPPER(''%' ||  PAR_VABREVIATURA_CLIMA || '%'')';
+  end if;
+  
+  if(LENGTH(TRIM(PAR_VESTADO_CLIMA))>0) then
+    v_query_where :=  v_query_where || ' and c.C_ESTADO = ''' ||  PAR_VESTADO_CLIMA || '''';
+  end if;
+  
+
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+  
+  v_query := v_query || ' order by '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' and rn <= ' || (par_pag_desde+par_cantidad_pag);
+    
+  OPEN par_out_cursor FOR v_query;
+  
+  execute immediate v_query_count into par_out_quantity;
+
+END;
+
+
+ PROCEDURE PRC_GET_CLIMA(
+   --Parametros de la busqueda
+   PAR_NCODIGO_CLIMA IN SCR_MANT_CLIMA.N_CODIGO%type,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+BEGIN
+  v_query := ' SELECT t.N_CODIGO, t.V_NOMCLI, t.V_ABREVI, t.V_ESTADO, ' ||
+             ' t.A_PROGRA, t.A_CODARE, t.A_CODSIS ' ||
+             ' FROM SCR_MANT_CLIMA t '   ||
+             ' WHERE t.N_CODIGO = ' || PAR_NCODIGO_CLIMA;
+  OPEN par_out_cursor FOR v_query;
+  
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+
+PROCEDURE PRC_INSERT_CLIMA(
+   PAR_VNOMBRE_CLIMA                SCR_MANT_CLIMA.C_NOMCLI%TYPE,
+   PAR_VABREVIATURA_CLIMA                 SCR_MANT_CLIMA.C_ABREVI%TYPE,
+   PAR_VESTADO_CLIMA                      SCR_MANT_CLIMA.C_ESTADO%TYPE,
+   --Campos de Auditoria
+   PAR_AUSUACLIMA_CREACION          SCR_MANT_CLIMA.A_USUINS%TYPE,
+   PAR_AUSUACLIMA_MODIFICACION      SCR_MANT_CLIMA.A_USUMOD%TYPE,
+   PAR_APROGRAMA_CLIMA                    SCR_MANT_CLIMA.A_PROGRA%TYPE,
+   PAR_ACODIGO_AREA_CLIMA                 SCR_MANT_CLIMA.N_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA_CLIMA              SCR_MANT_CLIMA.N_CODSIS%TYPE
+ )
+ IS
+ BEGIN
+ INSERT INTO SCR_MANT_CLIMA
+      (A_USUINS,
+       A_FECINS,
+       A_USUMOD,
+       A_FECMOD,
+       A_PROGRA,
+       N_CODARE,
+       N_CODSIS,
+       N_CODIGO,
+       C_NOMCLI,
+       C_ABREVI,
+       C_ESTADO)
+    VALUES
+      (PAR_AUSUACLIMA_CREACION,
+       SYSDATE,
+       PAR_AUSUACLIMA_MODIFICACION,
+       SYSDATE,
+       PAR_APROGRAMA_CLIMA,
+       PAR_ACODIGO_AREA_CLIMA,
+       PAR_ACODIGO_SISTEMA_CLIMA,
+       SQ_CDL_MANT_CLIMA.NEXTVAL,
+       PAR_VNOMBRE_CLIMA,
+       PAR_VABREVIATURA_CLIMA,
+       PAR_VESTADO_CLIMA);
+       
+  EXCEPTION
+     WHEN OTHERS THEN
+          dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+PROCEDURE PRC_UPDATE_CLIMA(
+   PAR_NCODIGO_CLIMA                      SCR_MANT_CLIMA.N_CODIGO%TYPE,
+   PAR_VNOMBRE_CLIMA                  SCR_MANT_CLIMA.C_NOMCLI%TYPE,
+   PAR_VABREVIATURA_CLIMA                 SCR_MANT_CLIMA.C_ABREVI%TYPE,
+   PAR_VESTADO_CLIMA                      SCR_MANT_CLIMA.C_ESTADO%TYPE,
+   --Campos de Auditoria
+   PAR_AUSUACLIMA_MODIFICACION        SCR_MANT_CLIMA.A_USUMOD%TYPE,
+   PAR_APROGRAMA_CLIMA                    SCR_MANT_CLIMA.A_PROGRA%TYPE,
+   PAR_ACODIGO_AREA_CLIMA                 SCR_MANT_CLIMA.N_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA_CLIMA              SCR_MANT_CLIMA.N_CODSIS%TYPE  
+ )
+ IS
+ BEGIN
+   
+  UPDATE SCR_MANT_CLIMA
+  SET A_USUMOD = PAR_AUSUACLIMA_MODIFICACION,
+       A_FECMOD  = SYSDATE,
+       A_PROGRA           = PAR_APROGRAMA_CLIMA,
+       N_CODARE         = PAR_ACODIGO_AREA_CLIMA ,
+       N_CODSIS      = PAR_ACODIGO_SISTEMA_CLIMA,
+       C_NOMCLI          = PAR_VNOMBRE_CLIMA,
+       C_ABREVI        = PAR_VABREVIATURA_CLIMA,
+       C_ESTADO             = PAR_VESTADO_CLIMA
+  WHERE N_CODIGO = PAR_NCODIGO_CLIMA;
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+
+END;
+
+PROCEDURE PRC_INACTIVA_CLIMA(
+   PAR_NCODIGO_CLIMA                      SCR_MANT_CLIMA.N_CODIGO%TYPE,
+   PAR_AUSUACLIMA_MODIFICACION      SCR_MANT_CLIMA.A_USUMOD%TYPE, 
+   PAR_APROGRAMA_CLIMA                    SCR_MANT_CLIMA.A_PROGRA%TYPE,
+   PAR_ACODIGO_AREA_CLIMA                 SCR_MANT_CLIMA.N_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA_CLIMA              SCR_MANT_CLIMA.N_CODSIS%TYPE  
+ ) 
+ IS
+ BEGIN
+  UPDATE SCR_MANT_CLIMA
+    SET C_ESTADO=2,
+        A_USUMOD = PAR_AUSUACLIMA_MODIFICACION,
+        A_FECMOD  = SYSDATE,       
+        A_PROGRA           = PAR_APROGRAMA_CLIMA,
+        N_CODARE         = PAR_ACODIGO_AREA_CLIMA ,
+        N_CODSIS      = PAR_ACODIGO_SISTEMA_CLIMA
+    WHERE N_CODIGO = PAR_NCODIGO_CLIMA;
+
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+
+  END;
+  
+  PROCEDURE PRC_LISTA_CLIMA(
+  --Parametro de listado
+  PAR_V_ESTADO           IN SCR_MANT_CLIMA.C_ESTADO%TYPE,
+  --Parametro de retorno
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR 
+  	SELECT N_CODIGO,
+  	       C_NOMCLI,
+           C_ABREVI,
+  	       C_ESTADO 
+  	FROM SCR_MANT_CLIMA WHERE C_ESTADO = PAR_V_ESTADO;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      dbms_output.put_line('Se ha producido el siguiente error: ' || sqlerrm);
+END;
+  
+end PCK_CLIMA;

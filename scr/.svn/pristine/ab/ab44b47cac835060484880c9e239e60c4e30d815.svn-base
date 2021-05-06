@@ -1,0 +1,330 @@
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:text="${#messages.msg('application.subtitlePtar')}"></title>
+<link  th:href="@{/images/company_logo.gif}"  rel="Shortcut Icon"/>
+<link rel="stylesheet" th:href="@{/resources/Content/css/style.css}" />
+<link rel="stylesheet" th:href="@{/resources/Content/css/skin.css}" />
+<link rel="stylesheet" th:href="@{/resources/bootstrap-table/bootstrap-table.css}" />
+
+
+<link rel="stylesheet" th:href="@{/resources/Scripts/jquery-plugin/jquery-bonsai-master/svg-icons.css}" />
+<link rel="stylesheet" th:href="@{/resources/Scripts/bootstrap-jquery-ui/js/bootstrap-datepicker.css}" />
+<link rel="stylesheet" th:href="@{/resources/Scripts/bootstrap-jquery-ui/js/summernote.css}" />
+<link rel="stylesheet" th:href="@{/resources/Content/bootstrap/css/bootstrap-select.css}" />
+<link rel="stylesheet" th:href="@{/resources/Scripts/bootstrap-jquery-ui/js/bootstrap.fileupload.css}" />
+<link rel="stylesheet" th:href="@{/resources/Content/css/xpress.css}" />
+<link rel="stylesheet" th:href="@{/resources/Scripts/alertifyjs/css/alertify.min.css}" />
+<link rel="stylesheet" th:href="@{/resources/Scripts/alertifyjs/css/themes/default.min.css}" />
+<link rel="stylesheet" th:href="@{/resources/Scripts/alertifyjs/css/themes/semantic.min.css}" />
+<link rel="stylesheet" th:href="@{/resources/Content/css/xpress.css}" />
+<link rel="stylesheet" th:href="@{/resources/Growl/stylesheets/jquery.growl.css}" />
+
+<script th:inline="javascript">
+/*<![CDATA[*/    
+	// 	Obligatorio para cargar Menu - Inicio
+	var contexto = /*[[@{/}]]*/ ;
+	var ltaOpcionesMenu = null;
+	// Obligatorio para cargar Menu - Fin
+    var modo =  /*[[${modo}]]*/ ; 
+    var objAnalista =  /*[[${objAnalista}]]*/ ;    
+    var ltaPtarPorSector =  /*[[${ltaPtarPorSector}]]*/ ;
+    var ltaTipoDocumento =  /*[[${ltaTipoDocumento}]]*/ ;
+    var ltaTipo =  /*[[${ltaTipo}]]*/ ;
+    var ltaParametrosAsignados =  /*[[${ltaParametrosAsignados}]]*/ ;
+    var ltaParametrosNoAsignados =  /*[[${ltaParametrosNoAsignados}]]*/ ;
+    
+/*]]>*/
+</script>
+
+</head>
+<body class="skin-gym bar-white">
+	<section class="wrap-ui">
+    	<div class="box-opacity"></div>
+    	<header class="header">
+    		<div class="pull-left">
+				<a class="btn-show enlace_desactivado" id="btnShowMenu"></a>
+				<div class="logo-data">			
+					<a th:href="@{/inicioSptar}">					
+						<img alt="Spring"
+						th:src="@{/images/sedapal_ptar.png}" th:alt-title="#{application.sedapal}"
+						/>
+					</a>
+					<div class="pull-right">
+						<span th:utext="#{application.subtitlePtar}" style="line-height: 1.5em;color: #1587c6;"></span>
+					</div> 
+					<span class="title-master"></span>
+				</div>
+			</div>
+			<div class="pull-right">
+				<div class="pull-left comp-btn-user">
+					<button id="btnGroupDrop2" type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+						
+			          	<span class="name">
+			          		<span th:if="${#httpServletRequest.getSession().getAttribute('userAnalistaBean')!=null}" th:text="${'Usuario: '+#httpServletRequest.getSession().getAttribute('userAnalistaBean')+'&nbsp;'}"></span>
+			          	</span>
+			        </button>
+			        <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="btnGroupDrop2">
+			          <li>
+			          	<a>
+							<span class="glyphicon glyphicon-user"></span> 
+							<span th:if="${#httpServletRequest.getSession().getAttribute('tipoAnalista')!=null}" th:text="${#httpServletRequest.getSession().getAttribute('tipoAnalista')}"></span> 
+						</a>
+			          </li>
+			          <li>
+			          	<a th:href="@{/logout}">
+										<span class="glyphicon glyphicon-off"></span> 
+										<span th:text="#{menu.cerrarSesion}"></span> 
+						</a>
+			          </li>
+			        </ul>	        
+				</div>
+			</div>   		
+    	</header>   
+    	 <!--Menu -->
+        <div class="menu">
+             	<a class="btn-hide"></a>
+				<span class="name-app-menu" th:utext="#{application.subtitleMenuPtar}"></span>
+				<nav class="nav">
+				    <ul id="menuNavegacion" class="nav-wrap">
+				    </ul>
+				</nav>
+        </div> 	
+    	<div class="wrap-content">
+			<!--</main-aside>-->
+			<!--<pull-main-content>-->
+			<div class="pull-main-content">
+				<!--<main-content>-->
+				<div class="main-content view-wrap">
+					<div class="content-body">
+						<div class="breadcrumbs">
+							:: Usted se encuentra en: <span>Mantenimientos</span><span
+								class="nivel-bread"></span><span class="nivel-bread">/</span><span
+								class="active-view">Analistas</span>
+						</div>
+						<div class="main-colum">
+							<div class="box-wrap-main">
+								<div class="box-wrap-header">
+									<div class="pull-left">
+										<div class="title-main">
+											<span id="lblTituloMantenimiento">Mantenimiento de Analistas</span>
+										</div>
+									</div>
+								</div>	
+								<div class="box-wrap-body">	
+								    <div class="box-form" id="divMantenimiento">
+								    	<div class="row">
+											<div class="col-md-9">
+												<div class="form-horizontal">
+													<div class="form-group">
+														<label for="txtCodigo" class="control-label col-sm-2">Codigo :</label>
+														<div class="col-md-2">
+															<input type="text" class="form-control input-sm"  id="txtCodigo" disabled="disabled"/>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-horizontal">
+													<div class="form-group">
+														<label for="txtCodigo" class="control-label col-sm-2">Tipo de Analista<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-2">
+															<input type="radio" class="control-label" id="tipoAnalistaInterno"  name="tipoAnalista" value = "" />
+															<label for="txtCodigo" class="control-label">Interno</label>
+														</div>
+														<div class="col-md-2">
+															<input type="radio" class="control-label"  id="tipoAnalistaExterno" name="tipoAnalista" value = "" />
+															<label for="txtCodigo" class="control-label">Externo</label>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-horizontal">
+													<div class="form-group">
+														<label class="control-label col-sm-2">Nro de Ficha<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-2">
+															<input type="text" class="form-control input-sm" maxlength="5" id="txtNumeroFicha" />
+														</div>
+														<div class="col-md-2">
+															<button type="button" id="btnBuscarTrabajador" class="btn-s btn-search">
+																 <i class="fa fa-search"></i>
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-horizontal">
+													<div class="form-group">
+														<label class="control-label col-sm-2">Tipo de Doc<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-3">
+															<select class="form-control input-sm" id="cboTipoDocumento">
+															</select>	
+														</div>
+														<label class="control-label col-sm-2">Nro.Doc<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-3">
+															<input type="text" class="form-control input-sm" maxlength="18" id="txtnumeroDoc" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>	
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-horizontal">
+													<div class="form-group">
+														<label class="control-label col-sm-2">Nombre<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-3">
+															<input type="text" class="form-control input-sm" maxlength="50" id="txtNombre" />	
+														</div>
+														<label class="control-label col-sm-2">Apellidos<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-3">
+															<input type="text" class="form-control input-sm" maxlength="50"  id="txtApellido" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>	
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-horizontal">
+													<div class="form-group">
+														<label class="control-label col-sm-2">Cargo<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-3">
+															<input type="text" class="form-control input-sm"  maxlength="100" id="txtCargo" />		
+														</div>
+														<label class="control-label col-sm-2">Rol<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-3">
+															<select class="form-control input-sm" id="cboTipo">
+															</select>	
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-horizontal">
+													<div class="form-group">
+														<label class="control-label col-sm-2">Correo<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-3">
+															<input type="text" class="form-control input-sm" maxlength="60"  id="txtCorreo" />
+														</div>
+														<label class="control-label col-sm-2">Usuario<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-3">
+															<input type="text" class="form-control input-sm" maxlength="15"  id="txtUsuario" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-horizontal">
+													<div class="form-group">
+														<label class="control-label col-sm-2">Observación<font class="text-danger"> (*) :</font></label>
+														<div class="col-md-8">
+															<textarea id="txtObservacion" maxlength="500" class="form-control" rows="5" style="overflow:auto; resize:none"></textarea>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											 <div class="col-md-1">&nbsp;</div>
+	                                         <div class="col-md-11">
+	                                             <div class="row container-fluid">
+	                                                 <div class="col-md-3">
+	                                                     <br />
+	                                                     <label>Lista de Parametros:</label> 
+	                                                     <select  id="selPerfilesNoAsignados" style="height: 150px" name="ParametroAnalistaNoAsignados[]" multiple="multiple"  class="form-control"  >
+	                                                     </select>
+	                                                 </div>
+	                                                 <div class="col-xs-1">
+	                                                     <div class="col-sm-4">
+	                                                         <br />
+	                                                         <p id="botonera">
+												    </p>
+	                                                     </div>
+	                                                 </div>
+	                                                 <div class="col-md-3 col-sm-3 col-md-offset-0">
+	                                                     <br /> <label>Parametros Asignados :</label>
+	                                                      <select
+	                                                         id="selPerfilesAsignados" style="height: 150px" name="ParametroAnalistaAsignados[]" multiple="multiple" class="form-control">
+	                                                     </select>
+	                                                 </div>
+	                                            </div>
+	                                        </div>
+	                                    </div> 							
+    								</div>
+    							</div>
+    							<div class="col-sm-12"> 
+								    <div class="box-acciones">
+										<div class="pull-left">
+											<div id="divMensajeInformacion"></div>
+										</div>
+										<div class="pull-right">					
+											<button id="btnGrabar" class="btn-s btn-add">Grabar</button>
+											<button id="btnRegresar" class="btn-s btn-clean">Regresar</button>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">&nbsp;</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--</main-content>-->
+				<footer class="login inter-foot" id="mainFooter">
+				
+				</footer>
+			</div>
+			<!--</pull-main-content>-->
+		</div>
+		<div class="up-page upPage"><span class="glyphicon glyphicon-chevron-up"></span></div>
+    </section>
+	
+<script type="text/javascript" th:src="@{/resources/Scripts/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/Scripts/jquery-ui-1.11.1/jquery-ui.js}"></script>
+<script type="text/javascript" th:src="@{/resources/Scripts/app/ajax.navegacion.js}"></script>
+<script type="text/javascript" th:src="@{/resources/Scripts/bootstrap-jquery-ui/js/bootstrap.js}"></script>
+<!-- JS TABLA -->
+<script type="text/javascript" th:src="@{/resources/Content/bootstrap-datatable/jquery.dataTables.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/Content/bootstrap-datatable/dataTables.fixedColumns.js}"></script>
+<script type="text/javascript" th:src="@{/resources/Content/bootstrap-datatable/dataTables.bootstrap.js}"></script>
+<script type="text/javascript" th:src="@{/resources/Scripts/app/jquery.mCustomScrollbar.js}"></script>
+<!-- JS UTILITARIOS -->
+<script type="text/javascript" th:src="@{/resources/Scripts/jquery-plugin/jquery-aphanum/jquery.alphanum.js}"></script>
+<script type="text/javascript" th:src="@{/resources/Scripts/jquery-plugin/jquery-maskedinput/maskedinput.js}"></script>
+<script type="text/javascript" th:src="@{/resources/Scripts/jquery-plugin/jquery-redirect-get-post/jquery.redirect.js}"></script>
+<!-- serializar json paginas -->
+<script type="text/javascript" th:src="@{/resources/Scripts/jquery/jquery.serializejson.min.js}"></script>
+<script type="text/javascript" th:src="@{/resources/Scripts/jquery/jquery.serializejson.js}"></script>
+
+<!-- PARA BOOTSTRAP COMBO  -->
+<script type="text/javascript" th:src="@{/resources/Scripts/bootstrap-jquery-ui/js/bootstrap-select.js}"></script>
+<!-- BOOTSTRAP-TABLE -->
+<script type="text/javascript" th:src="@{/resources/bootstrap-table/bootstrap-table.js}"></script>
+<script type="text/javascript" th:src="@{/resources/bootstrap-table/extensions/flat-json/bootstrap-table-flat-json.js}"></script>
+<script type="text/javascript" th:src="@{/resources/bootstrap-table/extensions/export/bootstrap-table-export.js}"></script>
+<script type="text/javascript" th:src="@{/resources/bootstrap-table/locale/bootstrap-table-es-ES.js}"></script>
+<script type="text/javascript" th:src="@{/resources/Growl/javascripts/jquery.growl.js}"></script>
+
+<!-- LIBRERIA SPTAR -->
+<script type="text/javascript" th:src="@{/js/ConstanteServices.js}"></script>
+<script type="text/javascript" th:src="@{/js/footer.js}"></script>
+<!-- <script type="text/javascript" th:src="@{/js/menu.js}"></script> -->
+<script type="text/javascript" th:src="@{/js/sptar.js}"></script>
+<script type="text/javascript" th:src="@{/js/analista.js}"></script>
+</body>
+</html>

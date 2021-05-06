@@ -1,0 +1,1273 @@
+create or replace PACKAGE BODY PCK_ALC_ANALBACT AS
+
+    PROCEDURE PRC_BUSCA_ANALBACT(
+       --Parametros de la busqueda
+       PAR_DFECHA_MUESTREO     IN VARCHAR2,
+       PAR_NID_FORM            IN INTEGER,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+       PAR_PAG_DESDE        IN INTEGER,
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR 
+    )IS 
+        V_QUERY VARCHAR2(4000);
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000);  
+    
+        BEGIN
+        
+              V_QUERY_COUNT := 'select count(*) '; 
+     
+              V_QUERY := 'select * 
+                          from (select a.*, rownum rn
+                                from (SELECT c.d_fecmue, c.c_hormue, c.d_recmue, c.c_horrec, c.d_iniens, c.c_horens, c.c_turno, e.c_ddcatl as e, d.c_ddcatl as d, c.n_codhfo ';
+            
+              IF(LENGTH(TRIM(PAR_DFECHA_MUESTREO)) > 0)THEN
+                V_QUERY_FROM := ' FROM alc_formulheader c 
+                                  LEFT JOIN alc_detcatlg d on c.c_anamue=d.c_valcat and d.n_ccatlg=14 
+                                  LEFT JOIN alc_detcatlg e on c.c_permue=e.c_valcat and e.n_ccatlg=10 
+                                  WHERE  c.n_status = 1 and c.n_idform = ' || PAR_NID_FORM || ' and TO_CHAR(c.d_fecmue, '''||'DD/MM/YYYY'||''') = ''' || PAR_DFECHA_MUESTREO ||'''  '; 
+             PAR_OUT_QUANTITY := 11;
+              ELSE 
+                V_QUERY_FROM := ' FROM alc_formulheader c 
+                                  LEFT JOIN alc_detcatlg d on c.c_anamue=d.c_valcat and d.n_ccatlg=14
+                                  LEFT JOIN alc_detcatlg e on c.c_permue=e.c_valcat and e.n_ccatlg=10 
+                                  WHERE c.n_status = 1 and c.n_idform= ' || PAR_NID_FORM;
+                                  
+                                   PAR_OUT_QUANTITY := 12;
+              END IF;
+              
+               V_QUERY := V_QUERY || V_QUERY_FROM;
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+            
+              V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query;
+              
+              execute immediate v_query_count into par_out_quantity;
+             
+              
+        END;
+        
+    PROCEDURE PRC_GET_ANALBACT(
+       --Parametros de la busqueda
+        PAR_NID_CABECERA  IN ALC_FORMULHEADER.N_CODHFO%TYPE,
+       --Parametros de retorno
+        par_out_cursor OUT SYS_REFCURSOR
+    )IS
+        v_query VARCHAR2(4000); 
+        BEGIN
+          v_query := 'SELECT N_CODHFO,D_FECMUE,D_RECMUE,D_INIENS,C_TURNO,C_PERMUE,C_ANAMUE,N_STATUS,C_HORMUE,C_HORREC,C_HORENS,C_CUMLBD,
+                      C_MANCON, C_INTERP, C_OBSERV, C_CEPAS1, C_CEPAS2, C_INTRES
+                      FROM ALC_FORMULHEADER WHERE N_STATUS = 1 AND N_CODHFO = ' || PAR_NID_CABECERA;
+          OPEN par_out_cursor FOR v_query;
+                    
+     END;
+        
+    PROCEDURE PRC_INSERT_ANALBACT(
+       PAR_DFECHA_MUESTREO          IN ALC_FORMULHEADER.D_FECMUE%TYPE,
+       PAR_DFECHA_RECEPCION         IN ALC_FORMULHEADER.D_RECMUE%TYPE,
+       PAR_DFECHA_INI_ENSAYO        IN ALC_FORMULHEADER.D_INIENS%TYPE,
+       PAR_CHORA_MUESTREO           IN ALC_FORMULHEADER.C_HORMUE%TYPE,
+       PAR_CHORA_RECEPCION          IN ALC_FORMULHEADER.C_HORREC%TYPE,
+       PAR_CHORA_INI_ENSAYO         IN ALC_FORMULHEADER.C_HORENS%TYPE,
+       PAR_CTURNO                   IN ALC_FORMULHEADER.C_TURNO%TYPE,
+       PAR_CMUESTREADOR             IN ALC_FORMULHEADER.C_PERMUE%TYPE,
+       PAR_CANALISTA                IN ALC_FORMULHEADER.C_ANAMUE%TYPE,    
+       PAR_CCUMPLIMIENTO            IN ALC_FORMULHEADER.C_CUMLBD%TYPE, 
+       PAR_CMANTENIMIENTO           IN ALC_FORMULHEADER.C_MANCON%TYPE, 
+       PAR_VESTADO                  IN ALC_FORMULHEADER.N_STATUS%TYPE,      
+       PAR_NID_FORM                 IN ALC_FORMULHEADER.N_IDFORM%TYPE,
+       PAR_COBSERVACION             IN ALC_FORMULHEADER.C_OBSERV%TYPE,
+       PAR_CCEPAS1                  IN ALC_FORMULHEADER.C_CEPAS1%TYPE,
+       PAR_CCEPAS2                  IN ALC_FORMULHEADER.C_CEPAS2%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION     IN ALC_FORMULHEADER.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI         IN ALC_FORMULHEADER.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_FORMULHEADER.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS
+        
+         BEGIN         
+                PAR_OUT_RETURN := SQ_ALC_FORMULHEADER.NEXTVAL;
+                
+                INSERT INTO ALC_FORMULHEADER ( A_USUCRE,A_FECCRE,A_USUMOD,A_FECMOD,A_NOMPRG,N_CODHFO,D_FECMUE,D_RECMUE,D_INIENS,
+                                                C_HORMUE,C_HORREC,C_HORENS,C_TURNO,C_PERMUE,C_ANAMUE,C_CUMLBD,C_MANCON, C_OBSERV, 
+                                                N_STATUS, N_IDFORM, C_CEPAS1, C_CEPAS2)
+                    VALUES(
+                           PAR_CUSUARIO_CREACION,
+                           SYSDATE,
+                           PAR_CUSUARIO_MODI,
+                           SYSDATE,
+                           PAR_CPROGRAMA,
+                           PAR_OUT_RETURN,
+                           NVL(PAR_DFECHA_MUESTREO, '12/12/2999'),
+                           NVL(PAR_DFECHA_RECEPCION, '12/12/2999'),
+                           NVL(PAR_DFECHA_INI_ENSAYO, '12/12/2999'),                          
+                           NVL(PAR_CHORA_MUESTREO, ' '),
+                           NVL(PAR_CHORA_RECEPCION,' '),
+                           NVL(PAR_CHORA_INI_ENSAYO,' '),
+                           NVL(PAR_CTURNO,' '),
+                           NVL(PAR_CMUESTREADOR,' '),
+                           NVL(PAR_CANALISTA,' '),
+                           NVL(PAR_CCUMPLIMIENTO,' '),
+                           NVL(PAR_CMANTENIMIENTO,' '),
+                           NVL(PAR_COBSERVACION,' '),
+                           NVL(PAR_VESTADO,0),
+                           NVL(PAR_NID_FORM,0),
+                           NVL(PAR_CCEPAS1,' '),
+                           NVL(PAR_CCEPAS2,' ')                           
+                           
+                        );    
+    END;
+    
+    PROCEDURE PRC_UPDATE_ANALBACT( 
+       PAR_NID_CABECERA             IN ALC_FORMULHEADER.N_CODHFO%TYPE,
+       PAR_DFECHA_MUESTREO          IN ALC_FORMULHEADER.D_FECMUE%TYPE,
+       PAR_DFECHA_RECEPCION         IN ALC_FORMULHEADER.D_RECMUE%TYPE,
+       PAR_DFECHA_INI_ENSAYO        IN ALC_FORMULHEADER.D_INIENS%TYPE,
+       PAR_CHORA_MUESTREO           IN ALC_FORMULHEADER.C_HORMUE%TYPE,
+       PAR_CHORA_RECEPCION          IN ALC_FORMULHEADER.C_HORREC%TYPE,
+       PAR_CHORA_INI_ENSAYO         IN ALC_FORMULHEADER.C_HORENS%TYPE,
+       PAR_CTURNO                   IN ALC_FORMULHEADER.C_TURNO%TYPE, 
+       PAR_CMUESTREADOR             IN ALC_FORMULHEADER.C_PERMUE%TYPE,
+       PAR_CANALISTA                IN ALC_FORMULHEADER.C_ANAMUE%TYPE,     
+       PAR_CCUMPLIMIENTO            IN ALC_FORMULHEADER.C_CUMLBD%TYPE, 
+       PAR_CMANTENIMIENTO           IN ALC_FORMULHEADER.C_MANCON%TYPE,
+       PAR_COBSERVACION             IN ALC_FORMULHEADER.C_OBSERV%TYPE,
+       PAR_CCEPAS1                  IN ALC_FORMULHEADER.C_CEPAS1%TYPE,
+       PAR_CCEPAS2                  IN ALC_FORMULHEADER.C_CEPAS2%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_FORMULHEADER.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_FORMULHEADER.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS
+       
+         BEGIN            
+                UPDATE ALC_FORMULHEADER 
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    D_FECMUE = NVL(PAR_DFECHA_MUESTREO,'12/12/2999'),
+                    D_RECMUE = NVL(PAR_DFECHA_RECEPCION,'12/12/2999'),
+                    D_INIENS = NVL(PAR_DFECHA_INI_ENSAYO,'12/12/2999'),
+                    C_HORMUE = NVL(PAR_CHORA_MUESTREO,' '),
+                    C_HORREC = NVL(PAR_CHORA_RECEPCION,' '),
+                    C_HORENS = NVL(PAR_CHORA_INI_ENSAYO,' '),
+                    C_TURNO  = NVL(PAR_CTURNO,' '),
+                    C_PERMUE = NVL(PAR_CMUESTREADOR,' '),
+                    C_ANAMUE = NVL(PAR_CANALISTA,' '),
+                    C_CUMLBD = NVL(PAR_CCUMPLIMIENTO,' '),
+                    C_MANCON = NVL(PAR_CMANTENIMIENTO,' '),
+                    C_OBSERV = NVL(PAR_COBSERVACION,' '),
+                    C_CEPAS1 = NVL(PAR_CCEPAS1,' '),
+                    C_CEPAS2 = NVL(PAR_CCEPAS2,' ')
+                WHERE N_CODHFO = PAR_NID_CABECERA;
+    END;
+    
+    PROCEDURE PRC_UPD_ANALBACTRESUL(
+       PAR_NID_CABECERA             IN ALC_FORMULHEADER.N_CODHFO%TYPE,
+       PAR_C_INTERPELACI            IN ALC_FORMULHEADER.C_INTERP%TYPE,       
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_FORMULHEADER.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_FORMULHEADER.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS
+         
+         BEGIN            
+                UPDATE ALC_FORMULHEADER 
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = NVL(PAR_CPROGRAMA,' '),
+                    C_INTERP = NVL(PAR_C_INTERPELACI,' ')
+                WHERE N_CODHFO = PAR_NID_CABECERA;
+      END;
+      
+    PROCEDURE PRC_UPD_ANALBACTRESUL2( 
+       PAR_NID_CABECERA             IN ALC_FORMULHEADER.N_CODHFO%TYPE,
+       PAR_C_INTERPELACI            IN ALC_FORMULHEADER.C_INTRES%TYPE,       
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_FORMULHEADER.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_FORMULHEADER.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS
+       
+         BEGIN            
+                UPDATE ALC_FORMULHEADER 
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = NVL(PAR_CPROGRAMA,' '),
+                    C_INTRES = NVL(PAR_C_INTERPELACI, ' ')
+                WHERE N_CODHFO = PAR_NID_CABECERA;
+      END;
+    
+    PROCEDURE PRC_INACTIVA_ANALBACT(       
+       --Parametros de la busqueda
+      PAR_NID_CABECERA           IN ALC_FORMULHEADER.N_CODHFO%TYPE,
+      PAR_NESTADO                IN ALC_FORMULHEADER.N_STATUS%TYPE
+     )IS
+     BEGIN
+        UPDATE ALC_FORMULHEADER  
+        SET    N_STATUS = PAR_NESTADO
+        WHERE  N_CODHFO = PAR_NID_CABECERA;
+           
+     END;
+     
+    PROCEDURE PRC_INSERT_RESULTMUES(
+       PAR_NID_CABECERA             IN ALC_RESULTMUESTR.N_CODHFO%TYPE,
+       PAR_CCOLIFOR                 IN ALC_RESULTMUESTR.C_COLTOT%TYPE,
+       PAR_CCOLTER                  IN ALC_RESULTMUESTR.C_COLTER%TYPE,
+       PAR_CBACHET                  IN ALC_RESULTMUESTR.C_BACHET%TYPE,
+       PAR_NTIPO                    IN ALC_RESULTMUESTR.N_TIPRES%TYPE,
+       PAR_CDESCMUESTRA             IN ALC_RESULTMUESTR.C_DESMUE%TYPE,
+       PAR_CTURNTU                  IN ALC_RESULTMUESTR.C_TURNTU%TYPE,      
+       PAR_VESTADO                  IN ALC_RESULTMUESTR.N_STATUS%TYPE,       
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION     IN ALC_RESULTMUESTR.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI         IN ALC_RESULTMUESTR.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_RESULTMUESTR.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS 
+       
+         BEGIN         
+            
+            INSERT INTO ALC_RESULTMUESTR ( A_USUCRE,A_FECCRE,A_USUMOD,A_FECMOD,A_NOMPRG,N_CODRES,N_CODHFO,C_COLTOT,C_COLTER,C_BACHET,
+                                            N_TIPRES,C_DESMUE,C_TURNTU,N_STATUS )
+            VALUES(
+                   PAR_CUSUARIO_CREACION,
+                   SYSDATE,
+                   PAR_CUSUARIO_MODI,
+                   SYSDATE,
+                   PAR_CPROGRAMA,
+                   SQ_ALC_RESULTMUESTR.NEXTVAL,
+                   NVL(PAR_NID_CABECERA,0),
+                   NVL(PAR_CCOLIFOR,' '),
+                   NVL(PAR_CCOLTER,' '),
+                   NVL(PAR_CBACHET, ' '),                          
+                   NVL(PAR_NTIPO,0),
+                   NVL(PAR_CDESCMUESTRA,' '),
+                   NVL(PAR_CTURNTU,' '),
+                   NVL(PAR_VESTADO,0)                                                                              
+                );   
+                     
+    END;
+    
+    PROCEDURE PRC_BUSCA_RESULTMUES(
+       --Parametros de la busqueda
+       PAR_NID_CABECERA     IN ALC_RESULTMUESTR.N_CODHFO%TYPE,
+       PAR_NTIPO            IN ALC_RESULTMUESTR.N_TIPRES%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER, 
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO 
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+        V_QUERY VARCHAR2(4000);
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000);
+    
+        BEGIN
+        
+              V_QUERY_COUNT := 'select count(*) '; 
+     
+              V_QUERY := 'select * 
+                          from ( select a.*, rownum rn
+                                from (SELECT c.c_desmue, c.c_coltot, c.c_colter, c.c_bachet, c.n_codres, c.n_status, c.n_codhfo, c.c_turntu, c.n_tipres, c.n_codhfo AS num ';
+                                
+              V_QUERY_FROM := ' FROM ALC_RESULTMUESTR c                                   
+                                  WHERE c.n_codhfo = ' || PAR_NID_CABECERA ||        
+                                  ' AND c.n_tipres = ' || PAR_NTIPO;
+                                                      
+             
+              V_QUERY := V_QUERY || V_QUERY_FROM; 
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM; 
+            
+              V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query;
+              
+              execute immediate v_query_count into par_out_quantity;
+    END;
+             
+    PROCEDURE PRC_INSERT_MUESTFIRST(
+       PAR_NID_CABECERA             IN ALC_MUESTRAFIRST.N_CODHFO%TYPE,
+       PAR_CDESCMUESTRA             IN ALC_MUESTRAFIRST.C_DESMUE%TYPE,
+       PAR_CDIL                     IN ALC_MUESTRAFIRST.C_DIL%TYPE,
+       PAR_CTCLT24                  IN ALC_MUESTRAFIRST.C_TCLT24%TYPE, 
+       PAR_CTCLT48                  IN ALC_MUESTRAFIRST.C_TCLT48%TYPE,
+       PAR_CTCLV24                  IN ALC_MUESTRAFIRST.C_TCLV24%TYPE,
+       PAR_CTCLV48                  IN ALC_MUESTRAFIRST.C_TCLV48%TYPE,
+       PAR_CTUEC24                  IN ALC_MUESTRAFIRST.C_TUEC24%TYPE,
+       PAR_CAGARML                  IN ALC_MUESTRAFIRST.C_AGARML%TYPE, 
+       PAR_CAGARDL                  IN ALC_MUESTRAFIRST.C_AGARDL%TYPE, 
+       PAR_ORDEN                    IN ALC_MUESTRAFIRST.N_MUESTR%TYPE,
+       PAR_VESTADO                  IN ALC_MUESTRAFIRST.N_STATUS%TYPE,       
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION     IN ALC_MUESTRAFIRST.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI         IN ALC_MUESTRAFIRST.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTRAFIRST.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS
+       
+         BEGIN         
+            
+            INSERT INTO ALC_MUESTRAFIRST ( A_USUCRE,A_FECCRE,A_USUMOD,A_FECMOD,A_NOMPRG,N_CORRMU,N_CODHFO,C_DESMUE,C_DIL,C_TCLT24,
+                                            C_TCLT48,C_TCLV24,C_TCLV48,C_TUEC24,C_AGARML,C_AGARDL,N_STATUS,N_MUESTR, C_TURNTU )
+            VALUES(
+                   PAR_CUSUARIO_CREACION,
+                   SYSDATE,
+                   PAR_CUSUARIO_MODI,
+                   SYSDATE,
+                   PAR_CPROGRAMA,
+                   SQ_ALC_MUESTRAFIRST.NEXTVAL,
+                   PAR_NID_CABECERA,
+                   NVL(PAR_CDESCMUESTRA,' '),
+                   NVL(PAR_CDIL,' '),
+                   NVL(PAR_CTCLT24,' '),                     
+                   NVL(PAR_CTCLT48,' '),
+                   NVL(PAR_CTCLV24,' '),
+                   NVL(PAR_CTCLV48, ' '),
+                   NVL(PAR_CTUEC24, ' '),
+                   NVL(PAR_CAGARML,' '),
+                   NVL(PAR_CAGARDL,' '),
+                   NVL(PAR_VESTADO,0),
+                   NVL(PAR_ORDEN,0),
+                   ' '
+                );   
+                     
+    END;
+    
+    PROCEDURE PRC_INSERT_MUESTSECOND(
+       PAR_NID_CABECERA             IN ALC_MUESTSECOND.N_CODHFO%TYPE,
+       PAR_CDESCMUESTRA             IN ALC_MUESTSECOND.C_DESMUE%TYPE,
+       PAR_CCL2RES                  IN ALC_MUESTSECOND.C_CL2RES%TYPE,
+       PAR_CAGAREL                  IN ALC_MUESTSECOND.C_AGAREL%TYPE, 
+       PAR_CAGELE                   IN ALC_MUESTSECOND.C_CAGELE%TYPE,
+       PAR_CGAMFC                   IN ALC_MUESTSECOND.C_AGAMFC%TYPE,
+       PAR_CAGMFC                   IN ALC_MUESTSECOND.C_CAGMFC%TYPE,
+       PAR_CAGARML                  IN ALC_MUESTSECOND.C_AGARML%TYPE,
+       PAR_CAGARDL                  IN ALC_MUESTSECOND.C_AGARDL%TYPE,   
+       PAR_CCOAGAR                  IN ALC_MUESTSECOND.C_COAGAR%TYPE, 
+       PAR_VESTADO                  IN ALC_MUESTSECOND.N_STATUS%TYPE,       
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION     IN ALC_MUESTSECOND.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI         IN ALC_MUESTSECOND.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTSECOND.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS
+       
+         BEGIN         
+            
+            INSERT INTO ALC_MUESTSECOND ( A_USUCRE,A_FECCRE,A_USUMOD,A_FECMOD,A_NOMPRG,N_CODRES,N_CODHFO,C_DESMUE,C_CL2RES,C_AGAREL,
+                                            C_CAGELE,C_AGAMFC,C_CAGMFC,C_AGARML,C_AGARDL,C_COAGAR,N_STATUS )
+            VALUES(
+                   PAR_CUSUARIO_CREACION,
+                   SYSDATE,
+                   PAR_CUSUARIO_MODI,
+                   SYSDATE,
+                   PAR_CPROGRAMA,
+                   SQ_ALC_MUESTSECOND.NEXTVAL,
+                   NVL(PAR_NID_CABECERA,0),
+                   NVL(PAR_CDESCMUESTRA,' '),
+                   NVL(PAR_CCL2RES,' '),
+                   NVL(PAR_CAGAREL,' '),
+                   NVL(PAR_CAGELE,      ' '),                     
+                   NVL(PAR_CGAMFC,' '),
+                   NVL(PAR_CAGMFC,' '),
+                   NVL(PAR_CAGARML,' '), 
+                   NVL(PAR_CAGARDL, ' '),
+                   NVL(PAR_CCOAGAR,' '),
+                   NVL(PAR_VESTADO,0)                                                                        
+                );   
+                     
+    END;
+    
+    PROCEDURE PRC_BUSCA_MUESTFIRST(
+       --Parametros de la busqueda
+       PAR_NID_CABECERA     IN ALC_MUESTRAFIRST.N_CODHFO%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER, 
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+        V_QUERY VARCHAR2(4000);
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000);
+    
+        BEGIN
+        
+              V_QUERY_COUNT := 'select count(*) '; 
+     
+              V_QUERY := 'select * 
+                          from (select a.*, rownum rn
+                                from (SELECT c.c_desmue, c.c_turntu, c.c_dil, c.c_tclt24, c.c_tclt48, c.c_tclv24, c.c_tclv48, c.c_tuec24,  
+                                        c.c_agarml, c.c_agardl, c.c_colaga, c.n_corrmu, c.n_duplic, c.n_codhfo, c.n_muestr ';
+            
+              V_QUERY_FROM := ' FROM ALC_MUESTRAFIRST c                                   
+                                  WHERE c.n_codhfo = ' || PAR_NID_CABECERA;             
+              
+             
+              V_QUERY := V_QUERY || V_QUERY_FROM;
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+            
+              V_QUERY := V_QUERY || ' order by '|| ' c.n_corrmu ' || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query;
+              
+              execute immediate v_query_count into par_out_quantity;
+        END;
+        
+    PROCEDURE PRC_GET_MUESTFIRST(
+       --Parametros de la busqueda
+        PAR_NID_CABECERA  IN ALC_MUESTRAFIRST.N_CODHFO%TYPE,
+        PAR_NID_DETALLE   IN ALC_MUESTRAFIRST.N_CORRMU%TYPE,
+       --Parametros de retorno
+        par_out_cursor OUT SYS_REFCURSOR 
+    )IS
+        v_query VARCHAR2(4000); 
+        BEGIN
+          v_query := 'SELECT c.c_desmue, c.c_dil, c.c_tclt24, c.c_tclt48, c.c_tclv24, c.c_tclv48, c.c_tuec24,  
+                             c.c_agarml, c.c_agardl, c.c_colaga, c.n_corrmu, c.n_codhfo, c.n_muestr, c.c_turntu
+                      FROM ALC_MUESTRAFIRST c WHERE c.n_codhfo = ' || PAR_NID_CABECERA ||
+                      ' AND c.n_corrmu = ' || PAR_NID_DETALLE;
+                      
+          OPEN par_out_cursor FOR v_query;
+                    
+     END;
+      
+    PROCEDURE PRC_UPDATE_MUESTFIRST( 
+       PAR_NID_CABECERA             IN ALC_MUESTRAFIRST.N_CODHFO%TYPE,
+       PAR_NID_DETALLE              IN ALC_MUESTRAFIRST.N_CORRMU%TYPE,
+       PAR_CDIL                     IN ALC_MUESTRAFIRST.C_DIL%TYPE,
+       PAR_CTCLT24                  IN ALC_MUESTRAFIRST.C_TCLT24%TYPE,
+       PAR_CTCLT48                  IN ALC_MUESTRAFIRST.C_TCLT48%TYPE,
+       PAR_CTCLV24                  IN ALC_MUESTRAFIRST.C_TCLV24%TYPE,
+       PAR_CTCLV48                  IN ALC_MUESTRAFIRST.C_TCLV48%TYPE,
+       PAR_CTUEC24                  IN ALC_MUESTRAFIRST.C_TUEC24%TYPE,
+       PAR_CAGARML                  IN ALC_MUESTRAFIRST.C_AGARML%TYPE,
+       PAR_CAGARDL                  IN ALC_MUESTRAFIRST.C_AGARDL%TYPE,
+       PAR_CCOLAGA                  IN ALC_MUESTRAFIRST.C_COLAGA%TYPE,
+       PAR_CDESCMUESTRA             IN ALC_MUESTRAFIRST.C_DESMUE%TYPE, 
+       PAR_ORDEN                    IN ALC_MUESTRAFIRST.N_MUESTR%TYPE, 
+       PAR_TURBNTU                  IN ALC_MUESTRAFIRST.C_TURNTU%TYPE, 
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_MUESTRAFIRST.A_USUMOD%TYPE, 
+       PAR_CPROGRAMA             IN ALC_MUESTRAFIRST.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS
+       
+         BEGIN             
+                UPDATE ALC_MUESTRAFIRST  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    C_DIL    = NVL(PAR_CDIL,' '),
+                    C_TCLT24 = NVL(PAR_CTCLT24,' '),
+                    C_TCLT48 = NVL(PAR_CTCLT48,' '),
+                    C_TCLV24 = NVL(PAR_CTCLV24, ' '),
+                    C_TCLV48 = NVL(PAR_CTCLV48,' '),
+                    C_TUEC24 = NVL(PAR_CTUEC24,' '),
+                    C_TURNTU = NVL(PAR_TURBNTU,' ')
+                    --C_AGARML = PAR_CAGARML,
+                    --C_AGARDL = PAR_CAGARDL
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CORRMU = PAR_NID_DETALLE;
+                
+                IF (PAR_CDESCMUESTRA = 'BOCATOMA 1' AND PAR_ORDEN = 2) THEN
+                    UPDATE ALC_MUESTRAFIRST  
+                    SET C_COLAGA = NVL(PAR_CCOLAGA,' '),
+                        C_AGARML = NVL(PAR_CAGARML,' '),
+                        C_AGARDL = NVL(PAR_CAGARDL,' ')
+                    WHERE N_CODHFO = PAR_NID_CABECERA AND C_DESMUE = 'BOCATOMA 1';
+                END IF;
+                
+                IF (PAR_CDESCMUESTRA = 'BOCATOMA 2' AND PAR_ORDEN = 5) THEN
+                    UPDATE ALC_MUESTRAFIRST  
+                    SET C_COLAGA = NVL(PAR_CCOLAGA,' '),
+                        C_AGARML = NVL(PAR_CAGARML,' '),
+                        C_AGARDL = NVL(PAR_CAGARDL,' ')
+                    WHERE N_CODHFO = PAR_NID_CABECERA AND C_DESMUE = 'BOCATOMA 2';
+                END IF;
+                
+    END;
+    
+    PROCEDURE PRC_BUSCA_MUESTSECOND(
+       --Parametros de la busqueda
+       PAR_NID_CABECERA     IN ALC_MUESTSECOND.N_CODHFO%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER, 
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+        V_QUERY VARCHAR2(4000);
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000);
+    
+        BEGIN
+        
+              V_QUERY_COUNT := 'select count(*) '; 
+     
+              V_QUERY := 'select * 
+                          from (select a.*, rownum rn
+                                from (SELECT c.c_desmue, c.c_cl2res, c.c_agarel, c.c_cagele, c.c_agamfc, c.c_cagmfc, c.c_agarml, c.c_agardl, c.c_coagar,
+                                        c.n_codres, c.n_duplic, c.n_codhfo';
+                                
+              V_QUERY_FROM := ' FROM ALC_MUESTSECOND c                                   
+                                  WHERE c.n_codhfo = ' || PAR_NID_CABECERA;             
+              
+             
+              V_QUERY := V_QUERY || V_QUERY_FROM;
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+            
+              V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query;
+              
+              execute immediate v_query_count into par_out_quantity;
+        END;
+        
+    PROCEDURE PRC_GET_MUESTSECOND(
+       --Parametros de la busqueda
+        PAR_NID_CABECERA  IN ALC_MUESTSECOND.N_CODHFO%TYPE,
+        PAR_NID_DETALLE   IN ALC_MUESTSECOND.N_CODRES%TYPE,
+       --Parametros de retorno 
+        par_out_cursor OUT SYS_REFCURSOR
+    )IS
+        v_query VARCHAR2(4000); 
+        BEGIN
+          v_query := 'SELECT c.c_desmue, c.c_cl2res, c.c_agarel, c.c_cagele, c.c_agamfc, c.c_cagmfc, c.c_agarml, c.c_agardl, c.c_coagar,
+                             c.n_codres, c.n_codhfo 
+                      FROM ALC_MUESTSECOND c WHERE c.n_codhfo = ' || PAR_NID_CABECERA ||
+                      ' AND c.n_codres = ' || PAR_NID_DETALLE;
+                      
+          OPEN par_out_cursor FOR v_query;
+                    
+     END;
+     
+     PROCEDURE PRC_UPDATE_MUESTSECOND( 
+       PAR_NID_CABECERA             IN ALC_MUESTSECOND.N_CODHFO%TYPE,
+       PAR_NID_DETALLE              IN ALC_MUESTSECOND.N_CODRES%TYPE,
+       PAR_CCL2RES                  IN ALC_MUESTSECOND.C_CL2RES%TYPE,
+       PAR_CAGAREL                  IN ALC_MUESTSECOND.C_AGAREL%TYPE,
+       PAR_CAGELE                   IN ALC_MUESTSECOND.C_CAGELE%TYPE,
+       PAR_CGAMFC                   IN ALC_MUESTSECOND.C_AGAMFC%TYPE,
+       PAR_CAGMFC                   IN ALC_MUESTSECOND.C_CAGMFC%TYPE,
+       PAR_CAGARML                  IN ALC_MUESTSECOND.C_AGARML%TYPE,
+       PAR_CAGARDL                  IN ALC_MUESTSECOND.C_AGARDL%TYPE,
+       PAR_CCOAGAR                  IN ALC_MUESTSECOND.C_COAGAR%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_MUESTSECOND.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTSECOND.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS 
+       
+         BEGIN            
+                UPDATE ALC_MUESTSECOND  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    C_CL2RES = NVL(PAR_CCL2RES,' '),
+                    C_AGAREL = NVL(PAR_CAGAREL,' '),
+                    C_CAGELE = NVL(PAR_CAGELE,' '),
+                    C_AGAMFC = NVL(PAR_CGAMFC,' '),
+                    C_CAGMFC = NVL(PAR_CAGMFC,' '),
+                    C_AGARML = NVL(PAR_CAGARML,' '),
+                    C_AGARDL = NVL(PAR_CAGARDL,' '),
+                    C_COAGAR = NVL(PAR_CCOAGAR,' ')
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CODRES = PAR_NID_DETALLE;
+    END;
+        
+    PROCEDURE PRC_CALCULO_MUESTFIRST(       
+       --Parametros de la busqueda
+      PAR_NID_CABECERA           IN ALC_MUESTRAFIRST.N_CODHFO%TYPE,
+      PAR_CDESCMUESTRA           IN ALC_MUESTRAFIRST.C_DESMUE%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_FORMULHEADER.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_FORMULHEADER.A_NOMPRG%TYPE,
+      PAR_OUT_RETURN            OUT NUMBER
+     )IS
+      C_TEXTO VARCHAR2(100); 
+      N_MNPTMP NUMBER; 
+      C_DILTMP VARCHAR2(9);
+      N_POTENC NUMBER;
+      N_RESULT NUMBER;
+      N_COUNT NUMBER;
+      C_AGARMLTMP VARCHAR2(9);
+      C_AGARDLTMP VARCHAR2(9);
+      C_COLAGATMP VARCHAR2(9);
+      C_CAMPO1 VARCHAR(20);
+      C_CAMPO2 VARCHAR(20);
+      C_CAMPO3 VARCHAR(20);
+      C_CAMPO4 VARCHAR(20);
+      C_CAMPO5 VARCHAR(20);
+      C_CAMPO6 VARCHAR(20);
+     BEGIN 
+          
+          /*  INICIO BOCATOMA*/ 
+               SELECT COUNT(c_dil) INTO N_COUNT FROM ALC_MUESTRAFIRST  WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA)) 
+                    AND n_corrmu = (SELECT MAX(n_corrmu)  FROM ALC_MUESTRAFIRST WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA)));  
+                    
+             IF(N_COUNT > 0) THEN
+                  --OBTENEMOS LAS VARIABLES QUE UTILIZAREMOS EN EL CALCULO DE LA PRIMERA MUESTRA  
+                      --Se tienen 3 diluciones, se toma la ultima.
+                      SELECT MIN(TO_NUMBER(c_dil)) INTO C_DILTMP FROM ALC_MUESTRAFIRST WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA)) ;
+                                            
+                      --se le suma uno a la ultima disolucion
+                      SELECT (TO_NUMBER(C_DILTMP) + 1) INTO N_POTENC FROM DUAL;
+                      
+                      --al numero 10 le elevamos la potencia obtenida de la disolucion CON SU VALOR ABSOLUTO
+                      SELECT POWER(10, ABS(N_POTENC)) INTO N_POTENC FROM DUAL;                  
+                    
+                  --INICIO CAMPO COLIFOR. TOTALES NMP/100 mL    
+                      N_COUNT := 0;
+                      --obtemos una cadena con los registros del campo C_TCLV48 (ejem. 5-3-2)
+                      SELECT listagg(C_TCLV48, '-') within group (order by n_corrmu asc) INTO C_TEXTO FROM ALC_MUESTRAFIRST 
+                      WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA)); 
+                      
+                      SELECT COUNT(n_mnp100) INTO N_COUNT FROM ALC_MNP WHERE UPPER(TRIM(c_reapos)) = UPPER(TRIM(C_TEXTO));
+                      
+                      IF (N_COUNT > 0) THEN                                
+                          --con la cadena obtenida se busca un valor en la tabla ALC_MNP
+                          SELECT n_mnp100 INTO N_MNPTMP FROM ALC_MNP WHERE c_reapos = C_TEXTO;
+                          
+                          --multiplicamos el valor obtenido anteriormente por el resultado de la potencia obtenida.
+                          C_CAMPO1 :=  TO_CHAR(N_MNPTMP * N_POTENC);
+                          
+                          --INICIO CAMPO COLIFOR. TERMOT NMP/100 mL 
+                          C_TEXTO  := '';
+                          N_COUNT  := 0;
+                          N_MNPTMP := 0;                  
+                          --obtemos una cadena con los registros del campo C_TUEC24 (ejem. 5-3-2)
+                          SELECT listagg(C_TUEC24, '-') within group (order by n_corrmu asc) INTO C_TEXTO FROM ALC_MUESTRAFIRST 
+                          WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA)); 
+                          
+                          SELECT COUNT(n_mnp100) INTO N_COUNT FROM ALC_MNP WHERE UPPER(TRIM(c_reapos)) = UPPER(TRIM(C_TEXTO));
+                          
+                          IF (N_COUNT > 0) THEN                                
+                              --con la cadena obtenida se busca un valor en la tabla ALC_MNP
+                              SELECT n_mnp100 INTO N_MNPTMP FROM ALC_MNP WHERE UPPER(TRIM(c_reapos)) = UPPER(TRIM(C_TEXTO));                 
+                              
+                              --multiplicamos el valor obtenido anteriormente por el resultado de la potencia obtenida.
+                              C_CAMPO2 :=  TO_CHAR(N_MNPTMP * N_POTENC);
+                              
+                               --INICIO CAMPO BACTER. HETEROT UFC/mL                  
+                               SELECT C_COLAGA INTO C_COLAGATMP FROM ALC_MUESTRAFIRST WHERE N_CODHFO=PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA)) AND ROWNUM = 1;
+                               SELECT C_AGARML INTO C_AGARMLTMP FROM ALC_MUESTRAFIRST WHERE N_CODHFO=PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA)) AND ROWNUM = 1;                
+                               SELECT C_AGARDL INTO C_AGARDLTMP FROM ALC_MUESTRAFIRST WHERE N_CODHFO=PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA)) AND ROWNUM = 1; 
+                              
+                              IF(C_AGARMLTMP <> 0 AND C_AGARMLTMP IS NOT NULL)THEN           
+                                 C_CAMPO3 := TO_CHAR( ROUND( TO_NUMBER(C_COLAGATMP) /( TO_NUMBER(C_AGARMLTMP) /POWER( 10, ABS(TO_NUMBER(C_AGARDLTMP)) ) ), 2 ) );  
+                                 
+                                 /*ACTUALIZAMOS RESULTADOS DE PRIMERA MUESTRA*/      
+                                 --BOCATOMA 1
+                                 UPDATE ALC_RESULTMUESTR
+                                 SET C_COLTOT = C_CAMPO1,
+                                    C_COLTER = C_CAMPO2,
+                                    C_BACHET = C_CAMPO3
+                                 WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA)) AND N_TIPRES = 1; 
+                                
+                                 PAR_OUT_RETURN := 0; --FIN DE EJECUCION DE PROCEDURE 
+                              ELSE
+                                PAR_OUT_RETURN := 4; -- CAMPO AGARML ES CERO
+                              END IF;
+                               --FIN CAMPO BACTER. HETEROT UFC/mL                                
+                                                            
+                          ELSE
+                            PAR_OUT_RETURN := 3; --NO EXISTE COMBINACION PARA TUBOS (+) EC INGRESADOS
+                          END IF;
+                          --FIN CAMPO COLIFOR. TERMOT NMP/100 mL                                              
+                      ELSE
+                        PAR_OUT_RETURN := 2; --NO EXISTE COMBINACION PARA TTUBOS (+) CLVBB  INGRESADOS
+                      END IF;
+                  --FIN CAMPO COLIFOR. TOTALES NMP/100 mL                                   
+              ELSE
+                PAR_OUT_RETURN := 1; --FALTA DILUCION
+              END IF;           
+          /*  FIN BOCATOMA*/
+             
+     END;
+     
+     PROCEDURE PRC_CALCULO_MUESTSECOND(       
+       --Parametros de la busqueda
+      PAR_NID_CABECERA           IN ALC_MUESTSECOND.N_CODHFO%TYPE,
+      PAR_CDESCMUESTRA           IN ALC_MUESTSECOND.C_DESMUE%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_FORMULHEADER.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_FORMULHEADER.A_NOMPRG%TYPE,
+      PAR_OUT_RETURN             OUT NUMBER
+     )IS 
+       C_CAGELETMP VARCHAR2(20); --AGAR E-LES VOLT. FILT
+       C_AGARELTMP VARCHAR2(20); --N COL AGAR E-LES
+       C_CAGMFCTMP VARCHAR2(20);
+       C_COAGARTMP VARCHAR2(20);
+       C_AGARMLTMP VARCHAR2(20); 
+       C_AGARDLTMP VARCHAR2(20);
+       C_DESMUETMP VARCHAR2(50);
+       C_CAMPO1    VARCHAR2(50);
+       C_CAMPO2    VARCHAR2(50);
+       C_CAMPO3    VARCHAR2(50);
+       
+       BEGIN    
+              PAR_OUT_RETURN :=-1;
+              --N?COL AGAR E-LES 
+              SELECT C_CAGELE INTO C_CAGELETMP FROM ALC_MUESTSECOND WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA));
+              
+              --AGAR E-LES VOLT. FILT (mL) 
+              SELECT C_AGAREL INTO C_AGARELTMP FROM ALC_MUESTSECOND WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA));                                   
+              
+              --N COL AGAR M-FC
+              SELECT C_CAGMFC INTO C_CAGMFCTMP FROM ALC_MUESTSECOND WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA));
+              
+              SELECT C_COAGAR INTO C_COAGARTMP FROM ALC_MUESTSECOND WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA));  
+              SELECT C_AGARML INTO C_AGARMLTMP FROM ALC_MUESTSECOND WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA));  
+              SELECT C_AGARDL INTO C_AGARDLTMP FROM ALC_MUESTSECOND WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA));  
+              
+              --COLIFOR. TOTALES NMP/100 mL
+              C_CAMPO1 := TO_CHAR( ROUND( ((TO_NUMBER(C_CAGELETMP) / TO_NUMBER(C_AGARELTMP)) * 100), 2));           
+              --COLIFOR. TERMOT NMP/100 mL
+              C_CAMPO2 := TO_CHAR( ROUND(((TO_NUMBER(C_CAGMFCTMP) / TO_NUMBER(C_AGARELTMP)) * 100) , 2));        
+              --BACTER. HETEROT UFC/mL
+              C_CAMPO3 := TO_CHAR( ROUND( (TO_NUMBER( C_COAGARTMP) / (TO_NUMBER(C_AGARMLTMP) / POWER( 10, ABS( TO_NUMBER(C_AGARDLTMP) ) ) ) ) , 2) );
+              
+              UPDATE ALC_RESULTMUESTR 
+              SET C_COLTOT = C_CAMPO1, C_COLTER = C_CAMPO2, C_BACHET = C_CAMPO3
+              WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM(PAR_CDESCMUESTRA)) AND N_TIPRES = 2;
+             
+              PAR_OUT_RETURN := 0;
+      END; 
+      
+      PROCEDURE PRC_DUPLICADO_MUESTFIRST (       
+       --Parametros de la busqueda
+      PAR_NID_CABECERA           IN ALC_MUESTRAFIRST.N_CODHFO%TYPE,
+      PAR_NID_DETALLE            IN ALC_MUESTRAFIRST.N_CORRMU%TYPE,
+      PAR_NID_DETALLE_DUP        IN ALC_MUESTRAFIRST.N_CORRMU%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_MUESTRAFIRST.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTRAFIRST.A_NOMPRG%TYPE,
+      PAR_OUT_RETURN            OUT NUMBER
+     )IS
+           PAR_CTURNTU                  ALC_MUESTRAFIRST.C_TURNTU%TYPE;
+           PAR_CDIL                     ALC_MUESTRAFIRST.C_DIL%TYPE;
+           PAR_CTCLT24                  ALC_MUESTRAFIRST.C_TCLT24%TYPE;
+           PAR_CTCLT48                  ALC_MUESTRAFIRST.C_TCLT48%TYPE;
+           PAR_CTCLV24                  ALC_MUESTRAFIRST.C_TCLV24%TYPE;
+           PAR_CTCLV48                  ALC_MUESTRAFIRST.C_TCLV48%TYPE;
+           PAR_CTUEC24                  ALC_MUESTRAFIRST.C_TUEC24%TYPE;
+       
+         BEGIN          
+                SELECT C_DIL, C_TCLT24, C_TCLT48, C_TCLV24, C_TCLV48, C_TUEC24, C_TURNTU 
+                        INTO PAR_CDIL, PAR_CTCLT24, PAR_CTCLT48, PAR_CTCLV24, PAR_CTCLV48, PAR_CTUEC24, PAR_CTURNTU 
+                FROM ALC_MUESTRAFIRST
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CORRMU = PAR_NID_DETALLE;
+         
+                --INGRESAMOS EL REGISTRO EN EL REGISTRO DUPLICADO
+                UPDATE ALC_MUESTRAFIRST  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    C_DIL    = NVL(PAR_CDIL,' '),
+                    C_TCLT24 = NVL(PAR_CTCLT24,' '),
+                    C_TCLT48 = NVL(PAR_CTCLT48,' '),
+                    C_TCLV24 = NVL(PAR_CTCLV24, ' '),
+                    C_TCLV48 = NVL(PAR_CTCLV48,' '),
+                    C_TUEC24 = NVL(PAR_CTUEC24,' '),
+                    C_TURNTU = NVL(PAR_CTURNTU,' '),
+                    N_DUPLIC = NVL(PAR_NID_DETALLE,0)
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CORRMU = PAR_NID_DETALLE_DUP;
+                
+                --RELACIONAMOS LOS REGISTROS CON EL CAMPO N_DUPLIC
+                UPDATE ALC_MUESTRAFIRST  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    N_DUPLIC = NVL(PAR_NID_DETALLE,0)
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CORRMU = PAR_NID_DETALLE;                                
+                
+    END;
+    
+    PROCEDURE PRC_DEL_DUPLIC_MUESTFIRST (       
+       --Parametros de la busqueda
+      PAR_NID_CABECERA           IN ALC_MUESTRAFIRST.N_CODHFO%TYPE,
+      PAR_NID_DETALLE            IN ALC_MUESTRAFIRST.N_CORRMU%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_MUESTRAFIRST.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTRAFIRST.A_NOMPRG%TYPE,
+      PAR_OUT_RETURN            OUT NUMBER
+     )IS
+         N_DETALLETMP                     ALC_MUESTRAFIRST.N_DUPLIC%TYPE;
+       
+         BEGIN          
+                SELECT N_DUPLIC INTO N_DETALLETMP
+                FROM ALC_MUESTRAFIRST
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CORRMU = PAR_NID_DETALLE;
+                
+                --QUITAMOS LOS CAMPOS RELACIONADOS
+                UPDATE ALC_MUESTRAFIRST  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    C_DIL    = ' ',
+                    C_TCLT24 = ' ',
+                    C_TCLT48 = ' ',
+                    C_TCLV24 = ' ', 
+                    C_TCLV48 = ' ',
+                    C_TUEC24 = ' ',
+                    C_TURNTU = ' ',
+                    N_DUPLIC = 0
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CORRMU = PAR_NID_DETALLE;
+                
+                --QUITAMOS LA RELACION DE LOS REGISTROS CON EL CAMPO N_DUPLIC
+                UPDATE ALC_MUESTRAFIRST  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    N_DUPLIC = 0
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CORRMU = N_DETALLETMP;                                    
+    END;
+    
+    PROCEDURE PRC_DUPLICADO_MUESTSECOND (       
+       --Parametros de la busqueda
+      PAR_NID_CABECERA           IN ALC_MUESTSECOND.N_CODHFO%TYPE,
+      PAR_NID_DETALLE            IN ALC_MUESTSECOND.N_CODRES%TYPE,
+      PAR_NID_DETALLE_DUP        IN ALC_MUESTSECOND.N_CODRES%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_MUESTSECOND.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTSECOND.A_NOMPRG%TYPE,
+      PAR_OUT_RETURN            OUT NUMBER
+     )IS
+           PAR_CCL2RES                   ALC_MUESTSECOND.C_CL2RES%TYPE;
+           PAR_CAGAREL                   ALC_MUESTSECOND.C_AGAREL%TYPE;
+           PAR_CAGELE                    ALC_MUESTSECOND.C_CAGELE%TYPE;
+           PAR_CGAMFC                    ALC_MUESTSECOND.C_AGAMFC%TYPE;
+           PAR_CAGMFC                    ALC_MUESTSECOND.C_CAGMFC%TYPE;
+           PAR_CAGARML                   ALC_MUESTSECOND.C_AGARML%TYPE;
+           PAR_CAGARDL                   ALC_MUESTSECOND.C_AGARDL%TYPE;
+           PAR_CCOAGAR                   ALC_MUESTSECOND.C_COAGAR%TYPE;
+       
+         BEGIN          
+                SELECT C_CL2RES, C_AGAREL, C_CAGELE, C_AGAMFC, C_CAGMFC, C_AGARML, C_AGARDL, C_COAGAR 
+                        INTO PAR_CCL2RES, PAR_CAGAREL, PAR_CAGELE, PAR_CGAMFC, PAR_CAGMFC, PAR_CAGARML, PAR_CAGARDL, PAR_CCOAGAR
+                FROM ALC_MUESTSECOND
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CODRES = PAR_NID_DETALLE;
+         
+                --INGRESAMOS EL REGISTRO EN EL REGISTRO DUPLICADO
+                UPDATE ALC_MUESTSECOND  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    C_CL2RES = NVL(PAR_CCL2RES,' '),
+                    C_AGAREL = NVL(PAR_CAGAREL,' '),
+                    C_CAGELE = NVL(PAR_CAGELE,' '),
+                    C_AGAMFC = NVL(PAR_CGAMFC,' '),
+                    C_CAGMFC = NVL(PAR_CAGMFC,' '),
+                    C_AGARML = NVL(PAR_CAGARML,' '),
+                    C_AGARDL = NVL(PAR_CAGARDL,' '),
+                    C_COAGAR = NVL(PAR_CCOAGAR,' '),
+                    N_DUPLIC = NVL(PAR_NID_DETALLE,0)
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CODRES = PAR_NID_DETALLE_DUP;
+                
+                --RELACIONAMOS LOS REGISTROS CON EL CAMPO N_DUPLIC
+                UPDATE ALC_MUESTSECOND  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    N_DUPLIC = NVL(PAR_NID_DETALLE,0)
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CODRES = PAR_NID_DETALLE;                                
+                
+    END;
+    
+    PROCEDURE PRC_DEL_DUPLIC_MUESTSECOND (       
+       --Parametros de la busqueda
+      PAR_NID_CABECERA           IN ALC_MUESTSECOND.N_CODHFO%TYPE,
+      PAR_NID_DETALLE            IN ALC_MUESTSECOND.N_CODRES%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_MUESTSECOND.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTSECOND.A_NOMPRG%TYPE,
+      PAR_OUT_RETURN            OUT NUMBER
+     )IS
+         N_DETALLETMP                     ALC_MUESTSECOND.N_DUPLIC%TYPE;
+       
+         BEGIN  
+                --OBTENEMOS EL CAMPO REGISTRAMOS QUE SE TIENE UN DUPLICADO
+                SELECT N_DUPLIC INTO N_DETALLETMP
+                FROM ALC_MUESTSECOND
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CODRES = PAR_NID_DETALLE;
+                
+                --QUITAMOS LOS CAMPOS RELACIONADOS
+                UPDATE ALC_MUESTSECOND  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    C_CL2RES = ' ',
+                    C_AGAREL = ' ',
+                    C_CAGELE = ' ',
+                    C_AGAMFC = ' ',
+                    C_CAGMFC = ' ',
+                    C_AGARML = ' ', 
+                    C_AGARDL = ' ',
+                    C_COAGAR = ' ',
+                    N_DUPLIC = 0
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CODRES = PAR_NID_DETALLE;
+                
+                --QUITAMOS LA RELACION DE LOS REGISTROS CON EL CAMPO N_DUPLIC
+                UPDATE ALC_MUESTSECOND  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    N_DUPLIC = 0
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CODRES = N_DETALLETMP;                                    
+    END;
+            
+    PROCEDURE PRC_CALC_ENSAYO_BACTERIO(        
+       --Parametros de la busqueda
+      PAR_NID_CABECERA           IN ALC_MUESTRFORM25.N_CODHFO%TYPE,
+      PAR_OUT_RETURN            OUT NUMBER
+       --Campos de Auditoria      
+     )IS 
+       V_QUERY VARCHAR2(400);
+       C_COLTOTX VARCHAR(100);
+       C_COLTOTY VARCHAR(100);
+       C_COLTERX VARCHAR(100);
+       C_COLTERY VARCHAR(100);
+       C_BACHETX VARCHAR(100);
+       C_BACHETY VARCHAR(100);
+       C_1COLTOTTMP1 VARCHAR2(20); 
+       C_1COLTERTMP1 VARCHAR2(20); 
+       C_1BACHETTMP1 VARCHAR2(20);
+       C_1COLTOTTMP2 VARCHAR2(20); 
+       C_1COLTERTMP2 VARCHAR2(20); 
+       C_1BACHETTMP2 VARCHAR2(20);
+       C_1COLTOTTMP3 VARCHAR2(20); 
+       C_1COLTERTMP3 VARCHAR2(20); 
+       C_1BACHETTMP3 VARCHAR2(20);
+       C_1COLTOTTMP4 VARCHAR2(20); 
+       C_1COLTERTMP4 VARCHAR2(20); 
+       C_1BACHETTMP4 VARCHAR2(20);
+       C_1COLTOTTMP5 VARCHAR2(20); 
+       C_1COLTERTMP5 VARCHAR2(20); 
+       C_1BACHETTMP5 VARCHAR2(20);
+       
+       C_2COLTOTTMP1 VARCHAR2(20); 
+       C_2COLTERTMP1 VARCHAR2(20); 
+       C_2BACHETTMP1 VARCHAR2(20);
+       C_2COLTOTTMP2 VARCHAR2(20); 
+       C_2COLTERTMP2 VARCHAR2(20); 
+       C_2BACHETTMP2 VARCHAR2(20);
+       C_2COLTOTTMP3 VARCHAR2(20); 
+       C_2COLTERTMP3 VARCHAR2(20); 
+       C_2BACHETTMP3 VARCHAR2(20);
+       C_2COLTOTTMP5 VARCHAR2(20); 
+       C_2COLTERTMP5 VARCHAR2(20); 
+       C_2BACHETTMP5 VARCHAR2(20);
+       
+       BEGIN   
+               C_COLTOTX := '0';
+               C_COLTOTY := '0';
+               C_COLTERX := '0';
+               C_COLTERY := '0';
+               C_BACHETX := '0';
+               C_BACHETY := '0';
+               C_1COLTOTTMP1 := '0'; 
+               C_1COLTERTMP1 := '0'; 
+               C_1BACHETTMP1 := '0';
+               C_1COLTOTTMP2 := '0'; 
+               C_1COLTERTMP2 := '0'; 
+               C_1BACHETTMP2 := '0';
+               C_1COLTOTTMP3 := '0'; 
+               C_1COLTERTMP3 := '0'; 
+               C_1BACHETTMP3 := '0';
+               C_1COLTOTTMP4 := '0'; 
+               C_1COLTERTMP4 := '0'; 
+               C_1BACHETTMP4 := '0';
+               C_1COLTOTTMP5 := '0'; 
+               C_1COLTERTMP5 := '0'; 
+               C_1BACHETTMP5 := '0';
+               C_2COLTOTTMP1 := '0'; 
+               C_2COLTERTMP1 := '0'; 
+               C_2BACHETTMP1 := '0';
+               C_2COLTOTTMP2 := '0'; 
+               C_2COLTERTMP2 := '0'; 
+               C_2BACHETTMP2 := '0';
+               C_2COLTOTTMP3 := '0'; 
+               C_2COLTERTMP3 := '0'; 
+               C_2BACHETTMP3 := '0';
+               C_2COLTOTTMP5 := '0'; 
+               C_2COLTERTMP5 := '0'; 
+               C_2BACHETTMP5 := '0';
+       
+              --ELIMINAMOS LOS VALORES ANTIGUOS
+              DELETE FROM ALC_MUESTRFORM25 WHERE N_CODHFO = PAR_NID_CABECERA;
+              DELETE FROM ALC_RESULTEFICIE WHERE N_CODHFO = PAR_NID_CABECERA;
+
+        
+               --INICIO TABLA 1 - PLANTA 1
+              --OBTENEMOS LOS VALORES DE LA TABLA ALC_RESULTMUESTR
+              BEGIN
+                  SELECT NVL(C_COLTOT, '0'), NVL(C_COLTER, '0'), NVL(C_BACHET, '0') INTO C_1COLTOTTMP1, C_1COLTERTMP1, C_1BACHETTMP1
+                  FROM ALC_RESULTMUESTR
+                  WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM('BOCATOMA 1'));        
+                  
+                  SELECT NVL(DECODE(C_COLTOT,'0','1',C_COLTOT), '0'), NVL(DECODE(C_COLTER,'0','1',C_COLTER), '0'), NVL(DECODE(C_BACHET,'0','1',C_BACHET), '0') INTO C_1COLTOTTMP2, C_1COLTERTMP2, C_1BACHETTMP2 
+                  FROM ALC_RESULTMUESTR
+                  WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM('ENTRADA PLANTA 1'));
+                  
+                  SELECT NVL(C_COLTOT, '0'), NVL(C_COLTER, '0'), NVL(C_BACHET, '0') INTO C_1COLTOTTMP3, C_1COLTERTMP3, C_1BACHETTMP3
+                  FROM ALC_RESULTMUESTR
+                  WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM('DEC. PLANTA 1'));
+                  
+                  SELECT NVL(C_COLTOT, '0'), NVL(C_COLTER, '0'), NVL(C_BACHET, '0') INTO C_1COLTOTTMP4, C_1COLTERTMP4, C_1BACHETTMP4
+                  FROM ALC_RESULTMUESTR
+                  WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM('PLANTA CONVENCIONAL 1'));
+                  
+                  SELECT NVL(C_COLTOT, '0'), NVL(C_COLTER, '0'), NVL(C_BACHET, '0') INTO C_1COLTOTTMP5, C_1COLTERTMP5, C_1BACHETTMP5
+                  FROM ALC_RESULTMUESTR
+                  WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM('FILTRADA PLANTA 1'));
+              EXCEPTION
+                  WHEN OTHERS
+                  THEN dbms_output.put_line('SQLERRORCODE : ' || SQLCODE);
+              END;
+              
+              INSERT INTO ALC_MUESTRFORM25 (C_DESCRI, C_BOCATO, C_ENTRAD, C_DECANT, C_CONVEN, C_FILTRA, N_CODHFO, N_PLANTA, N_CODMEN)
+              VALUES ('COLIFORMES TOTALES', C_1COLTOTTMP1, C_1COLTOTTMP2, C_1COLTOTTMP3, C_1COLTOTTMP4, C_1COLTOTTMP5, PAR_NID_CABECERA, 1, SQ_ALC_MUESTRFORM25.NEXTVAL);
+              
+              INSERT INTO ALC_MUESTRFORM25 (C_DESCRI, C_BOCATO, C_ENTRAD, C_DECANT, C_CONVEN, C_FILTRA, N_CODHFO, N_PLANTA, N_CODMEN)
+              VALUES ('COLIFORMES TERMOTOLERANTES', C_1COLTERTMP1, C_1COLTERTMP2, C_1COLTERTMP3, C_1COLTERTMP4, C_1COLTERTMP5, PAR_NID_CABECERA, 1, SQ_ALC_MUESTRFORM25.NEXTVAL);
+              
+              INSERT INTO ALC_MUESTRFORM25 (C_DESCRI, C_BOCATO, C_ENTRAD, C_DECANT, C_CONVEN, C_FILTRA, N_CODHFO, N_PLANTA, N_CODMEN)
+              VALUES ('BACTERIAS HETEROTROFICAS UFC/mL', C_1BACHETTMP1, C_1BACHETTMP2, C_1BACHETTMP3, C_1BACHETTMP4, C_1BACHETTMP5, PAR_NID_CABECERA, 1, SQ_ALC_MUESTRFORM25.NEXTVAL);            
+          
+              
+              BEGIN 
+              --INICIO TABLA 2 - PLANTA 2
+              --OBTENEMOS LOS VALORES DE LA TABLA ALC_RESULTMUESTR
+                  SELECT C_COLTOT, C_COLTER, C_BACHET INTO C_2COLTOTTMP1, C_2COLTERTMP1, C_2BACHETTMP1
+                  FROM ALC_RESULTMUESTR
+                  WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM('BOCATOMA 2'));        
+                  
+                  SELECT DECODE(C_COLTOT,'0','1',C_COLTOT), DECODE(C_COLTER,'0','1',C_COLTER), DECODE(C_BACHET,'0','1',C_BACHET) INTO C_2COLTOTTMP2, C_2COLTERTMP2, C_2BACHETTMP2 
+                  FROM ALC_RESULTMUESTR
+                  WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM('ENTRADA PLANTA 2'));
+                  
+                  SELECT C_COLTOT, C_COLTER, C_BACHET INTO C_2COLTOTTMP3, C_2COLTERTMP3, C_2BACHETTMP3
+                  FROM ALC_RESULTMUESTR
+                  WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM('DEC. PLANTA 2'));
+                                
+                  SELECT C_COLTOT, C_COLTER, C_BACHET INTO C_2COLTOTTMP5, C_2COLTERTMP5, C_2BACHETTMP5
+                  FROM ALC_RESULTMUESTR
+                  WHERE n_codhfo = PAR_NID_CABECERA AND UPPER(TRIM(c_desmue)) = UPPER(TRIM('FILTRADA PLANTA 2'));
+                  
+              EXCEPTION
+                  WHEN OTHERS
+                  THEN dbms_output.put_line('SQLERRORCODE : ' || SQLCODE);
+              END;
+              
+              INSERT INTO ALC_MUESTRFORM25 (C_DESCRI, C_BOCATO, C_ENTRAD, C_DECANT,  C_FILTRA, N_CODHFO, N_PLANTA, N_CODMEN)
+              VALUES ('COLIFORMES TOTALES', C_2COLTOTTMP1, C_2COLTOTTMP2, C_2COLTOTTMP3,  C_2COLTOTTMP5, PAR_NID_CABECERA, 2, SQ_ALC_MUESTRFORM25.NEXTVAL);
+              
+              INSERT INTO ALC_MUESTRFORM25 (C_DESCRI, C_BOCATO, C_ENTRAD, C_DECANT,  C_FILTRA, N_CODHFO, N_PLANTA, N_CODMEN)
+              VALUES ('COLIFORMES TERMOTOLERANTES', C_2COLTERTMP1, C_2COLTERTMP2, C_2COLTERTMP3,  C_2COLTERTMP5, PAR_NID_CABECERA, 2, SQ_ALC_MUESTRFORM25.NEXTVAL);
+              
+              INSERT INTO ALC_MUESTRFORM25 (C_DESCRI, C_BOCATO, C_ENTRAD, C_DECANT, C_FILTRA, N_CODHFO, N_PLANTA, N_CODMEN)
+              VALUES ('BACTERIAS HETEROTROFICAS UFC/mL', C_2BACHETTMP1, C_2BACHETTMP2, C_2BACHETTMP3, C_2BACHETTMP5, PAR_NID_CABECERA, 2, SQ_ALC_MUESTRFORM25.NEXTVAL); 
+            
+              BEGIN 
+                  --INICIO TABLA 3
+                  C_COLTOTX := TO_CHAR( ROUND(LN(TO_NUMBER(C_1COLTOTTMP1)) - LN(TO_NUMBER(C_1COLTOTTMP2)), 2 ));
+                  C_COLTOTY := TO_CHAR( ROUND(LN(TO_NUMBER(C_2COLTOTTMP1)) - LN(TO_NUMBER(C_2COLTOTTMP2)), 2 ));
+                  
+                  C_COLTERX := TO_CHAR( ROUND(LN(TO_NUMBER(C_1COLTERTMP1)) - LN(TO_NUMBER(C_1COLTERTMP2)), 2 ));
+                  C_COLTERY := TO_CHAR( ROUND(LN(TO_NUMBER(C_2COLTERTMP1)) - LN(TO_NUMBER(C_2COLTERTMP2)), 2 ));
+                  
+                  C_BACHETX := TO_CHAR( ROUND(LN(TO_NUMBER(C_1BACHETTMP1)) - LN(TO_NUMBER(C_1BACHETTMP2)), 2 ));
+                  C_BACHETY := TO_CHAR( ROUND(LN(TO_NUMBER(C_2BACHETTMP1)) - LN(TO_NUMBER(C_2BACHETTMP2)), 2 ));
+              
+              EXCEPTION
+                  WHEN OTHERS
+                  THEN dbms_output.put_line('SQLERRORCODE : ' || SQLCODE);
+              END;
+                                        
+              INSERT INTO ALC_RESULTEFICIE (C_DESCRI, C_COLITO, C_COLTER, C_BACHET, N_CODHFO, N_CODREF)
+              VALUES ('BOCATOMA 1 - ENTRADA 1', C_COLTOTX, C_COLTERX, C_BACHETX, PAR_NID_CABECERA, SQ_ALC_RESULTEFICIE.NEXTVAL); 
+              
+              INSERT INTO ALC_RESULTEFICIE (C_DESCRI, C_COLITO, C_COLTER, C_BACHET, N_CODHFO, N_CODREF)
+              VALUES ('BOCATOMA 2 - ENTRADA 2', C_COLTOTY, C_COLTERY, C_BACHETY, PAR_NID_CABECERA, SQ_ALC_RESULTEFICIE.NEXTVAL); 
+              
+              PAR_OUT_RETURN := 0;
+      END; 
+       
+    PROCEDURE PRC_BUSCA_PLANTA(
+       --Parametros de la busqueda
+       PAR_NID_CABECERA     IN ALC_MUESTRFORM25.N_CODHFO%TYPE,
+       PAR_NTIPO            IN ALC_MUESTRFORM25.N_PLANTA%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER, 
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+        V_QUERY VARCHAR2(4000);
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000);
+    
+        BEGIN
+         
+              V_QUERY_COUNT := 'select count(*) '; 
+              
+              IF(PAR_NTIPO = 2)THEN
+              
+                  V_QUERY := 'select * 
+                              from (select a.*, rownum rn
+                                    from (SELECT C.C_DESCRI, C.C_BOCATO, C.C_ENTRAD, C.C_DECANT, C.C_FILTRA, C.C_CONVEN, C.N_CODMEN,
+                                    N_CODHFO, N_STATUS, C_ALTERN';
+              ELSE
+                  V_QUERY := 'select * 
+                              from (select a.*, rownum rn
+                                    from (SELECT C.C_DESCRI, C.C_BOCATO, C.C_ENTRAD, C.C_DECANT, C.C_CONVEN, C.C_FILTRA, C.N_CODMEN,
+                                    N_CODHFO, N_STATUS, C_ALTERN';
+              END IF;
+                                
+              V_QUERY_FROM := ' FROM ALC_MUESTRFORM25 c                                   
+                                  WHERE c.n_codhfo = ' || PAR_NID_CABECERA ||
+                                  ' AND c.n_planta = ' || PAR_NTIPO;            
+
+              V_QUERY := V_QUERY || V_QUERY_FROM;
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+            
+              V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query;
+              
+              execute immediate v_query_count into par_out_quantity;
+        END;   
+        
+    PROCEDURE PRC_BUSCA_EFICIENCIA(
+       --Parametros de la busqueda
+       PAR_NID_CABECERA     IN ALC_RESULTEFICIE.N_CODHFO%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2,
+       PAR_PAG_DESDE        IN INTEGER, 
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+        V_QUERY VARCHAR2(4000);
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000);
+    
+        BEGIN
+         
+              V_QUERY_COUNT := 'select count(*) '; 
+     
+              V_QUERY := 'select * 
+                          from (select a.*, rownum rn
+                                from (SELECT C_DESCRI, C_COLITO, C_COLTER, C_BACHET, N_CODREF , N_CODHFO, C_STATUS, N_CODF25, A_USUCRE, A_FECCRE';
+                                
+              V_QUERY_FROM := ' FROM ALC_RESULTEFICIE c                                   
+                                  WHERE c.n_codhfo = ' || PAR_NID_CABECERA;
+                                          
+
+              V_QUERY := V_QUERY || V_QUERY_FROM;
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+            
+              V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query; 
+              
+              execute immediate v_query_count into par_out_quantity;
+        END;  
+        
+    PROCEDURE PRC_INSERT_MUESTRFOR299( 
+       PAR_NID_CABECERA             IN ALC_MUESTRFOR299.N_CODHFO%TYPE,
+       PAR_CDESCMUESTRA             IN ALC_MUESTRFOR299.C_DESCRI%TYPE, 
+       PAR_CLIMITEMAX               IN ALC_MUESTRFOR299.C_LIMMAX%TYPE, 
+       PAR_CLIMITECAL               IN ALC_MUESTRFOR299.C_LIMCAL%TYPE, 
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION     IN ALC_MUESTRFOR299.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI         IN ALC_MUESTRFOR299.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTRFOR299.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS
+
+         BEGIN         
+            
+            INSERT INTO ALC_MUESTRFOR299 ( A_USUCRE,A_FECCRE,A_USUMOD,A_FECMOD,A_NOMPRG,N_CODMUE,N_CODHFO,C_DESCRI,C_LIMMAX,C_LIMCAL,N_STATUS)
+            VALUES(
+                   PAR_CUSUARIO_CREACION,
+                   SYSDATE,
+                   PAR_CUSUARIO_MODI,
+                   SYSDATE, 
+                   PAR_CPROGRAMA,
+                   SQ_ALC_MUESTRFOR299.NEXTVAL,
+                   NVL(PAR_NID_CABECERA,0),
+                   NVL(PAR_CDESCMUESTRA,' '),
+                   NVL(PAR_CLIMITEMAX,' '),
+                   NVL(PAR_CLIMITECAL,' '),
+                   1
+                );          
+                     
+    END;
+    
+    PROCEDURE PRC_BUSCA_MUESTRFOR299(
+       --Parametros de la busqueda
+       PAR_NID_CABECERA     IN ALC_MUESTRFOR299.N_CODHFO%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2,
+       PAR_PAG_DESDE        IN INTEGER, 
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+        V_QUERY VARCHAR2(4000);
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000);
+    
+        BEGIN
+         
+              V_QUERY_COUNT := 'select count(*) '; 
+     
+              V_QUERY := 'select * 
+                          from (select a.*, rownum rn
+                                from (SELECT C_DESCRI, C_RESMEN, C_RESVIC, C_REVIRS, C_RESRED, N_CODMUE, C_LIMMAX, C_LIMCAL, A_NOMPRG, A_USUCRE';
+                                
+              V_QUERY_FROM := ' FROM ALC_MUESTRFOR299                                    
+                                  WHERE N_CODHFO = ' || PAR_NID_CABECERA;
+                                          
+
+              V_QUERY := V_QUERY || V_QUERY_FROM;
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+            
+              V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query; 
+              
+              execute immediate v_query_count into par_out_quantity;
+        END; 
+    
+END PCK_ALC_ANALBACT;

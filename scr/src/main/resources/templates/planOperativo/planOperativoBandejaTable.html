@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsList" class="grid_10" >
+		
+		<table  class="fancyTable" id="idTablaPlanOperativoBandeja" cellpadding="0" cellspacing="0" style="width: 100%!important">
+			<thead>
+				<tr>
+					<th th:text="${#messages.msg('tablaPoisson.table.col1')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('plan.operativo.msg.codigo')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('plan.operativo.msg.codigo')}" style="width: 50px;"></th>
+					
+					<th th:text="${#messages.msg('plan.operativo.msg.descripcion')}" style="width: 200px;"></th>
+					<th th:text="${#messages.msg('actividad.area.label')}" style="width: 50px;"></th>
+					<th style="width: 50px;">Estado</th>
+					<th th:text="${#messages.msg('plan.operativo.label.anio')}" style="width: 50px;"></th>
+				</tr>
+			</thead>
+		</table>
+
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				setTimeout(function(){
+					console.log("cargando tabla de reportes")
+					cargarTablaPlanBandeja();	
+				},500);
+			}); 
+		</script>	
+	</div>
+</body>
+</html>

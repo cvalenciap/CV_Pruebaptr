@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('bandeja.detalle.title')}"></title>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+    	modelAttributeValue = [[${detalle}]];
+    });
+    /*]]>*/
+</script>
+<link rel="stylesheet" th:href="@{/css/jasny-bootstrap.css}" />
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div class="containerform">
+			<div class="container_save" style="display: none;">
+			</div>
+			
+			<input type="hidden" id="codigoRio" th:value="${rioId}" />
+			<input type="hidden" id="codigoCaudal" th:value="${detalle.intCodigoCaudal}" />
+			<input type="hidden" id="periodoCarga" th:value="${detalle.strPeriodo}" />
+			<form id="form-save-matriz" th:action="@{/bandejaCaudalesDetalle/save}" method="post" style="display: none;"></form>
+			
+			<fieldset>
+				<div class="col-md-12 espaciado-superior">
+					<div class="col-md-12 label-name">
+						<font size="4" th:text="${detalle.strToday}">
+					    </font>
+					</div>
+					<div class="col-md-12 adjuste-inner-text espaciado-superior center-align">
+						<font size="5" th:text="${detalle.strNombreLargoRio + ' - ' + detalle.strPeriodo}"></font>
+					</div>
+				</div>
+			</fieldset>
+
+			<div class="panel-heading">
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+					<form th:action="@{/bandejaCaudales}" role="form" method="get">
+						<button type="submit" class="btn btn-info">
+							<span class="glyphicon glyphicon-chevron-left"></span>
+							<div style="display: inherit;" th:text="${#messages.msg('bandeja.detalle.btn.regresar')}"></div>
+						</button>
+					</form>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+
+		</div>
+		
+		<form id="form-upload-file" th:action="@{/bandejaCaudalesDetalle/uploadFile}" method="post" style="display: none;">
+		</form>
+		
+		<div class="col-md-12 espaciado-superior label-name">
+			<div class="col-md-4 label-name">
+				<div class="fileinput fileinput-new" data-provides="fileinput">
+					<form id="upload-file-form">
+					    <span class="btn btn-default btn-file"><span class="glyphicon glyphicon-folder-open"> Cargar</span><input name="uploadfile" id="upload-carga-input" type="file" accept=".xls"/></span>
+					    <span class="fileinput-filename"></span><span id="emptyFileMessage" class="fileinput-new" th:text="${#messages.msg('bandeja.detalle.btn.empty')}"></span>
+					</form>
+				</div>
+			</div>
+			<div id="panel-load-information" class="col-md-8 label-name" style="display: none;">
+			<!-- ACA SE INYECTA EL STATUS DE CARGA -->
+			</div>
+		</div>
+		
+		<div class="col-md-12 espaciado-inferior label-name">
+			<a th:href="@{/bandejaCaudalesDetalle/downloadTemplate}"><span class="glyphicon glyphicon-download-alt"></span>
+			Descargar Plantilla
+<!-- 			<label th:text="${#messages.msg('bandeja.detalle.descargar.plantilla')}">mje</label> -->
+			</a>
+		</div>
+		
+		<div class="panel">
+			<div class="container_12">
+				<div th:replace="bandejaCaudalesDetalleTable :: resultsList" class="grid_10 height800" id="idTipoProcesoTable"></div>
+			</div>
+		</div>
+		
+		<div id="panel-datos-excel" class="panel " style="display: none;">
+			<div class="col-md-12 label-name">
+				<a name="datosImport"><h3 class="align-left" th:text="${#messages.msg('bandeja.detalle.titulo.datos.importar')}"></h3></a>
+			</div>
+			
+			<div class="container_12">
+				<div th:replace="bandejaCaudalesDetalleExcelTable :: resultsList" class="grid_10 height800" id="idTipoProcesoTable"></div>
+			</div>
+
+			<fieldset class="col-md-12 col-sm-12 col-xs-12">
+				<span><br /></span>
+				<div class="form-group col-sm-12">
+					<div class="wrapper text-center">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-primary btn-md" onclick="saveMatriz()" id="guardarButton">Guardar</button>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-md" onclick="cancelImport();">Cancelar</button>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+		<script type="text/javascript" th:src="@{/js/jquery.browser.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/bandejaCaudalesDetalle.js}"></script>
+		<script type="text/javascript" th:src="@{/js/jasny-bootstrap.js}"></script>
+	</div>
+	
+</body>
+
+</html>

@@ -1,0 +1,438 @@
+create or replace package body PKC_ALC_FORM242 is
+
+PROCEDURE PRC_LISTADO_HEADER_FORM242(
+    --Parametros de la busqueda
+   P_FECHA_MUESTREO          IN VARCHAR2,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR  
+       
+ )
+ IS
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+
+BEGIN
+
+  v_query_count:= ' select count(*) ';
+
+  v_query :=  'SELECT * 
+                 FROM(SELECT a.*, rownum rn 
+                        FROM(SELECT  
+                                    TO_CHAR(H.D_FECMUE, ''DD/MM/YYYY''), 
+                                    TO_CHAR(H.D_RECMUE, ''DD/MM/YYYY HH24:MI:SS''), 
+                                    A.C_DDCATL AS C,
+                                    B.C_DDCATL AS D,     
+                                    H.N_CODHFO 
+                                       ';
+
+  v_query_from := ' FROM ALC_FORMULHEADER H 
+                                           LEFT JOIN ALC_DETCATLG A ON H.C_PERMUE = A.C_VALCAT AND A.N_CCATLG=10
+                                           LEFT JOIN ALC_DETCATLG B ON H.C_PERECE = B.C_VALCAT AND B.N_CCATLG=11    
+                                           WHERE ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := ' 1=1 AND H.N_IDFORM = 242 AND H.N_STATUS = 1';
+
+   if(LENGTH(TRIM(P_FECHA_MUESTREO))>0) then
+    v_query_where :=  v_query_where || ' AND H.N_IDFORM = 242 AND TO_CHAR(H.D_FECMUE, '''||'DD/MM/YYYY'||''') >= ''' || P_FECHA_MUESTREO ||''' AND ';
+    v_query_where :=  v_query_where || '                          TO_CHAR(H.D_FECMUE, '''||'DD/MM/YYYY'||''') <= ''' || P_FECHA_MUESTREO ||'''  ';  
+
+   end if;
+
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+
+  v_query := v_query || ' order by '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' and rn <= ' || (par_pag_desde+par_cantidad_pag);
+
+  OPEN par_out_cursor FOR v_query;
+
+  execute immediate v_query_count into par_out_quantity;
+END;
+
+
+PROCEDURE PRC_INSERT_HEADER(
+
+   P_FECHA_MUESTREO                 IN VARCHAR2,
+   P_FECHA_RECEPCION                IN VARCHAR2,
+   P_PERSONA_MUESTREA               ALC_FORMULHEADER.C_PERMUE%TYPE,
+   P_PERSONA_RECEPCION              ALC_FORMULHEADER.C_PERECE%TYPE,
+   P_OBSERVACION                    ALC_FORMULHEADER.C_OBSERV%TYPE,
+   --Campos de Auditoria
+   A_PAR_USUARIO_CREACION           ALC_FORMULHEADER.A_USUCRE%TYPE,
+   A_PAR_USUARIO_MODIFICACION       ALC_FORMULHEADER.A_USUMOD%TYPE,
+   A_PAR_NOMBRE_PROGRAMA            ALC_FORMULHEADER.A_NOMPRG%TYPE,
+   PAR_TRACHO                       ALC_FORMULHEADER.C_TRACHO%TYPE,
+   PAR_CUMPLE                       ALC_FORMULHEADER.N_CUMPLE%TYPE,
+   PAR_OUT_RETURN                     OUT INTEGER
+ )
+
+ IS
+ BEGIN
+
+  PAR_OUT_RETURN := SQ_ALC_FORMULHEADER.NEXTVAL;
+
+ INSERT INTO ALC_FORMULHEADER
+      ( 
+         A_USUCRE,
+         A_FECCRE,
+         A_USUMOD,
+         A_FECMOD,
+         A_NOMPRG,
+         N_CODHFO,
+         D_FECMUE,
+         D_RECMUE,
+         C_PERMUE,  
+         C_PERECE,
+         C_OBSERV,
+         N_IDFORM,
+         N_STATUS,
+         C_TRACHO,
+         N_CUMPLE
+         
+       )
+ VALUES
+      (
+         A_PAR_USUARIO_CREACION,
+         SYSDATE,
+         A_PAR_USUARIO_MODIFICACION,
+         SYSDATE, 
+         A_PAR_NOMBRE_PROGRAMA,
+         PAR_OUT_RETURN,
+         NVL(TO_DATE(P_FECHA_MUESTREO, 'DD/MM/YYYY'), '12/12/2999'),
+         NVL(TO_DATE(P_FECHA_RECEPCION, 'DD/MM/YYYY HH24:MI:SS'), '12/12/2999'),
+         NVL(P_PERSONA_MUESTREA, ' '),
+         NVL(P_PERSONA_RECEPCION, ' '),
+         NVL(P_OBSERVACION, ' '),
+         242,
+         1,
+         PAR_TRACHO,
+         PAR_CUMPLE
+       );
+
+END;
+
+PROCEDURE PRC_INSERT_DETALLE(
+
+   P_LOCALIDAD_MUESTREO          ALC_MUESTRFOR242.N_LOCMUE%TYPE,
+   P_ESTACION_MUESTREO           ALC_MUESTRFOR242.N_ESTMUE%TYPE,
+   P_ALTURA                      ALC_MUESTRFOR242.N_ALTURA%TYPE,
+   P_HORA                        IN VARCHAR2, -- ALC_MUESTRFOR242.D_HORMUE%TYPE,
+   P_COORD_W                     ALC_MUESTRFOR242.N_COORDW%TYPE,
+   P_COORD_E                     ALC_MUESTRFOR242.N_COORDE%TYPE,
+   P_PH                          ALC_MUESTRFOR242.N_PH%TYPE,
+   P_TEMPERATURA                 ALC_MUESTRFOR242.N_TEMPEC%TYPE,
+   P_CONDUCTIVIDAD               ALC_MUESTRFOR242.N_CONDUC%TYPE,
+   P_TURBIEDAD                   ALC_MUESTRFOR242.N_TURBIE%TYPE,
+   P_OXIGENO                     ALC_MUESTRFOR242.N_OXIGEN%TYPE,
+   P_CLOROFILA                   ALC_MUESTRFOR242.N_CLOROF%TYPE,
+   P_FICOCIANINA                 ALC_MUESTRFOR242.N_FICOCI%TYPE,
+   P_OBSERVACION                 ALC_MUESTRFOR242.C_OBSERV%TYPE,
+   P_CODIGO_HEADER               ALC_MUESTRFOR242.N_CODHFO%TYPE,
+   --Campos de Auditoria
+   A_PAR_USUARIO_CREACION        ALC_MUESTRFOR242.A_USUCRE%TYPE,
+   A_PAR_USUARIO_MODIFICACION    ALC_MUESTRFOR242.A_USUMOD%TYPE,
+   A_PAR_NOMBRE_PROGRAMA         ALC_MUESTRFOR242.A_NOMPRG%TYPE
+ )
+
+ IS
+ BEGIN
+
+ INSERT INTO ALC_MUESTRFOR242
+      ( 
+         A_USUCRE,
+         A_FECCRE,
+         A_USUMOD,
+         A_FECMOD,
+         A_NOMPRG,
+         N_CODMUE, 
+         N_LOCMUE, 
+         N_ESTMUE, 
+         N_ALTURA, 
+         C_HORMUE, 
+         N_COORDW, 
+         N_COORDE, 
+         N_PH, 
+         N_TEMPEC,
+         N_CONDUC, 
+         N_TURBIE, 
+         N_OXIGEN, 
+         N_CLOROF, 
+         N_FICOCI,
+         C_OBSERV,
+         N_CODHFO,
+         N_STATUS
+       )
+ VALUES
+      (
+         A_PAR_USUARIO_CREACION,
+         SYSDATE,
+         A_PAR_USUARIO_MODIFICACION,
+         SYSDATE, 
+         A_PAR_NOMBRE_PROGRAMA,
+         SQ_ALC_MUESTRFOR242.NEXTVAL,
+         NVL(P_LOCALIDAD_MUESTREO, 0),
+         NVL(P_ESTACION_MUESTREO,  0),
+         NVL(P_ALTURA,  0),
+         NVL(P_HORA,  ' '),
+         NVL(P_COORD_W,  0),
+         NVL(P_COORD_E,  0),
+         NVL(P_PH,  0), 
+         NVL(P_TEMPERATURA,  0),
+         NVL(P_CONDUCTIVIDAD,  0),
+         NVL(P_TURBIEDAD,  0),
+         NVL(P_OXIGENO,  0),
+         NVL(P_CLOROFILA,  0),
+         NVL(P_FICOCIANINA,  0),
+         NVL(P_OBSERVACION,  ' '),
+         NVL(P_CODIGO_HEADER, 0),
+         1
+       );
+
+END;
+
+PROCEDURE PRC_GET_HEADER(
+   --Parametros de la busqueda
+   P_ID_REGISTRO   IN    ALC_FORMULHEADER.N_CODHFO%TYPE,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+
+BEGIN
+
+   OPEN PAR_OUT_CURSOR FOR
+   SELECT  
+        TO_CHAR(D_FECMUE,'DD/MM/YYYY'),
+        TO_CHAR(D_RECMUE,'DD/MM/YYYY HH24:MI:SS'),
+        C_PERMUE, 
+        C_PERECE,
+        C_OBSERV,
+        N_CODHFO,
+        C_TRACHO,
+        N_CUMPLE
+
+FROM   ALC_FORMULHEADER
+
+WHERE N_CODHFO = P_ID_REGISTRO;
+
+END;
+
+PROCEDURE PRC_LISTADO_DETALLE(
+    --Parametros de la busqueda
+   P_COD_HEADER         ALC_FORMULHEADER.N_CODHFO%TYPE,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR  
+
+)
+ IS
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+
+BEGIN
+
+  v_query_count:= ' select count(*) ';
+
+  v_query :=  'SELECT * 
+                 FROM(SELECT a.*, rownum rn 
+                        FROM(SELECT  C.C_DDCATL AS E, 
+                                     D.C_DDCATL AS F, 
+                                     B.N_COORDW AS G, 
+                                     B.N_COORDE AS H, 
+                                     B.N_ALTURA AS I, 
+                                     B.C_HORMUE AS J, 
+                                     B.N_PH     AS K, 
+                                     B.N_TEMPEC AS L,
+                                     B.N_CONDUC AS M, 
+                                     B.N_TURBIE AS N, 
+                                     B.N_OXIGEN AS O, 
+                                     B.N_CLOROF AS P, 
+                                     B.C_OBSERV AS Q, 
+                                     B.N_CODMUE AS R,
+                                     A.N_CODHFO AS S
+                                       ';
+
+  v_query_from := ' FROM ALC_FORMULHEADER A 
+                         INNER JOIN ALC_MUESTRFOR242 B ON B.N_CODHFO = A.N_CODHFO
+                         INNER JOIN ALC_DETCATLG     C ON C.C_VALCAT = B.N_LOCMUE AND C.N_CCATLG = 3
+                         INNER JOIN ALC_DETCATLG     D ON D.C_VALCAT = B.N_ESTMUE AND D.N_CCATLG = 6    
+                    WHERE ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := ' 1=1 ';
+
+  v_query_where :=  v_query_where || ' AND A.N_CODHFO = ''' || P_COD_HEADER ||''' AND B.N_STATUS = 1 '; 
+
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+
+  v_query := v_query || ' order by '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' and rn <= ' || (par_pag_desde+par_cantidad_pag);
+
+  OPEN par_out_cursor FOR v_query;
+
+  execute immediate v_query_count into par_out_quantity;
+END;
+
+PROCEDURE PRC_INACTIVA_DETALLE(
+
+P_IDDETALLE                 ALC_MUESTRFOR242.N_CODMUE%TYPE,
+P_ESTADO                    ALC_MUESTRFOR242.N_STATUS%TYPE,
+A_PAR_USUARIO_MODIFICACION  ALC_MUESTRFOR242.A_USUMOD%TYPE
+)
+
+IS 
+BEGIN
+
+  UPDATE ALC_MUESTRFOR242 SET N_STATUS = P_ESTADO,
+                              A_USUMOD = A_PAR_USUARIO_MODIFICACION
+  WHERE N_CODMUE = P_IDDETALLE;
+
+END;
+
+PROCEDURE PRC_INACTIVA_HEADER(
+
+P_ID_HEADER                  ALC_FORMULHEADER.N_CODHFO%TYPE,
+P_ESTADO                     ALC_FORMULHEADER.N_STATUS%TYPE,
+A_PAR_USUARIO_MODIFICACION   ALC_FORMULHEADER.A_USUMOD%TYPE
+)
+
+IS 
+BEGIN
+
+  UPDATE ALC_FORMULHEADER SET N_STATUS = P_ESTADO,
+                              A_USUMOD = A_PAR_USUARIO_MODIFICACION
+  WHERE N_CODHFO = P_ID_HEADER;
+
+  /*UPDATE ALC_MUESTRFOR242 SET N_STATUS = P_ESTADO,
+                              A_USUMOD = A_PAR_USUARIO_MODIFICACION
+  WHERE N_CODHFO = P_ID_HEADER;*/
+
+END;
+
+PROCEDURE PRC_GET_DETALLE(
+   --Parametros de la busqueda
+   P_ID_DETALLE   IN    ALC_MUESTRFOR242.N_CODMUE%TYPE,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+
+BEGIN
+
+   OPEN PAR_OUT_CURSOR FOR
+   /*SELECT B.C_DDCATL, C.C_DDCATL, A.C_COORDW, A.C_COORDE, 
+          A.C_ALTURA, A.D_HORMUE, A.C_PH,     A.C_TEMPEC,
+          A.C_CONDUC, A.C_TURBIE, A.C_OXIGEN, A.C_CLOROF,
+          A.C_OBSERV, A.N_CODMUE */
+   SELECT A.N_LOCMUE, A.N_ESTMUE, A.N_COORDW, A.N_COORDE, 
+          A.N_ALTURA, A.C_HORMUE, A.N_PH,     A.N_TEMPEC,
+          A.N_CONDUC, A.N_TURBIE, A.N_OXIGEN, A.N_CLOROF,
+          A.C_OBSERV, A.N_CODMUE
+
+   FROM ALC_MUESTRFOR242 A 
+        INNER JOIN ALC_DETCATLG B ON A.N_LOCMUE = B.C_VALCAT AND B.N_CCATLG = 3
+        INNER JOIN ALC_DETCATLG C ON A.N_ESTMUE = C.C_VALCAT AND C.N_CCATLG = 6
+
+   WHERE A.N_CODMUE = P_ID_DETALLE AND A.N_STATUS = 1;
+
+END;
+
+
+PROCEDURE PRC_UPDATE_DETALLE(
+  
+   P_LOCALIDAD_MUESTREO          ALC_MUESTRFOR242.N_LOCMUE%TYPE,
+   P_ESTACION_MUESTREO           ALC_MUESTRFOR242.N_ESTMUE%TYPE,
+   P_ALTURA                      ALC_MUESTRFOR242.N_ALTURA%TYPE,
+   P_HORA                        IN VARCHAR2, -- ALC_MUESTRFOR242.D_HORMUE%TYPE,
+   P_COORD_W                     ALC_MUESTRFOR242.N_COORDW%TYPE,
+   P_COORD_E                     ALC_MUESTRFOR242.N_COORDE%TYPE,
+   P_PH                          ALC_MUESTRFOR242.N_PH%TYPE,
+   P_TEMPERATURA                 ALC_MUESTRFOR242.N_TEMPEC%TYPE,
+   P_CONDUCTIVIDAD               ALC_MUESTRFOR242.N_CONDUC%TYPE,
+   P_TURBIEDAD                   ALC_MUESTRFOR242.N_TURBIE%TYPE,
+   P_OXIGENO                     ALC_MUESTRFOR242.N_OXIGEN%TYPE,
+   P_CLOROFILA                   ALC_MUESTRFOR242.N_CLOROF%TYPE,
+   P_FICOCIANINA                 ALC_MUESTRFOR242.N_FICOCI%TYPE,
+   P_OBSERVACION                 ALC_MUESTRFOR242.C_OBSERV%TYPE,
+   P_CODIGO_DETALLE              ALC_MUESTRFOR242.N_CODMUE%TYPE,
+   --Campos de Auditoria
+   A_PAR_USUARIO_MODIFICACION    ALC_MUESTRFOR242.A_USUMOD%TYPE
+ )
+ IS
+ BEGIN
+   
+  UPDATE ALC_MUESTRFOR242
+  SET  
+         A_USUMOD = A_PAR_USUARIO_MODIFICACION,
+         N_LOCMUE = P_LOCALIDAD_MUESTREO,
+         N_ESTMUE = P_ESTACION_MUESTREO,
+         N_ALTURA = P_ALTURA,
+         C_HORMUE = P_HORA,
+         N_COORDW = P_COORD_W,
+         N_COORDE = P_COORD_E,
+         N_PH     = P_PH,
+         N_TEMPEC = P_TEMPERATURA,
+         N_CONDUC = P_CONDUCTIVIDAD,
+         N_TURBIE = P_TURBIEDAD,
+         N_OXIGEN = P_OXIGENO,
+         N_CLOROF = P_CLOROFILA,
+         C_OBSERV = P_OBSERVACION
+       
+  WHERE N_CODMUE = P_CODIGO_DETALLE;
+  
+END;
+
+PROCEDURE PRC_UPDATE_HEADER242(
+  
+   P_ID_HEADER                      ALC_FORMULHEADER.N_CODHFO%TYPE,
+   P_FECHA_MUESTREO                 IN VARCHAR2,
+   P_FECHA_RECEPCION                IN VARCHAR2,
+   P_PERSONA_MUESTREA               ALC_FORMULHEADER.C_PERMUE%TYPE,
+   P_PERSONA_RECEPCION              ALC_FORMULHEADER.C_PERECE%TYPE,
+   P_OBSERVACION                    ALC_FORMULHEADER.C_OBSERV%TYPE,  
+   
+   ---AUDITORIA---
+   P_USUARIO_MODIF                  ALC_FORMULHEADER.A_USUMOD%TYPE,
+   P_NOMBRE_PROG                    ALC_FORMULHEADER.A_NOMPRG%TYPE,
+   PAR_TRACHO                       ALC_FORMULHEADER.C_TRACHO%TYPE,
+   PAR_CUMPLE                       ALC_FORMULHEADER.N_CUMPLE%TYPE
+ )
+ IS
+ BEGIN
+   
+  UPDATE ALC_FORMULHEADER H
+  SET  
+         H.A_USUMOD = P_USUARIO_MODIF,
+         H.A_FECMOD = SYSDATE,
+         H.A_NOMPRG = P_NOMBRE_PROG,
+         H.D_FECMUE = TO_DATE(P_FECHA_MUESTREO, 'DD/MM/YYYY HH24:MI:SS'),
+         H.D_RECMUE = TO_DATE(P_FECHA_RECEPCION, 'DD/MM/YYYY HH24:MI:SS'),
+         H.C_PERMUE = P_PERSONA_MUESTREA,  
+         H.C_PERECE = P_PERSONA_RECEPCION,
+         H.C_OBSERV = P_OBSERVACION,
+         H.C_TRACHO = PAR_TRACHO,
+         H.N_CUMPLE = PAR_CUMPLE
+  WHERE H.N_CODHFO = P_ID_HEADER;
+  
+END;
+
+end PKC_ALC_FORM242;

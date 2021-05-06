@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('bandeja.title')}"></title>
+<script th:inline="javascript">
+	var contextPath = /*[[@{/}]]*/ ;
+	lstRios = [[${riosAutocomplete}]];
+</script>
+</head>
+<body>
+	<div layout:fragment="content">
+	
+		<input type="hidden" id="detailErrorMessage" th:if="${ultimaCarga != null}" th:value="${ultimaCarga.strDescError}"/>
+
+		<h3 class="text-center" th:text="${#messages.msg('bandeja.home')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<fieldset>
+				<div class="col-md-12 espaciado-superior">
+					<div class="col-md-12" th:if="${ultimaCarga != null}">
+						<div th:if="${ultimaCarga.strEstado == '1'}" class="alert alert-success" role="alert">
+							<label class="mensaje-negrita" th:text="${#messages.msg('bandeja.caudales.exito')}"></label>
+							<label th:text="${ultimaCarga.strMensajeAlerta}"></label> 
+						</div>
+						<div th:if="${ultimaCarga.strEstado == '2'}" class="alert alert-danger" role="alert">
+							<label class="mensaje-negrita" th:text="${#messages.msg('bandeja.caudales.error')}"></label>
+							<label th:text="${ultimaCarga.strMensajeAlerta}"></label> 
+							<a href="#" onclick="showErrorDetail()"><label class="mensaje-negrita" th:text="${#messages.msg('bandeja.caudales.vererror')}"></label> </a>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			
+			<form name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">
+				<fieldset>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						
+						<div class="col-md-12 col-sm-12 col-xs-12">
+						
+							<div class="form-group">
+									<label class="control-label col-md-2 text-right no-padding" th:text="${#messages.msg('bandeja.caudales.nombre.largo')}"></label>
+									<div class="col-md-3">
+										<input 	type="text" 
+										id="rioNombreLargo" 
+										name="nombreLargo" 
+										class="form-control" 
+										th:placeholder="${#messages.msg('bandeja.caudales.nombre.largo')}"
+										style="text-transform: uppercase;" />
+									</div>
+									
+									<label class="control-label col-md-2 text-right no-padding" th:text="${#messages.msg('bandeja.caudales.tipo.proceso')}"></label>
+									<div class="col-md-2">
+										<select id="cbxTipoProceso" name="tipoProceso" class="form-control">
+										</select>
+										<input type="hidden" value="" id="tipoProcesoHide"/>
+									</div>
+									
+									<label class="control-label col-md-1 text-right no-padding" th:text="${#messages.msg('bandeja.caudales.fecha')}"></label>
+									<div class="col-md-2">
+										<input type="text" id="txtPeriodo" name="periodo" class="form-control" 
+											th:placeholder="${#messages.msg('bandeja.caudales.fecha')}"
+											title ="Ingrese el periodo"  
+											style="text-align: center;" 
+											readonly="readonly"
+											maxlength="6" />
+										<input type="hidden" value="" id="txtPeriodoHide"/>
+									</div>	
+						   </div>
+  
+					</div>
+						
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<form role="form" th:action="@{/historialCargas}" method="get">
+					<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-left">
+						<button type="submit" class="btn btn-info">
+							<span class="glyphicon glyphicon-time"></span>
+							<div style="display: inherit;" th:text="${#messages.msg('bandeja.caudales.agregar')}"></div>
+						</button>
+					</div>
+				</form>
+				<div class="col-md-6 col-sm-6 col-xs-12 no-padding text-right">
+					<button type="button" id="idBtnFormBuscaCaudal" class="btn btn-primary"><span class="glyphicon glyphicon-search">&nbsp;</span><label th:text="${#messages.msg('tipoProceso.buscar')}"></label></button>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="container_12">
+				<div th:replace="bandejaCaudalesTable :: resultsList" class="grid_10 height800" id="idTipoProcesoTable"></div>
+			</div>
+			<script type="text/javascript" th:src="@{/js/bandejaCaudales.js}"></script>
+		</div>
+	</div>
+</body>
+
+</html>

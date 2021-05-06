@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-edit-turbidimetroDigital">
+	
+		
+	
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('turbidimetroDigital.registrar')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('turbidimetroDigital.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('turbidimetroDigital.crear')}">Crear texto html</span>
+		</div>
+		
+		
+		<div class="modal-footer">
+		
+			<form name="form-edit-turbidimetroDigital" id="form-edit-turbidimetroDigital-id" method="post" 
+				  th:action="@{/turbidimetroDigitalSave}" th:object="${turbidimetroDigitalEditBean}"
+				  role="form">
+				  	<input type="hidden" id="codigo" name="codigo" th:value="${turbidimetroDigitalEditBean.intCodigo}" />		
+				  	<input type="hidden" id="codigoTipo" name="codigoTipo" th:value="${codigoTipoDocumento}" />
+				  	<input type="hidden" id="tipArchDocumento" name="tipArchDocumento" th:value="${tipArchDocumento}" />
+				  	<input type="hidden" id="tamMaxArchDocumento" name="tamMaxArchDocumento" th:value="${tamMaxArchDocumento}" />
+				  	<input type="hidden" id="page" name="page" th:value="${turbidimetroDigitalEditBean.page}" />	
+				  	<fieldset class="col-md-12">									
+					 <div class="center"> 
+					 	<div class="col-md-12 col-sm-12 col-xs-12">	
+							<div class="col-md-12 col-sm-12 col-xs-12">											                    
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="codUbicacion"><span th:text="${#messages.msg('turbidimetroDigital.ubicacion')}"></span></label>
+								<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+									<select class="form-control" id="codUbicacion" name="codUbicacion" th:field="*{intUbicacion}" style="height: 33px;"></select>
+									
+									
+									<input type="hidden" id="intCodigo" th:field="*{intCodigo}" />											                    	 	   			                    	 
+			                    </div>
+			                    
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strNomEquipo"><span th:text="${#messages.msg('turbidimetroDigital.nomEquipo')}"></span></label>
+								<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+									<input type="text"  class="form-control" id="strNomEquipo"
+			                    		maxlength="20"  th:field="*{strNomEquipo}" onkeypress="return MYAPPL.soloNumerosLetrasGuionesComas(event)"
+			                    	 	/>			                    	 	   			                    	 
+			                    </div>	
+			                    	
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strCodEquipo"><span th:text="${#messages.msg('turbidimetroDigital.codigo')}"></span></label>
+								<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+									<input type="text"  class="form-control " id="strCodEquipo"
+			                    		maxlength="20"  th:field="*{strCodEquipo}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"
+			                    	 	/>	
+			                    	 <input type="hidden" id="strCodEquipoHide" th:field="*{strCodEquipoHide}" />				                    	 	   			                    	 
+			                    </div>			                    			                    
+			 				</div>
+			 						 				
+			 				<div class="col-md-12 col-sm-12 col-xs-12">	
+			 					<label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strMarca"><span th:text="${#messages.msg('turbidimetroDigital.marca')}"></span></label>
+								<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+									<input type="text"  class="form-control" id="strMarca"
+			                    		maxlength="20"  th:field="*{strMarca}" onkeypress="return MYAPPL.soloNumerosLetrasGuionesComas(event)"
+			                    	 	/>		                    	 	   			                    	 
+			                    </div>	
+			                    
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strModelo"><span th:text="${#messages.msg('turbidimetroDigital.modelo')}"></span></label>
+								<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+									<input type="text"  class="form-control" id="strModelo"
+			                    		maxlength="20"  th:field="*{strModelo}" onkeypress="return MYAPPL.soloNumerosLetrasGuionesComas(event)"
+			                    	 	/>		                    	 	   			                    	 
+			                    </div>	
+			                    										                    
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="intMesCalibracion"><span th:text="${#messages.msg('turbidimetroDigital.mesCalibracion')}"></span></label>
+								<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+									<select class="form-control" id="codMes" name="codMes" th:field="*{intMesCalibracion}" style="height: 33px;"></select>
+									<input type="hidden" id="codMesHide" th:field="*{intMesCalibracion}" />				                    	 	   			                    	 
+			                    </div>			                    
+			                    		                    			                    
+			 				</div>
+			 				
+			 				<div class="col-md-12 col-sm-12 col-xs-12">			                    
+			                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="intProxMesCalibracion"><span th:text="${#messages.msg('turbidimetroDigital.proxMesCalif')}"></span></label>
+								<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+									<select class="form-control" id="codMesProx" name="codMesProx" th:field="*{intProxMesCalibracion}" style="height: 33px;"></select>	
+									<input type="hidden" id="codMesProxHide" th:field="*{intProxMesCalibracion}" />										                    	 	   			                    	 
+			                    </div>				                    		                    			                    
+			 				</div>
+			 							 									
+					 	</div> 	
+					 </div>
+					 <div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0px;">
+					 	<div class="panel panel-success">
+							<div class="panel-heading left-align">
+								<label class="control-label" th:text="${#messages.msg('turbidimetroDigital.patronesSecundario')}"></label>
+							</div>
+							<div class="panel-body">
+								 	<div class="row">										                    
+					                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left" for="codGrupo"><span th:text="${#messages.msg('turbidimetroDigital.rangoNTU')}"></span></label>
+										<div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)" maxlength="20"
+					                    		  th:field="*{strRangoNTU1}"/>			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strRangoNTU2}"/>			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strRangoNTU3}" />			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strRangoNTU4}" />			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strRangoNTU5}"/>			                    	 		                    	 	   			                    	 
+					                    </div>	
+											                    			                    
+						 			</div>
+						 			<div class="row">										                    
+					                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left" for="codGrupo"><span th:text="${#messages.msg('turbidimetroDigital.valorMaxNTU')}"></span></label>
+										<div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strMaxNTU1}" />			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strMaxNTU2}"/>			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strMaxNTU3}" />			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strMaxNTU4}"/>			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strMaxNTU5}"/>			                    	 		                    	 	   			                    	 
+					                    </div>	
+											                    			                    
+						 			</div>
+						 			<div class="row">										                    
+					                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-left" for="codGrupo"><span th:text="${#messages.msg('turbidimetroDigital.valorMinNTU')}"></span></label>
+										<div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strMinNTU1}"/>			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2 ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strMinNTU2}"/>			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strMinNTU3}" />			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strMinNTU4}" />			                    	 		                    	 	   			                    	 
+					                    </div>	
+					                    <div class="form-group col-md-2 col-sm-2 col-xs-2  ">
+											<input type="text"  class="form-control letraMayuscula" onkeypress="return MYAPPL.soloNumerosPunto(event)"
+					                    		maxlength="20"  th:field="*{strMinNTU5}"/>			                    	 		                    	 	   			                    	 
+					                    </div>											                    			                    
+						 			</div>
+						 		</div>
+						 	</div>
+						 </div>
+
+					 </fieldset> 	 
+					 <fieldset class="col-md-12">
+						<div class="panel panel-info">
+							<div class="panel-body">
+								<div class="row">
+									<div class="form-horizontal">
+										<div id="upload_files_turb_digi">
+												<div th:replace="/COMM/subidaArchivos :: fileUpload"></div>
+											</div>
+									</div>
+								</div>
+							</div>
+						</div>			
+					</fieldset>	 	 
+					  	 
+					 
+					 <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset>  					
+					       				
+			</form>
+			
+			
+			 <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+				<div id="idTableVerificacion">
+					<div class="container_12">					 
+					 	<button type="button" class="btn btn-info btn-crear-mant-correo" data-toggle="modal" onclick="modificarVerifTurbidimetroDigital('$(#intCodigo).val()')"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('tipoProceso.agregar')}"></label></button>
+					</div>
+					
+					<div class="container_12 espaciado-superior">
+						<div th:replace="turbidimetroDigital/turbidimetroDigitalVerifiTable :: resultsListVerif" class="grid_10 height800" id="idTurbidimetroDigitalVerifTable"></div>
+					</div>	
+				</div>	
+			</fieldset>
+			<script th:inline="javascript">
+				MYAPPL.LOGIC.TURB_DIGI.initUpload();
+			</script>
+			
+		</div>
+	</div>
+</body>
+</html>

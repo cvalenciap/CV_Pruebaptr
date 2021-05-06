@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsListFirst" class="grid_10 height800" id="idMuestraFirstTable">
+		
+		<table  class="fancyTable" id="myTableMuestraFirst" cellpadding="0" cellspacing="0" style="width: 130%">
+			<thead>
+				<tr>		
+					<th th:text="${#messages.msg('muestraFirst.table.vacio')}" class="alto_div" colspan="4" style="width: 110px;"></th>			
+
+					<th th:text="${#messages.msg('muestraFirst.table.col33')}" colspan="2" style="width: 70px;"></th>
+						
+					<th th:text="${#messages.msg('muestraFirst.table.col55')}" colspan="2" style="width: 70px;"></th>
+					
+					<th th:text="${#messages.msg('muestraFirst.table.vacio')}" style="width: 35px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.col88')}" colspan="2" style="width: 70px;"></th>
+						
+					<th th:text="${#messages.msg('muestraFirst.table.vacio')}" style="width: 35px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.vacio')}" style="width: 30px; " ></th>		
+					<th th:text="${#messages.msg('muestraFirst.table.vacio')}" style="width: 25px;"></th>					
+				</tr>
+				<tr>		
+					<th th:text="${#messages.msg('muestraFirst.table.col0')}" style="width: 20px;"></th>			
+					<th th:text="${#messages.msg('muestraFirst.table.col1')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.col12')}" style="width: 100px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.col2')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.col3')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.col4')}" style="width: 50px;"></th>	
+					<th th:text="${#messages.msg('muestraFirst.table.col5')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.col6')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.col7')}" style="width: 35px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.col8')}" style="width: 50px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.col9')}" style="width: 50px;"></th>	
+					<th th:text="${#messages.msg('muestraFirst.table.col10')}" style="width: 35px;"></th>
+					<th th:text="${#messages.msg('muestraFirst.table.col11')}" style="width: 5px;" ></th>		
+					<th th:text="DUPLICADO" style="width: 25px;"></th>					
+				</tr>
+			</thead>
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTableMuestraFirst').DataTable({
+					"bProcessing": true,
+					"serverSide": false,
+					"searching": false,
+					"lengthChange":   false,
+					"bPaginate": false,
+					"bInfo": false,
+					"ordering" : false,
+					"ajax":{
+						url :"muestraFirst/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTableMuestraFirst_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	
+			            	d.idCabecera = $('#intIdHide').val();
+			            }
+					},
+					"order": [ 12, 'asc' ],
+					"columnDefs": [ 
+						///{ targets: '_all', visible: true,  },		
+			            {"width": "90px",
+		        			className: "dt-body-left",
+		                "targets": 1                
+		            	},
+			            {"width": "50px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": [2,3,4,5,6,7,8]                
+			            },
+			            
+			            { targets: 9 , orderable: false, data: 1, className: "dt-body-center", render: 
+			            	function(data, type, row){  
+			            	var retorno;
+
+				            	if(row[15] == 2 || row[15] == 5 || row[16] > 0 ){
+			            			retorno = row[9];
+			            		}else{
+			            			retorno = '';
+			            		}			            			
+								
+								return retorno;	 
+			            	}
+			            },
+			            { targets: 10 , orderable: false, data: 1, className: "dt-body-center", render: 
+			            	function(data, type, row){  
+			            	var retorno2;
+
+				            	if(row[15] == 2 || row[15] == 5 || row[16] > 0){
+			            			retorno2 = row[10];
+			            		}else{
+			            			retorno2 = '';
+			            		}			            			
+								
+								return retorno2;	 
+			            	}
+			            },
+			            { targets: 11 , orderable: false, data: 1, className: "dt-body-center", render: 
+			            	function(data, type, row){  
+			            	var retorno3;
+
+			            		if(row[15] == 2 || row[15] == 5 || row[16] > 0){
+			            			retorno3 = row[11];
+			            		}else{
+			            			retorno3 = '';
+			            		}		            			
+								
+								return retorno3;	 
+			            	}
+			            },
+			            {  
+			            	"width": "50px",
+			            	className: "dt-body-center alto_imput",
+			                "targets": 12                
+			            },
+			            { targets: 13, orderable: false, data: 1, className: "dt-body-center", render: 
+			            	function(data, type, row){  
+			            	var retorno1;
+			          
+			            		if(row[13] != 0){
+			            			retorno1 = '<input type="checkbox" onclick="addDuplicadoMuestraFirst('+row[12]+')" checked="checked" disabled="disabled"/>';
+			            			
+			            		}else{
+			            			retorno1 = '<input type="checkbox" onclick="addDuplicadoMuestraFirst('+row[12]+')" />';
+			            		}
+
+								var retorno = row[1] != 'DUPLICADO'? retorno1 : '<button class="btn btn-danger btn-delete-punto" title="Eliminar" onclick="deleteDuplicadoMuestraFirst('+row[12]+')"><span class="glyphicon glyphicon-erase"></span></button>';
+								
+								if(row[1] == 'DUPLICADO'){
+			            			if( (row[2] == '' || row[2] == undefined)){ //verifica si hay contenido en el segundo campo
+			            				retorno = '';
+			            			}
+			            			
+			            		}
+								
+								return retorno;	 
+			            	}
+			            },
+		              	{"width": "15px",
+		              		className: "dt-body-center",
+		              		"orderable": false,
+		              		"targets": 0,
+		              		visible: true,
+		              		"data": 1,
+		              		"render": function ( data, type, row) {
+		              			return row[1] != 'DUPLICADO'? '<button class="btn btn-info btn-modif-punto" title="Editar Equipo" onclick="modificarMuestraFirst('+row[12]+')"><span class="glyphicon glyphicon-pencil"></span></button>':"";
+		              		}
+		              	}
+					]
+				});
+			}); 
+			
+			
+		</script>	
+	</div>
+</body>
+</html>

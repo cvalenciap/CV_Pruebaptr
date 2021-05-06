@@ -1,0 +1,196 @@
+create or replace package PKC_ALC_FORM222 is
+
+PROCEDURE PRC_LISTADO_HEADER_FORM222(
+    --Parametros de la busqueda
+   P_FECHA_MUESTREO          IN VARCHAR2,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR      
+ );
+ 
+ PROCEDURE PRC_GET_HEADER222(
+   --Parametros de la busqueda
+   P_ID_HEADER   IN    ALC_FORMULHEADER.N_CODHFO%TYPE,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+);
+
+PROCEDURE PRC_INSERT_HEADER222(
+  
+   P_IDMUESTREA1                 ALC_FORMULARI222.N_MUESTR%TYPE,
+   P_IDMUESTREA2                 ALC_FORMULARI222.N_PARAME%TYPE,
+   P_IDRECEPCIONA1               ALC_FORMULARI222.N_ARMETA%TYPE,
+   P_IDRECEPCIONA2               ALC_FORMULARI222.N_ARFISI%TYPE,
+   P_IDRECEPCIONA3               ALC_FORMULARI222.N_ARORGA%TYPE,
+   P_IDANALISTA                  ALC_FORMULARI222.N_ESPECI%TYPE,
+   P_OBSERV                      ALC_FORMULARI222.C_OBSERV%TYPE,
+   P_CODMUESTRA1                 ALC_FORMULARI222.C_CODMUE1%TYPE,
+   P_CODMUESTRA2                 ALC_FORMULARI222.C_CODMUE2%TYPE,
+   P_CODMUESTRA3                 ALC_FORMULARI222.C_CODMUE3%TYPE,
+   P_DUP1                        ALC_FORMULARI222.N_DUP01%TYPE,
+   P_DUP2                        ALC_FORMULARI222.N_DUP02%TYPE,
+   P_DUP3                        ALC_FORMULARI222.N_DUP03%TYPE,
+   P_DUP4                        ALC_FORMULARI222.N_DUP04%TYPE,
+   P_DUP5                        ALC_FORMULARI222.N_DUP05%TYPE,
+   P_PRO1                        ALC_FORMULARI222.N_PR01%TYPE,
+   P_PRO2                        ALC_FORMULARI222.N_PR02%TYPE,
+   P_PRO3                        ALC_FORMULARI222.N_PR03%TYPE,
+   P_PRO4                        ALC_FORMULARI222.N_PR04%TYPE,
+   P_PRO5                        ALC_FORMULARI222.N_PR05%TYPE,
+   P_RDS1                        ALC_FORMULARI222.N_RDS01%TYPE,
+   P_RDS2                        ALC_FORMULARI222.N_RDS02%TYPE,
+   P_RDS3                        ALC_FORMULARI222.N_RDS03%TYPE,
+   P_RDS4                        ALC_FORMULARI222.N_RDS04%TYPE,
+   P_RDS5                        ALC_FORMULARI222.N_RDS05%TYPE,
+   P_FEC_MUESTREO                IN VARCHAR2,
+   --Campos de Auditoria
+   A_PAR_USUARIO_CREACION           ALC_FORMULARI222.A_USUCRE%TYPE,
+   A_PAR_USUARIO_MODIFICACION       ALC_FORMULARI222.A_USUMOD%TYPE,
+   A_PAR_NOMBRE_PROGRAMA            ALC_FORMULARI222.A_NOMPRG%TYPE
+ );
+ 
+ PROCEDURE PRC_INSERT_DETALLE222(
+              
+   P_ID_HEADER                      ALC_MUESTRFRM222.N_COF255%TYPE,            
+   P_FEC_MUESTREO                   IN VARCHAR2,
+   P_NRO_FRASCO                     ALC_MUESTRFRM222.C_NRFRAS%TYPE,
+   P_PUNTO_MUESTREO                 ALC_MUESTRFRM222.C_ESTMUE%TYPE,
+   P_COD_MUESTRA                    ALC_MUESTRFRM222.C_IDENMU%TYPE,
+   P_NRO_ENVASE                     ALC_MUESTRFRM222.C_ENVASE%TYPE,
+   P_TIPO_MUESTRA                   ALC_MUESTRFRM222.C_TIPMUE%TYPE,
+   P_TIPO_PRESERVACION              ALC_MUESTRFRM222.C_PRESER%TYPE,
+   P_OD                             ALC_MUESTRFRM222.N_PARAOD%TYPE,
+   P_PH                             ALC_MUESTRFRM222.N_PARAPH%TYPE, 
+   P_TEMP                           ALC_MUESTRFRM222.N_PARTEM%TYPE,
+   P_COND                           ALC_MUESTRFRM222.N_CONDUS%TYPE,
+   P_TURB                           ALC_MUESTRFRM222.N_TURNTU%TYPE,
+   P_FE                             ALC_MUESTRFRM222.C_FE%TYPE,
+   P_MN                             ALC_MUESTRFRM222.C_MN%TYPE,
+   P_CR                             ALC_MUESTRFRM222.C_CR%TYPE,
+   P_PB                             ALC_MUESTRFRM222.C_PB%TYPE,
+   P_ZN                             ALC_MUESTRFRM222.C_ZN%TYPE,
+   P_AS                             ALC_MUESTRFRM222.C_AS%TYPE,
+   P_CD                             ALC_MUESTRFRM222.C_CD%TYPE,
+   P_BA                             ALC_MUESTRFRM222.C_BA%TYPE,
+   P_SE                             ALC_MUESTRFRM222.C_SE%TYPE,
+   P_AL                             ALC_MUESTRFRM222.C_AL%TYPE,
+   P_NA                             ALC_MUESTRFRM222.C_NA%TYPE,
+   P_SB                             ALC_MUESTRFRM222.C_SB%TYPE,
+   P_CU                             ALC_MUESTRFRM222.C_CU%TYPE,
+   P_K                              ALC_MUESTRFRM222.C_K%TYPE,
+   P_HG                             ALC_MUESTRFRM222.C_HG%TYPE,
+   P_T_ENVASE                       ALC_MUESTRFRM222.C_TENVASE%TYPE,
+   --Campos de Auditoria
+   A_PAR_USUARIO_CREACION           ALC_MUESTRFRM222.A_USUCRE%TYPE,
+   A_PAR_USUARIO_MODIFICACION       ALC_MUESTRFRM222.A_USUMOD%TYPE,
+   A_PAR_NOMBRE_PROGRAMA            ALC_MUESTRFRM222.A_NOMPRG%TYPE
+ );
+ 
+ 
+ PROCEDURE PRC_LISTADO_DETALLE222(
+    --Parametros de la busqueda
+   P_COD_HEADER222         ALC_MUESTRFRM222.N_COF255%TYPE,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR  
+       
+);
+
+PROCEDURE PRC_UPDATE_HEADER222(
+   
+   P_FEC_MUESTREO                IN VARCHAR2,
+   P_IDMUESTREA1                 ALC_FORMULARI222.N_MUESTR%TYPE,
+   P_IDMUESTREA2                 ALC_FORMULARI222.N_PARAME%TYPE,
+   P_IDRECEPCIONA1               ALC_FORMULARI222.N_ARMETA%TYPE,
+   P_IDRECEPCIONA2               ALC_FORMULARI222.N_ARFISI%TYPE,
+   P_IDRECEPCIONA3               ALC_FORMULARI222.N_ARORGA%TYPE,
+   P_IDANALISTA                  ALC_FORMULARI222.N_ESPECI%TYPE,
+   P_OBSERV                      ALC_FORMULARI222.C_OBSERV%TYPE,
+   P_CODMUESTRA1                 ALC_FORMULARI222.C_CODMUE1%TYPE,
+   P_CODMUESTRA2                 ALC_FORMULARI222.C_CODMUE2%TYPE,
+   P_CODMUESTRA3                 ALC_FORMULARI222.C_CODMUE3%TYPE,
+   P_DUP1                        ALC_FORMULARI222.N_DUP01%TYPE,
+   P_DUP2                        ALC_FORMULARI222.N_DUP02%TYPE,
+   P_DUP3                        ALC_FORMULARI222.N_DUP03%TYPE,
+   P_DUP4                        ALC_FORMULARI222.N_DUP04%TYPE,
+   P_DUP5                        ALC_FORMULARI222.N_DUP05%TYPE,
+   P_PRO1                        ALC_FORMULARI222.N_PR01%TYPE,
+   P_PRO2                        ALC_FORMULARI222.N_PR02%TYPE,
+   P_PRO3                        ALC_FORMULARI222.N_PR03%TYPE,
+   P_PRO4                        ALC_FORMULARI222.N_PR04%TYPE,
+   P_PRO5                        ALC_FORMULARI222.N_PR05%TYPE,
+   P_RDS1                        ALC_FORMULARI222.N_RDS01%TYPE,
+   P_RDS2                        ALC_FORMULARI222.N_RDS02%TYPE,
+   P_RDS3                        ALC_FORMULARI222.N_RDS03%TYPE,
+   P_RDS4                        ALC_FORMULARI222.N_RDS04%TYPE,
+   P_RDS5                        ALC_FORMULARI222.N_RDS05%TYPE,
+   P_ID_HEADER                   ALC_FORMULARI222.N_COF255%TYPE,
+   ---AUDITORIA---
+   P_USUARIO_MODIF               ALC_FORMULARI222.A_USUMOD%TYPE,
+   P_NOMBRE_PROG                 ALC_FORMULARI222.A_NOMPRG%TYPE
+ );
+ 
+PROCEDURE PRC_GET_DETALLE222(
+   --Parametros de la busqueda
+   P_ID_DETALLE222   IN    ALC_MUESTRFRM222.N_COM222%TYPE,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+);
+
+PROCEDURE PRC_UPDATE_DETALLE222(
+   
+   P_ID_DETALLE                     ALC_MUESTRFRM222.N_COM222%TYPE,           
+   P_FEC_MUESTREO                   IN VARCHAR2,
+   P_NRO_FRASCO                     ALC_MUESTRFRM222.C_NRFRAS%TYPE,
+   P_PUNTO_MUESTREO                 ALC_MUESTRFRM222.C_ESTMUE%TYPE,
+   P_COD_MUESTRA                    ALC_MUESTRFRM222.C_IDENMU%TYPE,
+   P_NRO_ENVASE                     ALC_MUESTRFRM222.C_ENVASE%TYPE,
+   P_TIPO_MUESTRA                   ALC_MUESTRFRM222.C_TIPMUE%TYPE,
+   P_TIPO_PRESERVACION              ALC_MUESTRFRM222.C_PRESER%TYPE,
+   P_OD                             ALC_MUESTRFRM222.N_PARAOD%TYPE,
+   P_PH                             ALC_MUESTRFRM222.N_PARAPH%TYPE, 
+   P_TEMP                           ALC_MUESTRFRM222.N_PARTEM%TYPE,
+   P_COND                           ALC_MUESTRFRM222.N_CONDUS%TYPE,
+   P_TURB                           ALC_MUESTRFRM222.N_TURNTU%TYPE,
+   P_FE                             ALC_MUESTRFRM222.C_FE%TYPE,
+   P_MN                             ALC_MUESTRFRM222.C_MN%TYPE,
+   P_CR                             ALC_MUESTRFRM222.C_CR%TYPE,
+   P_PB                             ALC_MUESTRFRM222.C_PB%TYPE,
+   P_ZN                             ALC_MUESTRFRM222.C_ZN%TYPE,
+   P_AS                             ALC_MUESTRFRM222.C_AS%TYPE,
+   P_CD                             ALC_MUESTRFRM222.C_CD%TYPE,
+   P_BA                             ALC_MUESTRFRM222.C_BA%TYPE,
+   P_SE                             ALC_MUESTRFRM222.C_SE%TYPE,
+   P_AL                             ALC_MUESTRFRM222.C_AL%TYPE,
+   P_NA                             ALC_MUESTRFRM222.C_NA%TYPE,
+   P_SB                             ALC_MUESTRFRM222.C_SB%TYPE,
+   P_CU                             ALC_MUESTRFRM222.C_CU%TYPE,
+   P_K                              ALC_MUESTRFRM222.C_K%TYPE,
+   P_HG                             ALC_MUESTRFRM222.C_HG%TYPE,
+   P_T_ENVASE                       ALC_MUESTRFRM222.C_TENVASE%TYPE,
+   ---AUDITORIA---
+   P_USUARIO_MODIF               ALC_FORMULARI222.A_USUMOD%TYPE,
+   P_NOMBRE_PROG                 ALC_FORMULARI222.A_NOMPRG%TYPE
+ );
+ 
+ PROCEDURE PRC_INACTIVA_DETALLE222(
+   
+   P_ID_DETALLE                 ALC_MUESTRFRM222.N_COM222%TYPE,
+   P_STATUS                     ALC_MUESTRFRM222.N_STATUS%TYPE
+   ---AUDITORIA---
+   /*P_USUARIO_MODIF              ALC_FORMULARI222.A_USUMOD%TYPE,
+   P_NOMBRE_PROG                ALC_FORMULARI222.A_NOMPRG%TYPE*/
+ );
+ 
+
+end PKC_ALC_FORM222;

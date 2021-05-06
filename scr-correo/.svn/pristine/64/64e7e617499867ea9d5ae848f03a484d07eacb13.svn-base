@@ -1,0 +1,8 @@
+#PRODUCCION
+
+spring.thymeleaf.cache=false
+jdbc.driverClassName = oracle.jdbc.driver.OracleDriver
+jdbc.url=jdbc\:oracle\:thin\:@1.48.1.137\:1610\/DBAPLIC
+jdbc.username = AGLC_CONEX
+jdbc.password = DESARROLLO
+oracle.schema.procedures=AGLC

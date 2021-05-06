@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+    <div th:fragment="resultsList" class="grid_10 ">
+    
+        <br/>
+        <form name="form-edit-tablaPoisson" id="form-edit-analisis-hidro"
+            method="post" th:action="@{/analisisHidroBiologicoSave}" th:object="${analisisHidroBiologicoMain}" role="form">
+                
+                <div class="center" >
+                
+                
+                <div class="containerform">
+                <p class="main_heading">
+                    <legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+                </p>
+                
+                <fieldset>
+                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:10px">
+                        <div class="form-group">
+                        	<div class="col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label col-md-2 col-sm-2 col-xs-2 text-right" >Fecha</label>
+                            <div class="col-md-4 col-sm-4 col-xs-4">
+                                <input type="text" class="form-control" id="idFechaAnalisisHidro" name="idFechaMuestreo"   th:field="*{fecha}"  maxlength="20" />
+                            </div>
+                            
+                            <label class="control-label col-md-2 col-sm-2 col-xs-2 text-right" th:text="${#messages.msg('reporte.hidrobiologico.grupo.organismo')}"></label>
+                            <div class="col-md-4 col-sm-4 col-xs-4">
+                                <select class="form-control" id="cboOrganismos" name="codsub" style="height: 33px;" th:field="*{tipoOrganismo}" >
+                               		
+                                    <option  th:value="${#messages.msg('reporte.hidrobiologico.catalogo.algas')}" th:text="${#messages.msg('reporte.hidrobiologico.column.algas')}" data-med="Org/mL"></option>
+                                    <option value="22" th:text="${#messages.msg('reporte.hidrobiologico.column.cianobacterias')}" data-med="Org/mL"></option>
+                                    <option value="23" th:text="${#messages.msg('reporte.hidrobiologico.column.nematodes')}" data-med="Org/L"></option>
+                                    <option value="24" th:text="${#messages.msg('reporte.hidrobiologico.column.otros')}" data-med="Org/L"></option>
+                                </select>
+                            </div>
+<!--                             <label class="ontrol-label col-md-2 col-sm-2 col-xs-2 text-right" >Hora</label> -->
+<!--                             <div class="col-md-4 col-sm-4 col-xs-4"> -->
+<!--                                 <input type="text" class="form-control" id="idHoraAnalisisHidro" name="idHoraMuestreo"   th:field="*{hora}"  maxlength="8" /> -->
+<!--                             </div> -->
+                            
+                            </div>
+                            <br></br>
+                            <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top:5px">
+                            <label class="control-label col-md-2 col-sm-2 col-xs-2 text-right" th:text="${#messages.msg('analisis.hidrobiologico.punto.muestreo')}"></label>
+                            <div class="col-md-10 col-sm-10 col-xs-10">
+                                <select class="form-control" id="cboPuntos" name="cboPuntos" th:field="*{codsub}" style="height: 33px;"></select>
+<!-- 									<input type="text" class="form-control" id="cboPuntos" name="cboPuntos" th:field="*{codsub}" style="height: 33px;"></input> -->
+                            </div>
+                            
+                            
+                         
+                            
+                            </div>
+                            
+                            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                            	 <button type="button" class="btn btn-primary btn-sm"
+                                        id="buscarAnalisis" th:value="Buscar" onclick="cargarOrganismos();">Buscar</button>
+                            </div>
+                          
+                        </div>
+                          <br></br>
+                            <br></br>
+                    </div>
+                    </fieldset>
+                    </div>
+                    <br/>
+                
+                    <div class="row headertable border-plan-operativo margen-reporte-plan text-center hidden">
+                        <div class="col-md-3 col-sm-3 col-xs-3"></div>
+                        <div th:text="${#messages.msg('analisis.hidrobiologico.organismos')}"   class="col-md-4 col-sm-4 col-xs-4 negrita text-center"></div>
+                        <div th:text="${#messages.msg('analisis.hidrobiologico.cantidades')}" class="col-md-2 col-sm-2 col-xs-2 negrita text-center"></div>
+                        <div class="col-md-3 col-sm-3 col-xs-3"></div>
+                    </div>
+                    
+                    <div th:each="analisis,stat : *{listAnalisis}"  class="row organismoRow border-plan-operativo margen-reporte-plan">
+                        <div class="col-md-3 col-sm-3 col-xs-3 text-center"></div>
+                        <div th:text="${analisis.descripcion}" class="col-md-4 col-sm-4 col-xs-4 text-center"></div>
+                        <div  class="col-md-2 col-sm-2 col-xs-2 text-center form-group">
+<!--                         	mantener el lenght de 8 porque sera' 5 enteros y 2 decimales , porque con sumas grandes aparecen letras en el reporte de analisis hidrobiológico -->
+                            <input type="text" class="form-control cantidad" onkeyup="obtenerTotal()" maxlength="8" style="text-align:center" th:field="*{listAnalisis[__${stat.index}__].cantidad}"/>
+                            
+                        </div>
+                        <div class="col-md-1 col-sm-1 col-xs-1 medida" th:text="${UnidadMedida}">mL</div>
+                        <div class="col-md-2 col-sm-2 col-xs-2 text-center"></div>
+                        
+                        <input type="hidden" class="form-control"  th:field="*{listAnalisis[__${stat.index}__].codigo}"/>
+                        <input type="hidden" class="form-control"  th:field="*{listAnalisis[__${stat.index}__].descripcion}"/>
+                        <input type="hidden" class="form-control"  th:field="*{listAnalisis[__${stat.index}__].codsub}"/>
+                        <input type="hidden" class="form-control"  th:field="*{listAnalisis[__${stat.index}__].codorg}"/>
+                        <input type="hidden" class="form-control"  th:field="*{listAnalisis[__${stat.index}__].fechaAnalisis}"/>
+                        <input type="hidden" class="form-control"  th:field="*{listAnalisis[__${stat.index}__].tipoOrganismo}"/>
+                    </div>
+                    <div class="row border-plan-operativo margen-reporte-plan hidden" id="resultado-total">
+                    	<div class="col-md-3 col-sm-3 col-xs-3 text-center"></div>
+                    	<div class="control-label col-md-4 col-sm-4 col-xs-4 negrita text-center" >Total:</div>
+                    	<div class="col-md-2 col-sm-2 col-xs-2 text-center ">
+                    		<input type="text"  class="form-control total negrita text-center" value="0" disabled="disabled"></input>
+                    	</div>
+                    	<div class="col-md-1 col-sm-1 col-xs-1 medida negrita" th:text="${UnidadMedida}">mL</div>
+                    </div>
+                    
+                    <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+                        <span><br /></span>
+                        <div class="form-group col-sm-12">
+                            <div class="wrapper text-center">
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        id="guardarButton" th:value="actualizar" disabled="disabled">Guardar</button>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-sm"
+                                        data-dismiss="modal" onclick="cancelarBusqueda();">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            <script type="text/javascript" th:inline="javascript">
+			    /*<![CDATA[*/
+			    $(document).ready(function() {
+			    	
+			    	//MANEJO DEL FORMULARIO DE BUSQUEDA
+			    	$("#idFechaAnalisisHidro").on("blur", function() {
+			    		cargarOrganismos();
+			    	});
+
+			    	//MANEJO DEL FORMULARIO DE BUSQUEDA
+			    	$('#cboOrganismos').change(function () {
+			    		cargarOrganismos();
+			    	});
+
+			    	//MANEJO DEL FORMULARIO DE BUSQUEDA
+			    	$('#cboPuntos').change(function () {		 
+			    		cargarOrganismos();
+			    	});
+			    });
+			    /*]]>*/
+			</script>
+        </form>
+    </div>
+</body>
+</html>

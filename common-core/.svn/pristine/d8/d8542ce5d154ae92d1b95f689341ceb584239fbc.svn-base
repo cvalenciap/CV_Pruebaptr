@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('login.title')}"></title>
+<script type="text/javascript">
+function openDialog() {
+	document.getElementById('about-dialog').showModal();
+}
+</script>
+
+</head>
+<body>
+
+	<div layout:fragment="content">
+
+		<h3 class="text-center" th:text="#{login.title}"></h3>
+
+		<div class="container col-sm-offset-3 col-sm-6">
+			<div class="panel panel-default"
+				style="background-color: transparent;">
+				
+				<div class="panel-body" style="background-color: #d9edf7;">
+					<form name="form-login" id="form-login" th:action="@{/login}"
+						method="post" class="form-horizontal" role="form">
+
+						<fieldset>
+							<div th:if="${param.error}" th:remove="tag">
+								<script th:fragment="mensajesSave" th:inline="javascript">
+								/*<![CDATA[*/			
+								    mensajeError = /*[[${session['SPRING_SECURITY_LAST_EXCEPTION'].message}]]*/ '';		
+								/*]]>*/
+								MYAPPL.showToast('genericNoOk', mensajeError, null, null);		
+								</script>
+							</div>
+							<div th:if="${param.loggedout}" th:remove="tag" >
+								<script th:inline="javascript">
+								    mensajeError = /*[[#{login.loggedout}]]*/ '';		
+									MYAPPL.showToast('genericOk', mensajeError, null, null);		
+								</script>
+							</div>
+							<div th:if="${forget}" class="alert alert-info">
+								<span th:text="${forget}" />
+							</div>
+							<div th:if="${registered}">
+								<!--  span th:text="#{login.registered}" / -->
+								<script type="text/javascript">
+									$(document).ready(function() {
+										$('#registered-dialog').modal('show');
+										});
+								</script>
+
+							</div>
+							
+							<br/>
+							
+							<div class="form-group">
+								<label class="control-label col-sm-offset-1 col-sm-3"
+									for="username"> <span th:utext="#{login.name}" />
+								</label>
+								<div class="col-sm-5">
+									<input type="text" placeholder="Usuario" id="username"
+										name="username" class="form-control"
+										onKeypress="return MYAPPL.soloNumerosLetrasTildesGuionesBajo(event);" maxlength="15" 
+										data-toggle="tooltip" data-placement="below" autofocus="true"
+										th:title="#{login.name.tooltip}"  style="text-transform: uppercase;background-color: rgba(255, 255, 255, 0.1);"
+										onselectstart="return false" onpaste="return false;" onCopy="return false" onCut="return false" 
+										onDrag="return false" onDrop="return false" autocomplete="off"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-offset-1 col-sm-3"
+									for="password"><span th:utext="#{login.password}" /></label>
+								<div class="col-sm-5">
+									<input type="password" placeholder="CLAVE" id="password"
+										name="password" class="form-control"
+										data-toggle="tooltip" data-placement="below" 
+										th:title="#{login.password.tooltip}" style="background-color: rgba(255, 255, 255, 0.1);" 
+										onselectstart="return false" onCopy="return false" onCut="return false" 
+										onDrag="return false" onDrop="return false" autocomplete="off"/> 
+										<input type="hidden"
+										name="${_csrf.parameterName}" value="${_csrf.token}"
+										required="required"/>
+								</div>
+							</div>						
+							
+							<div class="form-group">
+								<div class="col-sm-offset-5 col-sm-2">
+									<div class="checkbox" style="display:none;">
+										<label for="remember_me"  > <input type="checkbox"
+											id="remember_me" name="remember-me" /> <span
+											th:utext="#{login.rememberme}" /></label>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<div class="wrapper text-center">
+									<div class="btn-group">
+										<button type="submit" class="btn btn-primary btn-lg">
+											<span class="glyphicon glyphicon-transfer" /> <span id="idTxtEntrar"
+												th:utext="#{login.login}" />
+										</button>
+									</div>
+
+								</div>
+							</div>
+							
+							<div class="col-md-12 control">
+								
+								<div style="border-top: 1px solid #888; padding-top: 15px; font-size: 85%">
+									<span th:utext="#{login.password.rememberpart1}" ></span> <a th:href="@{/olvido}" th:utext="#{login.password.rememberpart2}"></a>
+									
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<!-- registered dialog -->
+		<div name="registered-dialog" id="registered-dialog" class="modal fade"
+			tabindex="-1" aria-hidden="true" role="dialog">
+			<div class="modal-dialog" keyboard="false" backdrop="false">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title">
+							<span th:text="#{login.registered.title}" />
+						</h4>
+					</div>
+					<div class="modal-body">
+						<span th:text="#{login.registered}" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							<span th:text="#{login.dialog.close}" />
+						</button>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<script type="text/javascript" th:src="@{/js/login.js}"></script>
+		<!-- un /div ANtes del /body -->
+	</div>
+	<!-- ANtes del /body -->
+
+</body>
+
+</html>

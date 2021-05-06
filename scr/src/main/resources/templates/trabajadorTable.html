@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsList"  id="idTrabajadorTable">
+		
+		<table  class="fancyTable" id="myTrabajador" style="width: 100%;" cellpadding="0" cellspacing="0" >
+			<thead>
+				<tr>
+					<th th:text="${#messages.msg('trabajador.table.col1')}"></th>
+					<th th:text="${#messages.msg('trabajador.table.col2')}"></th>
+					<th th:text="${#messages.msg('trabajador.table.col3')}"></th>
+					<th th:text="${#messages.msg('trabajador.table.col4')}"></th>
+					<th th:text="${#messages.msg('trabajador.table.col5')}"></th>				
+				</tr>
+			</thead>			
+		</table>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#myTrabajador').DataTable({
+					"bProcessing": true,
+					"serverSide": true,
+					"searching": false,
+					"lengthChange": false,
+					"bJQueryUI": true,
+					"ajax":{
+						url :"trabajador/pagination", 
+			            type: "post",	
+			            error: function(){
+			              $("#myTrabajador_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	d.numFichaTra = $('#numFicha').val();
+			            	d.nombreTra = $('#nombreCompleto').val();
+			            }
+					},
+					"order": [ 1, 'asc' ],
+					"columnDefs": [ 
+						{ targets: '_all', visible: true,  },
+						{"width": "20px",
+			    		  	className: "dt-body-center",
+			              	"targets": 0
+			          	},
+						{"width": "30px",
+			    		  	className: "dt-body-center",
+			              	"targets": 1
+			          	},
+			            {"width": "60px",
+			    		  	className: "dt-body-center",
+			              	"targets": [3, 4]
+			          	},
+			            {"width": "150px",
+			    		  	className: "dt-body-center",
+			              	"targets": 2
+			          	},
+			          	{"width": "20px",
+			          		className: "dt-body-center",
+			          		"orderable": false,
+			          		"targets": 0,
+			          		visible: true,
+			          		"data": 1,
+			          		"render": function ( data, type, row) {
+			          			return '<button type="button" class="btn btn-info btn-sel-trab" title="Seleccionar" onclick="seleccionarTrabajador('+row[1]+',\''+row[2]+'\''+',\''+row[3]+'\''+',\''+row[4]+'\''+','+row[5]+')"><span class="glyphicon glyphicon-paperclip"></span></button>';
+			          		}
+			          	}
+					]
+				});
+			});
+		</script>	
+		
+	</div>
+</body>
+</html>

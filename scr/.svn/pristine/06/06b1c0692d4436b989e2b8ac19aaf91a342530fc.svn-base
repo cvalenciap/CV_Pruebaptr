@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  
+  	<encoder name="enc" class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+        <layout class="pe.com.sedapal.scr.web.configuration.log.PatternLayoutWithUserContext">
+            <param name="Pattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%user] - %msg%n" />
+        </layout>
+    </encoder>
+  </appender>
+  
+  	<appender name="FILE-DEMO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>scr.log</file>
+        <file>../logs/scr/scr.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">        
+<!-- 	        daily rollover -->
+	        <fileNamePattern>scr_%d{ddMMyyyy}.log</fileNamePattern>
+	        <fileNamePattern>../logs/scr/scr_%d{ddMMyyyy}.log</fileNamePattern>
+	        <maxHistory>30</maxHistory>
+	    </rollingPolicy>
+        <encoder name="enc" class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+	        <layout class="pe.com.sedapal.scr.web.configuration.log.PatternLayoutWithUserContext">
+	            <param name="Pattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%user] - %msg%n" />
+	        </layout>
+   	 	</encoder>
+    </appender>
+    
+  
+  <logger name="pe.com.sedapal" level="DEBUG" additivity="false">
+  	<appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE-DEMO" />
+  </logger>
+  
+  <root level="INFO">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE-DEMO" />
+  </root>
+  
+  
+</configuration>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<body>	
+	<section class="wrap-ui">
+    	<div class="box-opacity"></div>
+    	<header class="header">
+    		<div class="pull-left">
+<!-- 				<a class="btn-show" id="btnShowMenu"></a> -->
+				<div class="logo-data">								<!-- fuerzo a que se mantenga el  middle, este error se presento en tracking.jsp-->
+		<!-- 			<img src="../../../images/company_logo.gif" style="width: 28%;height: 80%; vertical-align: middle !important;"> -->
+					<div class="pull-right">
+						<span th:utext="#{application.subtitle}" style="line-height: 1.5em;"></span>
+					</div> 
+					<span class="title-master"></span>
+				</div>
+			</div>
+			<div class="pull-right">
+				<div class="pull-left comp-btn-user">
+					<button id="btnGroupDrop2" type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+			<!-- 			<span class="ico-user">					 -->
+		<!--  				<img src="../../../resources/Content/images/system/usuario.jpg" > -->
+			<!-- 			</span> -->
+			          	<span class="name">
+			          		<span th:if="${#httpServletRequest.userPrincipal!=null}" th:text="${'Usuario: '+#httpServletRequest.userPrincipal.name+'&nbsp;'}"></span>
+			          	</span>
+			        </button>
+			        <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="btnGroupDrop2">
+			          <li>
+			          	<a th:href="@{/logout}">
+										<span class="glyphicon glyphicon-off"></span> 
+										<span th:text="#{menu.cerrarSesion}"></span> 
+						</a>
+			          </li>
+			        </ul>	        
+				</div>
+			</div>   		
+    	</header>
+    </section>
+</body>
+</html>

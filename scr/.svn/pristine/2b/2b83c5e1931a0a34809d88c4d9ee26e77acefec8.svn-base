@@ -1,0 +1,19 @@
+create or replace package PCK_CATALOGO is
+
+PROCEDURE PRC_BUSCA_CATALOGO(
+   --Parametros de la busqueda
+   PAR_COD_TABLE IN ALC_CATALOGO.N_CCATLG%TYPE,
+   --Parametros de retorno
+   PAR_OUT_CURSOR OUT SYS_REFCURSOR  
+);
+
+PROCEDURE PRC_UPDATE_CAT_ACTIVIDADES(
+   PAR_VALOR2                   ALC_DETCATLG.C_VALOR2%TYPE,
+    --Campos Identificador registro
+   PAR_CDCATL                   ALC_DETCATLG.N_CDCATL%TYPE,
+      --Campos de Auditoria
+   PAR_USUA_MOD                   ALC_DETCATLG.A_USUMOD%TYPE,
+   PAR_PROGRAMA_MOD               ALC_DETCATLG.A_NOMPRG%TYPE
+);
+
+end PCK_CATALOGO;

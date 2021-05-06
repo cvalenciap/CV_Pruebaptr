@@ -1,0 +1,442 @@
+create or replace PACKAGE BODY PCK_ALC_PTAP AS
+ 
+    PROCEDURE PRC_BUSCA_ALMACENA_PTAP(
+       --Parametros de la busqueda
+       PAR_DFECHA_MUESTREO     IN VARCHAR2,
+       PAR_NID_FORM            IN INTEGER,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+       PAR_PAG_DESDE        IN INTEGER,
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR 
+    )IS 
+        V_QUERY VARCHAR2(4000);
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000); 
+     
+        BEGIN 
+        
+              V_QUERY_COUNT := 'select count(*) '; 
+     
+              V_QUERY := 'select * 
+                          from (select a.*, rownum rn
+                                from (SELECT c.d_fecmue, c.c_hormue, c.d_recmue, c.c_horrec, c.d_iniens, c.c_horens, c.c_turno, e.c_ddcatl as e, d.c_ddcatl as d, c.n_codhfo ';
+            
+              IF(LENGTH(TRIM(PAR_DFECHA_MUESTREO)) > 0)THEN
+                V_QUERY_FROM := ' FROM alc_formulheader c 
+                                  LEFT JOIN alc_detcatlg d on c.c_anamue=d.c_valcat and d.n_ccatlg=14 
+                                  LEFT JOIN alc_detcatlg e on c.c_permue=e.c_valcat and e.n_ccatlg=10 
+                                  WHERE  c.n_status = 1 and c.n_idform = ' || PAR_NID_FORM || ' and TO_CHAR(c.d_fecmue, '''||'DD/MM/YYYY'||''') = ''' || PAR_DFECHA_MUESTREO ||'''  '; 
+              ELSE
+                V_QUERY_FROM := ' FROM alc_formulheader c 
+                                  LEFT JOIN alc_detcatlg d on c.c_anamue=d.c_valcat and d.n_ccatlg=14
+                                  LEFT JOIN alc_detcatlg e on c.c_permue=e.c_valcat and e.n_ccatlg=10 
+                                  WHERE c.n_status = 1 and c.n_idform= ' || PAR_NID_FORM;
+              END IF;
+              
+             
+              V_QUERY := V_QUERY || V_QUERY_FROM;
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+            
+              V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query;
+              
+              execute immediate v_query_count into par_out_quantity;
+        END;
+        
+    PROCEDURE PRC_INSERT_MUESTRFORM21(
+       PAR_NID_CABECERA             IN ALC_MUESTRFORM21.N_CODHFO%TYPE,
+       PAR_CDESCMUESTRA             IN ALC_MUESTRFORM21.C_DESMUE%TYPE,          
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION     IN ALC_MUESTRFORM21.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI         IN ALC_MUESTRFORM21.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTRFORM21.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS 
+       
+         BEGIN         
+            
+            INSERT INTO ALC_MUESTRFORM21( A_USUCRE,A_FECCRE,A_USUMOD,A_FECMOD,A_NOMPRG,N_CODF21,N_CODHFO,C_TURNTU,C_CLRLIB,C_AGELFI,C_COAGEL,C_AGMFCV,
+                                        C_COLAMF,C_AG2AML,C_AG2ADL,C_COLA2A,C_AGMPVF,C_COLAPA,C_COLITO,C_COLTER,C_ESCOLI,C_BAHETE,C_PSESER,
+                                        N_STATUS,C_DESMUE )
+            VALUES(
+                   PAR_CUSUARIO_CREACION,
+                   SYSDATE,
+                   PAR_CUSUARIO_MODI,
+                   SYSDATE,
+                   PAR_CPROGRAMA,
+                   SQ_ALC_MUESTRFORM21.NEXTVAL,
+                   PAR_NID_CABECERA,
+                   '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 1, PAR_CDESCMUESTRA );   
+                     
+    END;
+    
+    PROCEDURE PRC_BUSCA_MUESTRFORM21(
+       --Parametros de la busqueda
+       PAR_NID_CABECERA     IN ALC_MUESTRFORM21.N_CODHFO%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER, 
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+        V_QUERY VARCHAR2(4000);
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000);
+    
+        BEGIN
+        
+              V_QUERY_COUNT := 'select count(*) '; 
+     
+              V_QUERY := 'select * 
+                          from (select a.*, rownum rn
+                                from (SELECT C_DESMUE, C_TURNTU, C_CLRLIB, C_AGELFI, C_COAGEL, C_AGMFCV, C_COLAMF, C_AG2AML, C_AG2ADL, C_COLA2A,
+                                             C_AGMPVF, C_COLAPA, C_COLITO, C_COLTER, C_ESCOLI, C_BAHETE, C_PSESER, N_CODF21, N_CODHFO';
+            
+              V_QUERY_FROM := ' FROM ALC_MUESTRFORM21                                    
+                                  WHERE N_CODHFO = ' || PAR_NID_CABECERA;             
+              
+             
+              V_QUERY := V_QUERY || V_QUERY_FROM;
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+            
+              V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query;
+              
+              execute immediate v_query_count into par_out_quantity;
+        END; 
+        
+    PROCEDURE PRC_GET_MUESTRFORM21(
+       --Parametros de la busqueda
+        PAR_NID_CABECERA  IN ALC_MUESTRFORM21.N_CODHFO%TYPE,
+        PAR_NID_DETALLE   IN ALC_MUESTRFORM21.N_CODF21%TYPE,
+       --Parametros de retorno
+        par_out_cursor OUT SYS_REFCURSOR 
+    )IS 
+        v_query VARCHAR2(4000); 
+        BEGIN
+          v_query := 'SELECT C_DESMUE, C_TURNTU, C_CLRLIB, C_AGELFI, C_COAGEL, C_AGMFCV, C_COLAMF, C_AG2AML, C_AG2ADL, C_COLA2A,
+                             C_AGMPVF, C_COLAPA, C_COLITO, C_COLTER, C_ESCOLI, C_BAHETE, C_PSESER, N_CODF21, N_CODHFO
+                      FROM ALC_MUESTRFORM21 WHERE N_CODHFO = ' || PAR_NID_CABECERA ||
+                      ' AND N_CODF21 = ' || PAR_NID_DETALLE;
+                      
+          OPEN par_out_cursor FOR v_query;
+                    
+     END;
+     
+     PROCEDURE PRC_UPDATE_MUESTRFORM21( 
+       PAR_NID_CABECERA     IN ALC_MUESTRFORM21.N_CODHFO%TYPE,
+       PAR_NID_DETALLE      IN ALC_MUESTRFORM21.N_CODF21%TYPE,
+       PAR_C_TURNTU         IN ALC_MUESTRFORM21.C_TURNTU%TYPE,
+       PAR_C_CLRLIB         IN ALC_MUESTRFORM21.C_CLRLIB%TYPE,
+       PAR_C_AGELFI         IN ALC_MUESTRFORM21.C_AGELFI%TYPE,
+       PAR_C_COAGEL         IN ALC_MUESTRFORM21.C_COAGEL%TYPE,
+       PAR_C_AGMFCV         IN ALC_MUESTRFORM21.C_AGMFCV%TYPE,
+       PAR_C_COLAMF         IN ALC_MUESTRFORM21.C_COLAMF%TYPE,
+       PAR_C_AG2AML         IN ALC_MUESTRFORM21.C_AG2AML%TYPE,
+       PAR_C_AG2ADL         IN ALC_MUESTRFORM21.C_AG2ADL%TYPE,
+       PAR_C_COLA2A         IN ALC_MUESTRFORM21.C_COLA2A%TYPE,
+       PAR_C_AGMPVF         IN ALC_MUESTRFORM21.C_AGMPVF%TYPE,
+       PAR_C_COLAPA         IN ALC_MUESTRFORM21.C_COLAPA%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_MUESTRFORM21.A_USUMOD%TYPE, 
+       PAR_CPROGRAMA             IN ALC_MUESTRFORM21.A_NOMPRG%TYPE,
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS
+       
+         BEGIN             
+                UPDATE ALC_MUESTRFORM21  
+                SET A_USUMOD = PAR_CUSUARIO_MODI,
+                    A_FECMOD = SYSDATE,
+                    A_NOMPRG = PAR_CPROGRAMA,
+                    C_TURNTU = PAR_C_TURNTU,
+                    C_CLRLIB = PAR_C_CLRLIB,
+                    C_AGELFI = PAR_C_AGELFI,
+                    C_COAGEL = PAR_C_COAGEL,
+                    C_AGMFCV = PAR_C_AGMFCV,
+                    C_COLAMF = PAR_C_COLAMF,
+                    C_AG2AML = PAR_C_AG2AML,
+                    C_AG2ADL = PAR_C_AG2ADL,
+                    C_COLA2A = PAR_C_COLA2A,
+                    C_AGMPVF = PAR_C_AGMPVF,
+                    C_COLAPA = PAR_C_COLAPA
+                WHERE N_CODHFO = PAR_NID_CABECERA AND N_CODF21 = PAR_NID_DETALLE;
+                                              
+    END;
+    
+    PROCEDURE PRC_BUSCA_MUESTELEF21(
+       --Parametros de la busqueda
+       PAR_NID_CABECERA     IN ALC_MUESTELEF21.N_CODHFO%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER, 
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+        V_QUERY VARCHAR2(4000); 
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000);
+    
+        BEGIN
+        
+              V_QUERY_COUNT := 'select count(*) '; 
+     
+              V_QUERY := 'select * 
+                          from (select a.*, rownum rn
+                                from (SELECT D.C_DDCATL, C.C_COLONI, C.C_GASCLT, C.C_GASCLV, C.C_GSEC24, C.C_FECMUG, C.C_COLTOT, C.C_COLTER, C.C_ESCOLI, C.N_CODELE';
+            
+              V_QUERY_FROM := ' FROM ALC_MUESTELEF21 C
+                                INNER JOIN ALC_DETCATLG D ON C.C_DESCRI = D.C_VALCAT AND D.N_CCATLG=6
+                                WHERE C.N_STATUS=1 AND C.N_CODHFO = ' || PAR_NID_CABECERA;             
+              
+             
+              V_QUERY := V_QUERY || V_QUERY_FROM;
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+            
+              V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query;
+              
+              execute immediate v_query_count into par_out_quantity;
+        END; 
+                
+    PROCEDURE PRC_INSERT_MUESTELEF21(
+       PAR_NID_CABECERA             IN ALC_MUESTELEF21.N_CODHFO%TYPE,
+       PAR_NID_DETALLE              IN ALC_MUESTELEF21.N_CODELE%TYPE, 
+       PAR_CDESCRI                  IN ALC_MUESTELEF21.C_DESCRI%TYPE,
+       PAR_CCOLONI                  IN ALC_MUESTELEF21.C_COLONI%TYPE,
+       PAR_CGASCLT                  IN ALC_MUESTELEF21.C_GASCLT%TYPE,
+       PAR_CGASCLV                  IN ALC_MUESTELEF21.C_GASCLV%TYPE,
+       PAR_CGSEC24                  IN ALC_MUESTELEF21.C_GSEC24%TYPE,
+       PAR_CFECMUG                  IN ALC_MUESTELEF21.C_FECMUG%TYPE,
+       PAR_CCOLTOT                  IN ALC_MUESTELEF21.C_COLTOT%TYPE,
+       PAR_CCOLTER                  IN ALC_MUESTELEF21.C_COLTER%TYPE,
+       PAR_CESCOLI                  IN ALC_MUESTELEF21.C_ESCOLI%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION     IN ALC_MUESTELEF21.A_USUCRE%TYPE,
+       PAR_CUSUARIO_MODI         IN ALC_MUESTELEF21.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTELEF21.A_NOMPRG%TYPE, 
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS 
+       
+         BEGIN         
+            
+            INSERT INTO ALC_MUESTELEF21( A_USUCRE,A_FECCRE,A_USUMOD,A_FECMOD,A_NOMPRG,N_CODELE,N_CODHFO,C_DESCRI, C_COLONI, C_GASCLT, 
+                                        C_GASCLV, C_GSEC24, C_FECMUG, C_COLTOT, C_COLTER, C_ESCOLI, N_STATUS )
+            VALUES(
+                   PAR_CUSUARIO_CREACION,
+                   SYSDATE,
+                   PAR_CUSUARIO_MODI,
+                   SYSDATE,
+                   PAR_CPROGRAMA,
+                   SQ_ALC_MUESTELEF21.NEXTVAL,
+                   PAR_NID_CABECERA,
+                   PAR_CDESCRI,PAR_CCOLONI,PAR_CGASCLT, PAR_CGASCLV, PAR_CGSEC24, PAR_CFECMUG, PAR_CCOLTOT, PAR_CCOLTER, PAR_CESCOLI, 1);   
+                     
+    END;
+    
+    PROCEDURE PRC_INACTIVA_MUESTELEF21(       
+       --Parametros de la busqueda 
+      PAR_NID_DETALLE              IN ALC_MUESTELEF21.N_CODELE%TYPE,
+      PAR_NESTADO                  IN ALC_MUESTELEF21.N_STATUS%TYPE
+     )IS
+     BEGIN
+        UPDATE ALC_MUESTELEF21  
+        SET    N_STATUS = PAR_NESTADO
+        WHERE  N_CODELE = PAR_NID_DETALLE;           
+     END;
+    
+    PROCEDURE PRC_BUSCA_MUESTEPAF21( 
+       --Parametros de la busqueda
+       PAR_NID_CABECERA     IN ALC_MUESTEPAF21.N_CODHFO%TYPE,
+       --PARAMETROS DE LA PAGINACION
+       PAR_COL_ORDER_BY     IN INTEGER,
+       PAR_COL_ORDER_BY_DIR IN VARCHAR2 ,
+       PAR_PAG_DESDE        IN INTEGER, 
+       PAR_CANTIDAD_PAG     IN INTEGER,
+       --PARAMETROS DE RETORNO 
+       PAR_OUT_QUANTITY     OUT INTEGER, 
+       PAR_OUT_CURSOR       OUT SYS_REFCURSOR
+    )IS 
+        V_QUERY VARCHAR2(4000); 
+        V_QUERY_FROM VARCHAR2(4000);
+        V_QUERY_COUNT VARCHAR2(4000);
+    
+        BEGIN
+        
+              V_QUERY_COUNT := 'select count(*) '; 
+     
+              V_QUERY := 'select * 
+                          from (select a.*, rownum rn 
+                                from (SELECT D.C_DDCATL, C.C_COLONI, C.C_AGLECH, C.C_PSEAE, C.N_CODEPA';
+             
+              V_QUERY_FROM := ' FROM ALC_MUESTEPAF21 C
+                                INNER JOIN ALC_DETCATLG D ON C.C_DESCRI = D.C_VALCAT AND D.N_CCATLG=6
+                                WHERE C.N_STATUS=1 AND C.N_CODHFO = ' || PAR_NID_CABECERA;              
+              
+              
+              V_QUERY := V_QUERY || V_QUERY_FROM;
+             
+              V_QUERY_COUNT := V_QUERY_COUNT || V_QUERY_FROM;
+            
+              V_QUERY := V_QUERY || ' order by '|| PAR_COL_ORDER_BY || ' ' || PAR_COL_ORDER_BY_DIR || ' ) a ) where rn > ' || PAR_PAG_DESDE || ' and rn <= ' || (PAR_PAG_DESDE+PAR_CANTIDAD_PAG);
+                    
+              OPEN par_out_cursor FOR v_query;
+              
+              execute immediate v_query_count into par_out_quantity;
+        END;       
+        
+    PROCEDURE PRC_INSERT_MUESTEPAF21(
+       PAR_NID_CABECERA             IN ALC_MUESTEPAF21.N_CODHFO%TYPE,
+       PAR_NID_DETALLE              IN ALC_MUESTEPAF21.N_CODEPA%TYPE, 
+       PAR_CDESCRI                  IN ALC_MUESTEPAF21.C_DESCRI%TYPE,
+       PAR_CCOLONI                  IN ALC_MUESTEPAF21.C_COLONI%TYPE,
+       PAR_CAGLECH                 IN ALC_MUESTEPAF21.C_AGLECH%TYPE,
+       PAR_CPSEAE                  IN ALC_MUESTEPAF21.C_PSEAE%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_CREACION     IN ALC_MUESTEPAF21.A_USUCRE%TYPE, 
+       PAR_CUSUARIO_MODI         IN ALC_MUESTEPAF21.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTEPAF21.A_NOMPRG%TYPE, 
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS  
+       
+         BEGIN         
+            
+            INSERT INTO ALC_MUESTEPAF21( A_USUCRE,A_FECCRE,A_USUMOD,A_FECMOD,A_NOMPRG,N_CODEPA,N_CODHFO,C_DESCRI, C_COLONI, C_AGLECH, 
+                                        C_PSEAE, N_STATUS )
+            VALUES(
+                   PAR_CUSUARIO_CREACION,
+                   SYSDATE,
+                   PAR_CUSUARIO_MODI, 
+                   SYSDATE,
+                   PAR_CPROGRAMA,
+                   SQ_ALC_MUESTELEF21.NEXTVAL,
+                   PAR_NID_CABECERA,
+                   PAR_CDESCRI,PAR_CCOLONI,PAR_CAGLECH, PAR_CPSEAE, 1);   
+                     
+    END;
+    
+    PROCEDURE PRC_INACTIVA_MUESTEPAF21(       
+       --Parametros de la busqueda 
+      PAR_NID_DETALLE              IN ALC_MUESTEPAF21.N_CODEPA%TYPE,
+      PAR_NESTADO                  IN ALC_MUESTEPAF21.N_STATUS%TYPE
+     )IS
+     BEGIN
+        UPDATE ALC_MUESTEPAF21  
+        SET    N_STATUS = PAR_NESTADO
+        WHERE  N_CODEPA = PAR_NID_DETALLE;           
+     END;
+     
+     PROCEDURE PRC_CALCULO_MUESTELEF21(       
+       --Parametros de la busqueda 
+      PAR_NID_CABECERA             IN ALC_MUESTEPAF21.N_CODHFO%TYPE,
+      PAR_NID_DETALLE              IN ALC_MUESTRFORM21.N_CODF21%TYPE
+     )IS
+         C_COAGELTMP VARCHAR2(20); 
+         C_COLAMFTMP VARCHAR2(20); 
+         C_COLA2ATMP VARCHAR2(20);
+         C_AG2AMLTMP VARCHAR2(20);
+         C_AG2ADLTMP VARCHAR2(20); 
+         N_RESUL   NUMBER;
+         
+         C_CAMPO1 VARCHAR(20);
+         C_CAMPO2 VARCHAR(20);
+         C_CAMPO3 VARCHAR(20);
+     BEGIN
+     
+        SELECT C_COAGEL INTO C_COAGELTMP FROM ALC_MUESTRFORM21 WHERE N_CODF21 = PAR_NID_DETALLE;        
+        C_CAMPO1 := TO_CHAR( ROUND( ( TO_NUMBER(C_COAGELTMP) * 100 ), 2 ) );
+
+        SELECT C_COLAMF INTO C_COLAMFTMP FROM ALC_MUESTRFORM21 WHERE N_CODF21 = PAR_NID_DETALLE;
+        C_CAMPO2 := TO_CHAR( ROUND( ( TO_NUMBER(C_COLAMFTMP) * 100 ), 2 ) );
+        
+        SELECT C_COLA2A INTO C_COLA2ATMP FROM ALC_MUESTRFORM21 WHERE N_CODF21 = PAR_NID_DETALLE;    
+        SELECT C_AG2AML INTO C_AG2AMLTMP FROM ALC_MUESTRFORM21 WHERE N_CODF21 = PAR_NID_DETALLE;
+        SELECT C_AG2ADL INTO C_AG2ADLTMP FROM ALC_MUESTRFORM21 WHERE N_CODF21 = PAR_NID_DETALLE;
+        N_RESUL := TO_NUMBER(C_COLA2ATMP) /( TO_NUMBER(C_AG2AMLTMP) / POWER( 10, ABS(TO_NUMBER(C_AG2ADLTMP)) ) );
+        C_CAMPO3 := TO_CHAR( ROUND(N_RESUL, 2) );
+        
+        UPDATE ALC_MUESTRFORM21
+        SET C_COLITO = C_CAMPO1,
+            C_COLTER = C_CAMPO2,
+            C_BAHETE = C_CAMPO3
+        WHERE N_CODF21 = PAR_NID_DETALLE;
+        
+        UPDATE ALC_MUESTRFOR299
+        SET C_RESMEN = C_CAMPO1,
+            C_RESVIC = C_CAMPO1,
+            C_REVIRS = C_CAMPO1,
+            C_RESRED = C_CAMPO1
+        WHERE N_CODHFO = PAR_NID_CABECERA AND C_DESCRI = 'COLIFORMES TOTALES UFC/100mL';
+        
+        UPDATE ALC_MUESTRFOR299
+        SET C_RESMEN = C_CAMPO2,
+            C_RESVIC = C_CAMPO2,
+            C_REVIRS = C_CAMPO2,
+            C_RESRED = C_CAMPO2
+        WHERE N_CODHFO = PAR_NID_CABECERA AND C_DESCRI = 'COLIFORMES TERMOTOLERANTES UFC/100mL';
+        
+        UPDATE ALC_MUESTRFOR299
+        SET C_RESMEN = C_CAMPO3,
+            C_RESVIC = C_CAMPO3,
+            C_REVIRS = C_CAMPO3,
+            C_RESRED = C_CAMPO3
+        WHERE N_CODHFO = PAR_NID_CABECERA AND C_DESCRI = 'BACTERIAS HETEROTROFICAS UFC/mL';
+                          
+     END; 
+     
+     PROCEDURE PRC_GET_MUESTRFOR299(
+       --Parametros de la busqueda
+        PAR_NID_DETALLE   IN ALC_MUESTRFOR299.N_CODMUE%TYPE,
+       --Parametros de retorno
+        par_out_cursor OUT SYS_REFCURSOR 
+     )IS 
+        v_query VARCHAR2(4000); 
+        BEGIN
+          v_query := 'SELECT C_RESMEN, C_RESVIC, C_REVIRS, C_RESRED, N_CODMUE
+                      FROM ALC_MUESTRFOR299 WHERE N_CODMUE = ' || PAR_NID_DETALLE;                      
+                      
+          OPEN par_out_cursor FOR v_query;
+                    
+     END;   
+     
+     PROCEDURE PRC_UPD_MUESTRFOR299( 
+       PAR_NID_DETALLE              IN ALC_MUESTRFOR299.N_CODMUE%TYPE, 
+       PAR_CRESMEN                  IN ALC_MUESTRFOR299.C_RESMEN%TYPE,
+       PAR_CRESVIC                  IN ALC_MUESTRFOR299.C_RESVIC%TYPE,
+       PAR_CREVIRS                  IN ALC_MUESTRFOR299.C_REVIRS%TYPE,
+       PAR_CRESRED                  IN ALC_MUESTRFOR299.C_RESRED%TYPE,
+       --Campos de Auditoria      
+       PAR_CUSUARIO_MODI         IN ALC_MUESTEPAF21.A_USUMOD%TYPE,
+       PAR_CPROGRAMA             IN ALC_MUESTEPAF21.A_NOMPRG%TYPE, 
+       PAR_OUT_RETURN            OUT INTEGER
+     )IS  
+       
+         BEGIN         
+            
+            UPDATE ALC_MUESTRFOR299 
+            SET  A_USUMOD = PAR_CUSUARIO_MODI,
+                 A_FECMOD = SYSDATE,
+                 A_NOMPRG = PAR_CPROGRAMA,
+                 C_RESMEN = PAR_CRESMEN,
+                 C_RESVIC = PAR_CRESVIC,
+                 C_REVIRS = PAR_CREVIRS,
+                 C_RESRED = PAR_CRESRED
+            WHERE N_CODMUE = PAR_NID_DETALLE;                     
+     END;
+        
+END PCK_ALC_PTAP;

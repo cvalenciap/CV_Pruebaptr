@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html layout:decorator="layout/main">
+<head>
+<title th:text="${#messages.msg('reporte.ensayo.cloro.title')}"></title>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/   
+	var mensajeTipo = /*[[${mensajeTipo}]]*/ 'ninguno';
+	/*]]>*/
+</script>
+
+</head>
+<body>
+	<div layout:fragment="content">
+			<!-- Modal -->
+		
+<div id="container-modal"></div>
+<div class="modal fade" id="modal-report" role="dialog" data-backdrop="static" style="position: relative;left: 30px;top:0px; overflow-x: scroll;overflow-y: scroll;" >
+<div id="id-modal-plan-bandeja-inactivar">
+	<div class="modal-content" >
+	</div>
+
+<!-- <div class="modal-header"> -->
+<!-- 			<button type="button" class="close" data-dismiss="modal" id="buttonCloseDetail">&times;</button> -->
+<!-- 			<h4 class="modal-title"> -->
+<!-- 				<span class="modal-title" id="idModalTitle">Reporte Ensayo</span>  -->
+<!-- 			</h4> -->
+<!-- </div> -->
+<!-- <div class="modal-footer"> -->
+  
+<!-- </div> -->
+</div>
+</div>
+	
+		
+<!-- 		<div class="modal-content" id="id-modal-plan-bandeja-inactivar"></div> -->
+<!-- 		<div id="modal-registra-planoperativo-agregar" class="modal fade" role="dialog" data-backdrop="static" style="position: relative;left: 30px;"></div> -->
+		
+		<div id="modal-registra-planoperativo-bandeja" class="modal fade" role="dialog" data-backdrop="static" style="position: relative;left: 30px;top:0px; overflow-x: scroll;overflow-y: scroll;">
+				<div class="modal-dialog" style="width: 90%;" >
+			
+				<!-- Modal content-->
+<!--  			    <div class="modal-content" id="id-modal-bandeja" th:replace="planOperativo/planOperativoBandejaTableEdit :: form-edit-tablaPoisson"> -->
+<!--  			    </div>  -->
+			    
+			    <div class="modal-content" id="id-modal-plan-bandeja"></div>
+			</div>
+		</div>
+		
+		
+		
+		<h3 class="text-center" th:text="${#messages.msg('reporte.ensayo.cloro.title')}"></h3>
+		<div class="containerform">
+			<div class="container_save" style="display: none;"></div>
+			
+			<p class="main_heading">
+				<legend th:text="${#messages.msg('search.criterios')}">Criterios</legend>
+			</p>
+				<fieldset>
+					<div class="row">
+<!-- 								<div class="col-md-1 col-sm-1 col-xs-1"></div> -->
+								<label class="control-label col-md-2 col-sm-2 col-xs-2 text-right" ><span th:text="${#messages.msg('analisis.hidrobiologico.fecha.muestreo')}"></span></label>
+								<div class="form-group col-md-2 col-sm-2 col-xs-2">
+			                    <input  type="text" class="form-control fondo-blanco" id="idFechaMuestreo"
+			                    		   maxlength="60"  
+			                    	 	   th:placeholder="${#messages.msg('reporte.ensayo.cloro.fecha.muestreo')}" readonly="readonly"/>
+			                     </div>
+								
+			                     <div class="col-md-2 col-sm-2 col-xs-2 ">
+									<button type="button" class="btn btn-info btn-crear-mant-correo" style="marging-right:2px" data-toggle="modal" onclick="cargarReporteMes();"><span class="glyphicon glyphicon-search"></span><label th:text="${#messages.msg('reporte.ensayo.cloro.hora.buscar')}"></label></button>
+								</div>
+					</div>
+					
+				</fieldset>
+				<br/>
+				
+		</div>
+		
+		<div class="panel" >
+			<div class="container_12" id="tableResult">
+<!-- 				<div th:replace="reporteEnsayoCloro/reporteEnsayoCloroTable :: resultsList" class="grid_10 height800" id="idTablaPoissonTable"></div> -->
+			</div>
+		</div>
+		
+		<script type="text/javascript" th:src="@{/js/reporteEnsayoCloro.js}"></script>
+		<script type="text/javascript" th:src="@{/js/ensayoCloroValidator.js}"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				setTimeout(function(){
+					cargarReporteMes();	
+				},500);
+			}); 
+		</script>	
+		
+	</div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsListEficiencia" class="grid_10 height800" id="idEficienciaTable">
+		
+		<table  class="fancyTable" id="myTableEficiencia" cellpadding="0" cellspacing="0" style="width: 100%; table-layout : auto;">
+			<thead>
+				
+				<tr>						
+					<th th:text="${#messages.msg('resultEficie.table.col00')}" colspan="5" class="alto_div"></th>
+													
+				</tr>
+				<tr>						
+					<th th:text="${#messages.msg('resultEficie.table.col1')}" ></th>
+					<th th:text="${#messages.msg('resultEficie.table.col2')}" ></th>
+					<th th:text="${#messages.msg('resultEficie.table.col3')}" ></th>
+					<th th:text="${#messages.msg('resultEficie.table.col4')}" ></th>	
+					<th th:text="${#messages.msg('resultEficie.table.col4')}" style="width: 0px;" class="hidden-xs"></th>												
+				</tr>
+			</thead>
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTableEficiencia').DataTable({
+					"bProcessing": true,
+					"serverSide": false,
+					"searching": false,
+					"ordering": false,
+					"lengthChange":   false,
+					"bPaginate": false,
+					"bInfo": false,
+					
+          			"bJQueryUI": true,
+					"ajax":{
+						url :"eficiencia/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTableEficiencia_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	
+			            	d.idCabecera = $('#intIdHide').val();
+			            	//d.idCabecera = 80;
+			            }
+					},
+					"order": [ 4, 'asc' ],
+					"columnDefs": [ 
+						{"width": "150px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": 1,
+		              		"render": function ( data, type, row) {
+		              			return ''+row[1].replace(",", "."); ;
+		              		}
+			            },
+			            {"width": "150px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": 2,
+		              		"render": function ( data, type, row) {
+		              			return ''+row[2].replace(",", "."); ;
+		              		}
+			            },
+			            {"width": "150px",
+			        		className: "dt-body-center alto_imput",
+			                "targets": 3,
+		              		"render": function ( data, type, row) {
+		              			return ''+row[3].replace(",", "."); ;
+		              		}
+			            },
+			            {  
+			            	"width": "160px",
+			            	className: "dt-body-left",
+			                "targets": 0                
+			            },
+			            {  
+			            	"width": "0px",
+			            	visible: false,
+			                "targets": [4]                
+			            }			           
+					]
+				});
+			}); 
+			
+			
+		</script>	
+	</div>
+</body>
+</html>

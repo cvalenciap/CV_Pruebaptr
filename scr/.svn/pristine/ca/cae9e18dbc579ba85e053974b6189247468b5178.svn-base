@@ -1,0 +1,227 @@
+create or replace package body PCK_COLABORADOR is
+
+
+-- Busqueda e colaborador
+
+   PROCEDURE PRC_BUSCA_COLABORADOR(
+   --Parametros de la busqueda
+   
+   PAR_VNOMBRE_COLABORADOR             IN SCR_MCOLABORADOR.V_NOMCOL%TYPE,
+   PAR_VNOMBRE_REPRESA_COLABORAD       IN SCR_MCOLABORADOR.V_NOMREP%TYPE,
+   PAR_VESTADO_COLABORADOR             IN SCR_MCOLABORADOR.V_ESTADO%TYPE,
+   PAR_VTIPO_TRABAJADOR                IN SCR_MCOLABORADOR.V_TIPTRA%TYPE,
+   --PARAMETROS DE LA PAGINACION
+   PAR_COL_ORDER_BY     IN INTEGER, 
+   PAR_COL_ORDER_BY_DIR IN VARCHAR2 , 
+   PAR_PAG_DESDE        IN INTEGER, 
+   PAR_CANTIDAD_PAG     IN INTEGER,
+   --PARAMETROS DE RETORNO
+   PAR_OUT_QUANTITY     OUT INTEGER,
+   PAR_OUT_CURSOR       OUT SYS_REFCURSOR  
+) 
+IS 
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+
+BEGIN
+
+  v_query_count:= ' select count(*) ';
+    
+  v_query :=  'SELECT * FROM(SELECT a.*, rownum rn FROM( select  c.N_CODCOL,c.V_NOMCOL,C.V_NOMREP,
+  DECODE (c.V_ESTADO, 1, ''ACTIVO'', 2, ''INACTIVO'', '' '')V_ESTADO,DECODE (c.V_TIPTRA, 1, ''INTERNO'', 2, ''EXTERNO'', '' '')V_TIPTRA, ' ||
+  ' c.A_USUINS, to_char(c.A_FECINS, ''DD/MM/YYYY''), c.A_USUMOD, to_char(c.A_FECMOD,''DD/MM/YYYY'')';
+
+  v_query_from := ' from scr_mcolaborador c where ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := ' 1=1 ';
+  
+  
+   if(LENGTH(TRIM(PAR_VNOMBRE_COLABORADOR))>0) then
+     v_query_where :=  v_query_where || ' and  UPPER(c.V_NOMCOL) LIKE UPPER(''%' ||  PAR_VNOMBRE_COLABORADOR || '%'')';
+   end if;
+  
+  if(LENGTH(TRIM(PAR_VNOMBRE_REPRESA_COLABORAD))>0) then
+    v_query_where :=  v_query_where || ' and UPPER(c.V_NOMREP) LIKE UPPER(''%' ||  PAR_VNOMBRE_REPRESA_COLABORAD || '%'')';
+  end if;
+  
+  if(LENGTH(TRIM(PAR_VESTADO_COLABORADOR))>0) then
+    v_query_where :=  v_query_where || ' and c.V_ESTADO = ''' ||  PAR_VESTADO_COLABORADOR || '''';
+  end if;
+  
+   if(LENGTH(TRIM(PAR_VTIPO_TRABAJADOR))>0) then
+    v_query_where :=  v_query_where || ' and c.V_TIPTRA = ''' ||  PAR_VTIPO_TRABAJADOR || '''';
+  end if;
+  
+
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+  
+  v_query := v_query || ' order by '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' and rn <= ' || (par_pag_desde+par_cantidad_pag);
+    
+  OPEN par_out_cursor FOR v_query;
+  
+  execute immediate v_query_count into par_out_quantity;
+
+END;
+
+
+-- Obtener un Colaborador
+
+   PROCEDURE PRC_GET_COLABORADOR(
+   --Parametros de la busqueda
+   PAR_NCODIGO_COLABORADOR IN SCR_MCOLABORADOR.N_CODCOL%type,
+   --Parametros de retorno
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+BEGIN
+  v_query := ' SELECT t.N_CODCOL,t.V_NOMCOL,t.V_DNI,t.V_NOMEMP,t.V_ABREVI,t.V_ESTADO,' ||
+             ' t.A_PROGRA, t.A_CODARE, t.A_CODSIS ' ||
+             ' FROM SCR_MCOLABORADOR t '   ||
+             ' WHERE t.N_CODCOL = ' || PAR_NCODIGO_COLABORADOR;
+  OPEN par_out_cursor FOR v_query;
+  
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+
+
+
+-- Insert Colaborador
+
+PROCEDURE PRC_INSERT_COLABORADOR(
+   PAR_VNOMBRE_COLABORADOR                     SCR_MCOLABORADOR.V_NOMCOL%TYPE,
+   PAR_VNOMBRE_EMPRESA                         SCR_MCOLABORADOR.V_NOMEMP%TYPE,
+   PAR_VNUMERO_DOCUMENTO                       SCR_MCOLABORADOR.V_DNI%TYPE,
+   PAR_VESTADO_COLABORADOR                     SCR_MCOLABORADOR.V_ESTADO%TYPE,
+   PAR_VTIPO_TRABAJADOR_COLABORA               SCR_MCOLABORADOR.V_TIPTRA%TYPE,
+   --Campos de Auditoria
+   PAR_AUSUACOLABORADOR_CREACION                SCR_MCOLABORADOR.A_USUINS%TYPE,
+   PAR_AUSUACOLABORADOR_MODIFICA                SCR_MCOLABORADOR.A_USUMOD%TYPE,
+   PAR_APROGRAMA_COLABORADOR                    SCR_MCOLABORADOR.A_PROGRA%TYPE,
+   PAR_ACODIGO_AREA_COLABORADOR                 SCR_MCOLABORADOR.A_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA_COLABORAD                SCR_MCOLABORADOR.A_CODSIS%TYPE
+ )
+ IS
+ BEGIN
+ INSERT INTO SCR_MCOLABORADOR
+      (A_USUINS,
+       A_FECINS,
+       A_USUMOD,
+       A_FECMOD,
+       A_PROGRA,
+       A_CODARE,
+       A_CODSIS,
+       N_CODCOL,
+       V_NOMCOL,
+       V_NOMEMP,
+       V_DNI,
+       V_ESTADO,
+       V_TIPTRA
+        )
+    VALUES
+      (PAR_AUSUACOLABORADOR_CREACION,
+       SYSDATE,
+       PAR_AUSUACOLABORADOR_MODIFICA,
+       SYSDATE,
+       PAR_APROGRAMA_COLABORADOR,
+       PAR_ACODIGO_AREA_COLABORADOR,
+       PAR_ACODIGO_SISTEMA_COLABORAD, 
+       SQ_CDL_MANT_COLABORADOR.NEXTVAL,
+       PAR_VNOMBRE_COLABORADOR,
+       PAR_VNOMBRE_EMPRESA,
+       PAR_VNUMERO_DOCUMENTO,
+       PAR_VESTADO_COLABORADOR,
+       PAR_VTIPO_TRABAJADOR_COLABORA);
+       
+  EXCEPTION
+     WHEN OTHERS THEN
+          dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+END;
+
+ -- UPDATE COLABORADOR
+  PROCEDURE PRC_UPDATE_COLABORADOR(
+   PAR_NCODIGO_COLABORADOR            SCR_MCOLABORADOR.N_CODCOL%TYPE,
+   PAR_VNOMBRE_COLABORADOR            SCR_MCOLABORADOR.V_NOMCOL%TYPE,
+   PAR_VABREVIATURA_COLABORADOR       SCR_MCOLABORADOR.V_ABREVI%TYPE,
+   PAR_VESTADO_COLABORADOR            SCR_MCOLABORADOR.V_ESTADO%TYPE,
+   --Campos de Auditoria
+   PAR_AUSUACOLABORADOR_MODIFICA      SCR_MCOLABORADOR.A_USUMOD%TYPE,
+   PAR_APROGRAMA_COLABORADOR          SCR_MCOLABORADOR.A_PROGRA%TYPE,
+   PAR_ACODIGO_AREA_COLABORADOR       SCR_MCOLABORADOR.A_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA_COLABORAD      SCR_MCOLABORADOR.A_CODSIS%TYPE  
+ )
+ IS
+ BEGIN
+   
+  UPDATE SCR_MCOLABORADOR
+  SET  A_USUMOD = PAR_AUSUACOLABORADOR_MODIFICA,
+       A_FECMOD  = SYSDATE,
+       A_PROGRA  = PAR_APROGRAMA_COLABORADOR,
+       A_CODARE  = PAR_ACODIGO_AREA_COLABORADOR ,
+       A_CODSIS  = PAR_ACODIGO_SISTEMA_COLABORAD,
+       
+       V_NOMCOL  = PAR_VNOMBRE_COLABORADOR,
+       V_ABREVI  = PAR_VABREVIATURA_COLABORADOR,
+       V_ESTADO  = PAR_VESTADO_COLABORADOR
+  WHERE N_CODCOL = PAR_NCODIGO_COLABORADOR;
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+
+END;
+ 
+
+PROCEDURE PRC_INACTIVA_COLABORADOR(
+   PAR_NCODIGO_COLABORADOR            SCR_MCOLABORADOR.N_CODCOL%TYPE,
+   PAR_AUSUACOLABORADOR_MODIFICA      SCR_MCOLABORADOR.A_USUMOD%TYPE,
+   PAR_APROGRAMA_COLABORADOR          SCR_MCOLABORADOR.A_PROGRA%TYPE,
+   PAR_ACODIGO_AREA_COLABORADOR       SCR_MCOLABORADOR.A_CODARE%TYPE,
+   PAR_ACODIGO_SISTEMA_COLABORAD      SCR_MCOLABORADOR.A_CODSIS%TYPE    
+ ) IS
+ BEGIN
+  UPDATE SCR_MCOLABORADOR
+    SET V_ESTADO=2,
+        A_USUMOD  = PAR_AUSUACOLABORADOR_MODIFICA,
+        A_FECMOD  = SYSDATE,       
+        A_PROGRA  = PAR_APROGRAMA_COLABORADOR,
+        A_CODARE  = PAR_ACODIGO_AREA_COLABORADOR ,
+        A_CODSIS  = PAR_ACODIGO_SISTEMA_COLABORAD
+    WHERE N_CODCOL = PAR_NCODIGO_COLABORADOR;
+
+  EXCEPTION
+   WHEN OTHERS THEN
+        dbms_output.put_line('Se ha producido el siguiente error: '||sqlerrm);
+
+  END;
+
+PROCEDURE PRC_LISTA_COLABORADOR(
+  --Parametro de listado
+  PAR_V_ESTADO           IN SCR_MCOLABORADOR.V_ESTADO%TYPE,
+  --Parametro de retorno
+  PAR_OUT_CURSOR        OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+  OPEN PAR_OUT_CURSOR FOR 
+  	SELECT N_CODCOL, 
+  	       V_NOMCOL, 
+  	       V_DNI,
+  	       V_ESTADO 
+  	FROM SCR_MCOLABORADOR WHERE V_ESTADO = PAR_V_ESTADO;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      dbms_output.put_line('Se ha producido el siguiente error: ' || sqlerrm);
+END;
+
+
+end PCK_COLABORADOR;

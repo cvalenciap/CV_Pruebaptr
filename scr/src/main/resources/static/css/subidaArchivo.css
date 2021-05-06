@@ -1,0 +1,34 @@
+@CHARSET "ISO-8859-1";
+div.divSubidaArchivo table tr td {
+	text-align: center;
+	font-size: 12px;
+}
+div.divSubidaArchivo table tr th.thIndex {
+	width: 5%;
+}
+div.divSubidaArchivo table tr th.thNombre {
+	width: 60%;
+}
+div.divSubidaArchivo table tr th.thTipo {
+	width: 10%;
+}
+div.divSubidaArchivo table tr th.thTamanho {
+	width: 10%;
+}
+div.divSubidaArchivo table tr th.thAcciones {
+	width: 15%;
+}
+div.divSubidaArchivo div.msjErrArchivos {
+	color: #e42626;
+	font-size: 12px;
+}
+div.divSubidaArchivo div.msjErrArchivos p {
+	padding: 5px 0;
+}
+div.divSubidaArchivo div.msjErrArchivos ul {
+	padding: 0;
+	list-style-type: none;
+}
+div.divSubidaArchivo table tr td.odd {
+	background-color: #f9f9f9;
+}

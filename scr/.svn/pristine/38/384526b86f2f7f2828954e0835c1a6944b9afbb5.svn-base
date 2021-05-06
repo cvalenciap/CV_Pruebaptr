@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+<script th:inline="javascript">
+/*<![CDATA[*/    
+	// 	Obligatorio para cargar Menu - Inicio
+	var contexto = /*[[@{/}]]*/ ;
+	var ltaOpcionesMenu = null;
+	// Obligatorio para cargar Menu - Fin
+    var mensajeRespuestaServer = /*[[${mensajeRespuesta}]]*/ ;
+    var estadoRespuestaServer = /*[[${estadoRespuesta}]]*/ ;
+    var valorGGADefecto =  /*[[${valorGGADefecto}]]*/ ;
+    var ltaSemillaBlankDBO =  /*[[${ltaSemillaBlankDBO}]]*/ ;
+    var ltaSemillaSeededDBO =  /*[[${ltaSemillaSeededDBO}]]*/ ;
+    var ltaSemillaStandardDBO  =  /*[[${ltaSemillaStandardDBO}]]*/ ;
+    var ltaSemillaSamplesDBO  =  /*[[${ltaSemillaSamplesDBO}]]*/ ;    
+    var ltaValidacionBlank  =  /*[[${ltaValidacionBlank}]]*/ ;
+    var ltaValidacionSeeded  =  /*[[${ltaValidacionSeeded}]]*/ ;
+    var ltaValidacionGGA  =  /*[[${ltaValidacionGGA}]]*/ ;
+    var ltaValidacionSamples = /*[[${ltaValidacionSamples}]]*/;
+    var validacionBlank = 0;
+    var validacionSeededMinimo = 0;
+    var validacionSeededMaximo = 0;
+    var validacionGGAMinimo = 0;
+    var validacionGGAMaximo = 0;
+    var validacionSamples = 0;
+    var idRegistroLaboratorio  =  /*[[${idRegistroLaboratorio}]]*/ ;
+/*]]>*/
+</script>
+
+</head>
+<body class="skin-gym bar-white">
+    	<div class="" role="document">   
+			<!--</main-aside>-->
+			<!--<pull-main-content>-->
+			<div >
+				<!--<main-content>-->
+				<div >
+					<div >
+						<div >
+							<div >
+								<div class="box-wrap-header">
+									<div class="pull-left">
+										<div class="title-main">
+											<span id="lblTituloMantenimiento">Semillas</span>
+										</div>
+									</div>
+									<div class="pull-right">
+										<div id="toolbar" style="margin-top: 7px;">									
+												<button id="btnRegresarDBO" name="btnRegresarDBO" style="display: block;" class="btn-s btn-clean">Atras</button>						
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="panel panel-default">
+											<div class="panel-heading">
+												<h3 class="panel-title">
+													<b class="accordeon_heading">Blanks</b>
+												</h3>
+											</div>
+											<div class="panel-body">
+												<div>
+													<div class="pull-left">
+														<div id="divMensajeInformacionBlanks"></div>
+													</div>
+												</div>
+												<div id="toolbarBlanks" style="margin-left: 80px;position: absolute;width: 300px;">
+														<span id="lblValidacionBlanks" style="font-size: 13px;"></span>
+												</div>
+												<div class="box-form">
+													<div class="row">
+														<div class="col-md-12">
+															<div>
+																<div class="table-responsive">
+																	<table id="tblResultadosBlanks"
+																		class="table table-striped table-bordered table-hover text-center text-middle"
+																		data-flat="true" 
+																		data-show-export="true"
+																		data-toolbar="#toolbarBlanks"
+																		data-cache="false"																
+																		>
+																	</table>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+							        <div class="col-md-12">
+							            <div class="panel panel-default">
+							                <div class="panel-heading">
+							                    <h3 class="panel-title"><b class="accordeon_heading">Sedded</b></h3>
+							                </div>
+							                <div class="panel-body">
+												<div>
+													<div class="pull-left">
+														<div id="divMensajeInformacionSeeded"></div>
+													</div>
+													<div class="pull-right" style="display: none;">
+														<div class="col-md-12">
+															<div class="form-horizontal">
+																<div class="form-group">
+																	<label class="control-label col-sm-6">Valor GGA : </label>
+																	<div class="col-md-3">
+																		<input type="text" class="form-control input-sm" th:value="*{valorGGADefecto}" disabled="disabled" id="txtValorGGA"/>
+																	</div>
+																	<div class="col-md-1">
+																		<button type="button" id="btnEditarValorGGA" class="btn-s btn-agregar"  style="margin-top: -2px;" >
+																			 <i class="fa fa-pencil-square-o"></i>
+																		</button>
+																		<button type="button" id="btnGuardarValorGGA" style="margin-top: -2px;display: none" class="btn-s btn-agregar">
+																			 <i class="glyphicon glyphicon-floppy-disk"></i>
+																		</button>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													
+												</div>
+												<div id="toolbarSeeded" style="margin-left: 80px;position: absolute;width: 400px;">
+														<span id="lblValidacionSeededVal2" style="font-size: 13px;" ></span>&nbsp;&nbsp;&nbsp;
+														<span id="lblValidacionSeededVal3" style="font-size: 13px;"></span>
+												</div>
+												<div class="box-form">
+													<div class="row">
+														<div class="col-md-12">
+															<div>
+																<div class="table-responsive">
+																	<table id="tblResultadosSeeded"
+																		class="table table-striped table-bordered table-hover text-center text-middle"
+																		data-flat="true" 
+																		data-show-export="true" 
+																		data-toolbar="#toolbarSeeded"
+																		data-cache="false">
+																	</table>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+							            </div>
+							        </div>	        
+							    </div>
+							    <div class="row">
+							        <div class="col-md-12">
+							            <div class="panel panel-default">
+							                <div class="panel-heading">
+							                    <h3 class="panel-title"><b class="accordeon_heading">GGA Standard</b></h3>	                    
+							                </div>
+							                <div class="panel-body">
+												<div>
+													<div class="pull-left">
+														<div id="divMensajeInformacionStandard"></div>
+													</div>
+												</div>
+												<div id="toolbarStandard" style="margin-left: 80px;position: absolute;width: 400px;">
+														<span id="lblValidacionGGAVal1" style="font-size: 13px;"></span>
+												</div>
+												<div class="box-form">
+													<div class="row">
+														<div class="col-md-12">
+															<div>
+																<div class="table-responsive">
+																	<table id="tblResultadosStandard"
+																		class="table table-striped table-bordered table-hover text-center text-middle"
+																		data-flat="true" 
+																		data-show-export="true" 
+																		data-toolbar="#toolbarStandard"
+																		data-cache="false">
+																	</table>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>			
+							     	</div>
+								</div>
+								<div class="row">
+							        <div class="col-md-12">
+							            <div class="panel panel-default">
+							                <div class="panel-heading">
+							                    <h3 class="panel-title"><b class="accordeon_heading">Samples</b></h3>
+							                </div>
+							                <div class="panel-body">
+												<div>
+													<div class="pull-left">
+														<div id="divMensajeInformacionSamples"></div>
+													</div>
+												</div>
+												<div id="toolbarSamples" style="margin-left: 80px;position: absolute;width: 300px;">
+														<span id="lblValidacionSamples" style="font-size: 13px;"></span>
+												</div>
+												<div class="box-form">
+													<div class="row">
+														<div class="col-md-12">
+															<div>
+																<div class="table-responsive">
+																	<table id="tblResultadosSamples"
+																		class="table table-striped table-bordered table-hover text-center text-middle"
+																		data-flat="true" 
+																		data-show-export="true"
+																		data-toolbar="#toolbarSamples"
+																		data-cache="false">
+																	</table>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+							            </div>
+							        </div>	        
+							    </div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--</main-content>-->
+				<!-- MODALES -->
+			</div>
+			<!--</pull-main-content>-->
+		</div>
+		<div class="up-page upPage"><span class="glyphicon glyphicon-chevron-up"></span></div>
+<script type="text/javascript" th:src="@{/resources/bootstrap-table/extensions/export/bootstrap-table-export.js}"></script>
+<script type="text/javascript" th:src="@{/resources/bootstrap-table/extensions/export/tableExport.js}"></script>
+<script type="text/javascript" th:src="@{/js/verBandejaSemilla.js}"></script>
+</body>
+</html>

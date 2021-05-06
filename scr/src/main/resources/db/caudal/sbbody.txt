@@ -1,0 +1,475 @@
+create or replace PACKAGE BODY PCK_CAUDAL IS
+
+PROCEDURE PRC_GET_CAUDAL(
+	   --Parametro de busqueda
+	   PAR_N_CODRIO  IN SCR_CAUDAL.N_CODRIO%TYPE,
+	   PAR_V_PERIOD IN SCR_CAUDAL.V_PERIOD%TYPE,
+	   PAR_V_ESTADO  IN SCR_CAUDAL.V_ESTADO%TYPE,
+	   --Parametro de retorno
+	   PAR_OUT_CURSOR OUT SYS_REFCURSOR
+)
+IS
+BEGIN
+
+OPEN PAR_OUT_CURSOR FOR
+     SELECT N_CODIGO,
+		  	N_CODRIO,
+			V_TIPROC,
+			V_LOTE,
+			V_RUTA,
+			V_PERIOD,
+			D_FHREG,
+			V_ESTADO,
+			V_NOMARC,
+			N_CODCAR,
+			D_FHPROC
+     FROM  SCR_CAUDAL
+     WHERE N_CODRIO = PAR_N_CODRIO AND V_PERIOD = PAR_V_PERIOD AND V_ESTADO = PAR_V_ESTADO
+     ORDER BY N_CODIGO, V_PERIOD;
+
+END;
+
+PROCEDURE PRC_GET_CAU_DET_RES(
+           --Parametro de busqueda
+           PAR_PERIODO IN SCR_CAUDAL.V_PERIOD%TYPE,
+           --Parametro de retorno
+           PAR_OUT_CURSOR OUT SYS_REFCURSOR
+)
+
+IS
+BEGIN
+
+OPEN PAR_OUT_CURSOR FOR
+     SELECT SUBSTR(C.V_PERIOD,1,4)||'-'||CASE SUBSTR(C.V_PERIOD,5)                    
+                                                                            WHEN '01' THEN 'Enero'
+                                                                            WHEN '02' THEN 'Febrero'
+                                                                            WHEN '03' THEN 'Marzo'
+                                                                            WHEN '04' THEN 'Abril'
+                                                                            WHEN '05' THEN 'Mayo'
+                                                                            WHEN '06' THEN 'Junio'
+                                                                            WHEN '07' THEN 'Julio'
+                                                                            WHEN '08' THEN 'Agosto'
+                                                                            WHEN '09' THEN 'Setiembre'  
+                                                                            WHEN '10' THEN 'Octubre'
+                                                                            WHEN '11' THEN 'Noviembre'
+                                                                            WHEN '12' THEN 'Diciembre'
+                                                                         ELSE ''
+                                                                         END AS PERIODO,
+                  R.C_NOMRIO, CD.V_DIA, 
+                  CD.N_NHR01, CD.N_NHR02, 
+                  CD.N_NHR03, CD.N_NHR04, 
+                  CD.N_NHR05, CD.N_NHR06, 
+                  CD.N_NHR07, CD.N_NHR08, 
+                  CD.N_NHR09, CD.N_NHR10, 
+                  CD.N_NHR11, CD.N_NHR12, 
+                  CD.N_NHR13, CD.N_NHR14, 
+                  CD.N_NHR15, CD.N_NHR16, 
+                  CD.N_NHR17, CD.N_NHR18, 
+                  CD.N_NHR19, CD.N_NHR20, 
+                  CD.N_NHR21, CD.N_NHR22, 
+                  CD.N_NHR23, CD.N_NHR24, 
+                  CD.N_PROMED, R.N_CODIGO CODRIO
+     FROM  SCR_CAUDAL_DET CD,
+                  SCR_CAUDAL C,
+                  SCR_MANT_RIO R
+     WHERE
+                  R.N_CODIGO = C.N_CODRIO
+                  AND CD.N_CODCAU = C.N_CODIGO
+                  AND C.V_PERIOD = PAR_PERIODO
+     ORDER BY
+                  CD.N_CODCAU, CD.V_DIA;
+
+END;
+
+PROCEDURE PRC_GET_CAU_DET_GRA(
+           --Parametro de busqueda
+           PAR_PERIODO IN SCR_CAUDAL.V_PERIOD%TYPE,
+           --Parametro de retorno
+           PAR_OUT_CURSOR OUT SYS_REFCURSOR
+)
+
+IS
+BEGIN
+
+OPEN PAR_OUT_CURSOR FOR
+     SELECT 
+           R.C_NOMRIO,
+           CD.V_DIA,
+           CD.N_PROMED       
+     FROM  
+           SCR_MANT_RIO R                  
+     INNER JOIN     
+           SCR_CAUDAL C                   
+       ON     
+           R.N_CODIGO = C.N_CODRIO
+     INNER JOIN     
+           SCR_CAUDAL_DET CD                   
+       ON     
+           C.N_CODIGO = CD.N_CODCAU
+     WHERE 
+           C.V_PERIOD = PAR_PERIODO                    
+     ORDER BY 
+           CD.N_CODCAU, CD.V_DIA;
+END;
+
+PROCEDURE PRC_GET_CAU_DET2(
+           --Parametro de busqueda
+           PAR_CAUDAL_CODIGO IN SCR_CAUDAL.N_CODIGO%TYPE,
+           --Parametro de retorno
+           PAR_OUT_CURSOR OUT SYS_REFCURSOR
+)
+IS
+v_query VARCHAR2(4000);
+BEGIN
+    v_query := ' SELECT CD.V_DIA, ' ||
+                ' NVL(CD.N_NHR01,-1), NVL(CD.N_NHR02,-1), ' || 
+                ' NVL(CD.N_NHR03,-1), NVL(CD.N_NHR04,-1), ' || 
+                ' NVL(CD.N_NHR05,-1), NVL(CD.N_NHR06,-1), ' || 
+                ' NVL(CD.N_NHR07,-1), NVL(CD.N_NHR08,-1), ' || 
+                ' NVL(CD.N_NHR09,-1), NVL(CD.N_NHR10,-1), ' || 
+                ' NVL(CD.N_NHR11,-1), NVL(CD.N_NHR12,-1), ' || 
+                ' NVL(CD.N_NHR13,-1), NVL(CD.N_NHR14,-1), ' || 
+                ' NVL(CD.N_NHR15,-1), NVL(CD.N_NHR16,-1), ' || 
+                ' NVL(CD.N_NHR17,-1), NVL(CD.N_NHR18,-1), ' || 
+                ' NVL(CD.N_NHR19,-1), NVL(CD.N_NHR20,-1), ' || 
+                ' NVL(CD.N_NHR21,-1), NVL(CD.N_NHR22,-1), ' || 
+                ' NVL(CD.N_NHR23,-1), NVL(CD.N_NHR24,-1) '  ||
+                ' FROM  SCR_CAUDAL_DET CD, SCR_CAUDAL C, SCR_MANT_RIO R ' ||
+                ' WHERE CD.N_CODCAU = C.N_CODIGO AND C.N_CODRIO = R.N_CODIGO AND C.N_CODIGO = ' || PAR_CAUDAL_CODIGO;
+    
+    v_query := v_query || ' ORDER BY CD.V_DIA ASC ';
+    
+    OPEN PAR_OUT_CURSOR FOR v_query;
+END;
+
+PROCEDURE PRC_BUSCA_CAUDAL (
+   --Parametros de la busqueda
+   PAR_TIPO_PROCESO IN VARCHAR2,
+   PAR_PERIODO IN VARCHAR2,
+   --Parametros de la paginacion
+   par_col_order_by IN integer, par_col_order_by_dir IN varchar2 , 
+   par_pag_desde IN integer, par_cantidad_pag IN integer,
+   --Parametros de retorno
+   par_out_quantity OUT integer,
+   par_out_cursor OUT SYS_REFCURSOR  
+)
+IS
+v_query VARCHAR2(4000);
+v_query_from VARCHAR2(4000);
+v_query_count VARCHAR2(4000);
+v_query_where VARCHAR2(4000);
+BEGIN
+  v_query_count:= ' SELECT COUNT(*) ';
+    
+  v_query :=  'SELECT * FROM(SELECT a.*, rownum rn FROM(SELECT cau.V_PERIOD, UPPER(r.C_NOMLAR), UPPER(r.C_ABREVI), DECODE(cau.V_TIPROC,''1'',''AUTOMATICO'',''2'',''MANUAL''), ' ||
+  ' DECODE(cau.V_ESTADO,''1'',''ACTIVO'',''2'',''INACTIVO''), TO_CHAR(cau.D_FHPROC, ''DD/MM/YYYY HH:MI:SS AM''), cau.N_CODIGO CODCAU, r.N_CODIGO CORDIO ';
+
+  v_query_from := ' FROM SCR_CAUDAL cau, SCR_MANT_RIO r WHERE cau.N_CODRIO = r.N_CODIGO AND cau.V_ESTADO = ''1'' ';
+
+  v_query := v_query || v_query_from;
+  v_query_count := v_query_count || v_query_from;
+
+  v_query_where := '';
+  
+  if(LENGTH(TRIM(PAR_TIPO_PROCESO))>0) then
+    v_query_where :=  v_query_where || ' AND cau.V_TIPROC = ''' || PAR_TIPO_PROCESO || '''';
+  end if;
+
+  if(LENGTH(TRIM(PAR_PERIODO))>0) then
+    v_query_where :=  v_query_where || ' AND cau.V_PERIOD = ''' || PAR_PERIODO || '''';
+  end if;
+
+  v_query := v_query||v_query_where;
+  v_query_count := v_query_count||v_query_where;
+  
+  v_query := v_query || ' ORDER BY '||par_col_order_by || ' ' ||par_col_order_by_dir || ' ) a ) WHERE rn > ' || par_pag_desde || ' AND rn <= ' || (par_pag_desde+par_cantidad_pag);
+    
+    dbms_output.put_line(v_query);
+    
+  OPEN par_out_cursor FOR v_query;
+  
+  execute immediate v_query_count into par_out_quantity;
+  
+END;
+
+PROCEDURE PRC_INSERT_CAUDAL(
+   PAR_N_CODRIO       IN        	  SCR_CAUDAL.N_CODRIO%TYPE,
+   PAR_V_TIPROC       IN          	SCR_CAUDAL.V_TIPROC%TYPE,
+   PAR_V_LOTE         IN            SCR_CAUDAL.V_LOTE%TYPE,
+   PAR_V_RUTA		      IN			      SCR_CAUDAL.V_RUTA%TYPE,
+   PAR_V_PERIOD       IN            SCR_CAUDAL.V_PERIOD%TYPE,
+   PAR_V_ESTADO       IN            SCR_CAUDAL.V_ESTADO%TYPE,
+   PAR_V_NOMARC       IN            SCR_CAUDAL.V_NOMARC%TYPE,
+   PAR_N_CODCAR       IN            SCR_CAUDAL.N_CODCAR%TYPE,
+
+   --Campos de Auditoria
+   PAR_A_USUINS       IN     		    SCR_CAUDAL.A_USUINS%TYPE,
+   PAR_A_PROGRA       IN            SCR_CAUDAL.A_PROGRA%TYPE,
+   PAR_A_CODARE       IN          	SCR_CAUDAL.A_CODARE%TYPE,
+   PAR_A_CODSIS       IN       		  SCR_CAUDAL.A_CODSIS%TYPE,
+   
+   --Campos de Salida
+   PAR_OUT_COD_CAU		OUT 		INTEGER
+ )
+ IS
+ BEGIN
+	 
+ PAR_OUT_COD_CAU := SQ_CDL_CAUDAL.NEXTVAL;
+	 
+ INSERT INTO SCR_CAUDAL
+      (A_USUINS,
+       A_FECINS,
+       A_USUUPD,
+       A_FECUPD,
+       A_PROGRA,
+       A_CODARE,
+       A_CODSIS,
+	   
+       N_CODIGO,
+  		 N_CODRIO,
+		   V_TIPROC,
+		   V_LOTE,
+		   V_RUTA,
+		   V_PERIOD,
+       D_FHREG,
+		   V_ESTADO,
+		   V_NOMARC,
+		   N_CODCAR,
+       D_FHPROC)
+    VALUES
+      (PAR_A_USUINS,
+       SYSDATE,
+	     NULL,
+	     NULL,
+       PAR_A_PROGRA,
+       PAR_A_CODARE,
+       PAR_A_CODSIS,
+	   
+       	PAR_OUT_COD_CAU,
+       	PAR_N_CODRIO,
+		    PAR_V_TIPROC,
+		    PAR_V_LOTE,
+		    PAR_V_RUTA,
+		    PAR_V_PERIOD,
+		    sysdate,
+		    PAR_V_ESTADO,
+		    PAR_V_NOMARC,
+		    PAR_N_CODCAR,
+		    sysdate);
+       
+  EXCEPTION
+     WHEN OTHERS THEN
+          dbms_output.put_line('Se ha producido el siguiente error: ' || sqlerrm);
+END;
+
+PROCEDURE PRC_INSERT_CAUDAL_DETALLE(
+   PAR_N_CODCAU         IN      		SCR_CAUDAL_DET.N_CODCAU%TYPE,
+   PAR_V_DIA            IN     	        SCR_CAUDAL_DET.V_DIA%TYPE,
+   PAR_N_NHR01			IN			    SCR_CAUDAL_DET.N_NHR01%TYPE,
+   PAR_N_NHR02          IN              SCR_CAUDAL_DET.N_NHR02%TYPE,
+   PAR_N_NHR03          IN           	SCR_CAUDAL_DET.N_NHR03%TYPE,
+   PAR_N_NHR04          IN              SCR_CAUDAL_DET.N_NHR04%TYPE,
+   PAR_N_NHR05          IN              SCR_CAUDAL_DET.N_NHR05%TYPE,
+   PAR_N_NHR06          IN              SCR_CAUDAL_DET.N_NHR06%TYPE,
+   PAR_N_NHR07          IN              SCR_CAUDAL_DET.N_NHR07%TYPE,
+   PAR_N_NHR08          IN              SCR_CAUDAL_DET.N_NHR08%TYPE,
+   PAR_N_NHR09			IN			    SCR_CAUDAL_DET.N_NHR09%TYPE,
+   PAR_N_NHR10          IN              SCR_CAUDAL_DET.N_NHR10%TYPE,
+   PAR_N_NHR11          IN           	SCR_CAUDAL_DET.N_NHR11%TYPE,
+   PAR_N_NHR12          IN              SCR_CAUDAL_DET.N_NHR12%TYPE,
+   PAR_N_NHR13          IN              SCR_CAUDAL_DET.N_NHR13%TYPE,
+   PAR_N_NHR14          IN              SCR_CAUDAL_DET.N_NHR14%TYPE,
+   PAR_N_NHR15          IN              SCR_CAUDAL_DET.N_NHR15%TYPE,
+   PAR_N_NHR16          IN              SCR_CAUDAL_DET.N_NHR16%TYPE,
+   PAR_N_NHR17			IN			    SCR_CAUDAL_DET.N_NHR17%TYPE,
+   PAR_N_NHR18          IN              SCR_CAUDAL_DET.N_NHR18%TYPE,
+   PAR_N_NHR19          IN           	SCR_CAUDAL_DET.N_NHR19%TYPE,
+   PAR_N_NHR20          IN              SCR_CAUDAL_DET.N_NHR20%TYPE,
+   PAR_N_NHR21          IN              SCR_CAUDAL_DET.N_NHR21%TYPE,
+   PAR_N_NHR22          IN              SCR_CAUDAL_DET.N_NHR22%TYPE,
+   PAR_N_NHR23          IN              SCR_CAUDAL_DET.N_NHR23%TYPE,
+   PAR_N_NHR24          IN              SCR_CAUDAL_DET.N_NHR24%TYPE,
+   PAR_N_PROMED         IN              SCR_CAUDAL_DET.N_PROMED%TYPE,
+
+   --Campos de Auditoria
+   PAR_A_USUINS        IN   			SCR_CAUDAL_DET.A_USUINS%TYPE,
+   PAR_A_PROGRA        IN            	SCR_CAUDAL_DET.A_PROGRA%TYPE,
+   PAR_A_CODARE        IN         	    SCR_CAUDAL_DET.A_CODARE%TYPE,
+   PAR_A_CODSIS        IN      		    SCR_CAUDAL_DET.A_CODSIS%TYPE,
+   
+   --Campos de salida
+   PAR_OUT_COD_CAU_DET     OUT          INTEGER
+ )
+ IS
+ BEGIN
+  DELETE FROM SCR_CAUDAL_DET 
+	 WHERE N_CODCAU = PAR_N_CODCAU AND V_DIA = PAR_V_DIA;
+ 
+	 PAR_OUT_COD_CAU_DET := SQ_CDL_CAUDAL_DETALLE.NEXTVAL;
+	 
+ INSERT INTO SCR_CAUDAL_DET
+      (A_USUINS,
+       A_FECINS,
+       A_USUUPD,
+       A_FECUPD,
+       A_PROGRA,
+       A_CODARE,
+       A_CODSIS,
+	   
+       	N_CODIGO,
+		N_CODCAU,
+		V_DIA,
+		N_NHR01,
+		N_NHR02,
+		N_NHR03,
+		N_NHR04,
+		N_NHR05,
+		N_NHR06,
+		N_NHR07,
+		N_NHR08,
+		N_NHR09,
+		N_NHR10,
+		N_NHR11,
+		N_NHR12,
+		N_NHR13,
+		N_NHR14,
+		N_NHR15,
+		N_NHR16,
+		N_NHR17,
+		N_NHR18,
+		N_NHR19,
+		N_NHR20,
+		N_NHR21,
+		N_NHR22,
+		N_NHR23,
+		N_NHR24,
+	  	N_PROMED)
+    VALUES
+      (PAR_A_USUINS,
+       SYSDATE,
+	   NULL,
+	   NULL,
+       PAR_A_PROGRA,
+       PAR_A_CODARE,
+       PAR_A_CODSIS,
+	   
+       	PAR_OUT_COD_CAU_DET,
+       	PAR_N_CODCAU,
+	   PAR_V_DIA,
+	   PAR_N_NHR01,
+	   PAR_N_NHR02,
+	   PAR_N_NHR03,
+	   PAR_N_NHR04,
+	   PAR_N_NHR05,
+	   PAR_N_NHR06,
+	   PAR_N_NHR07,
+	   PAR_N_NHR08,
+	   PAR_N_NHR09,
+	   PAR_N_NHR10,
+	   PAR_N_NHR11,
+	   PAR_N_NHR12,
+	   PAR_N_NHR13,
+	   PAR_N_NHR14,
+	   PAR_N_NHR15,
+	   PAR_N_NHR16,
+	   PAR_N_NHR17,
+	   PAR_N_NHR18,
+	   PAR_N_NHR19,
+	   PAR_N_NHR20,
+	   PAR_N_NHR21,
+	   PAR_N_NHR22,
+	   PAR_N_NHR23,
+	   PAR_N_NHR24,
+	   PAR_N_PROMED);
+       
+  EXCEPTION
+     WHEN OTHERS THEN
+          dbms_output.put_line('Se ha producido el siguiente error: ' || sqlerrm);
+END;
+
+PROCEDURE PRC_GET_CAUDAL_DET_BY_CAUDAL(
+	   --Parametro de busqueda
+	   PAR_CAUDAL IN SCR_CAUDAL_DET.N_CODCAU%TYPE,
+	   --Parametro de retorno
+	   PAR_OUT_CURSOR OUT SYS_REFCURSOR
+)
+
+IS
+BEGIN
+
+OPEN PAR_OUT_CURSOR FOR
+     SELECT N_CODIGO,
+        N_CODCAU,
+        V_DIA,
+        N_NHR01,
+        N_NHR02,
+        N_NHR03,
+        N_NHR04,
+        N_NHR05,
+        N_NHR06,
+        N_NHR07,
+        N_NHR08,
+        N_NHR09,
+        N_NHR10,
+        N_NHR11,
+        N_NHR12,
+        N_NHR13,
+        N_NHR14,
+        N_NHR15,
+        N_NHR16,
+        N_NHR17,
+        N_NHR18,
+        N_NHR19,
+        N_NHR20,
+        N_NHR21,
+        N_NHR22,
+        N_NHR23,
+        N_NHR24,
+        N_PROMED
+     FROM  SCR_CAUDAL_DET
+     WHERE N_CODCAU = PAR_CAUDAL
+     ORDER BY N_CODIGO, V_DIA;
+
+END;
+
+PROCEDURE PRC_UPDATE_CAUDAL(
+   PAR_N_CODIGO       IN     		    SCR_CAUDAL.N_CODIGO%TYPE,
+   PAR_V_TIPROC       IN          	SCR_CAUDAL.V_TIPROC%TYPE,
+   PAR_V_LOTE         IN            SCR_CAUDAL.V_LOTE%TYPE,
+   PAR_V_RUTA		      IN			      SCR_CAUDAL.V_RUTA%TYPE,
+   PAR_D_FHREG        IN            SCR_CAUDAL.D_FHREG%TYPE,
+   PAR_V_ESTADO       IN            SCR_CAUDAL.V_ESTADO%TYPE,
+   PAR_V_NOMARC       IN            SCR_CAUDAL.V_NOMARC%TYPE,
+   PAR_N_CODCAR       IN            SCR_CAUDAL.N_CODCAR%TYPE,
+
+   --Campos de Auditoria
+   PAR_A_USUUPD       IN     		    SCR_CAUDAL.A_USUUPD%TYPE,
+   PAR_A_PROGRA       IN            SCR_CAUDAL.A_PROGRA%TYPE,
+   PAR_A_CODARE       IN          	SCR_CAUDAL.A_CODARE%TYPE,
+   PAR_A_CODSIS       IN       		  SCR_CAUDAL.A_CODSIS%TYPE
+ )
+ IS
+ BEGIN
+	 
+ UPDATE SCR_CAUDAL
+ SET   A_USUUPD = CASE WHEN PAR_A_USUUPD IS NULL THEN A_USUUPD ELSE PAR_A_USUUPD END,
+       A_FECUPD = SYSDATE,
+       A_PROGRA = CASE WHEN PAR_A_PROGRA IS NULL THEN A_PROGRA ELSE PAR_A_PROGRA END,
+       A_CODARE = CASE WHEN PAR_A_CODARE IS NULL THEN A_CODARE ELSE PAR_A_CODARE END,
+       A_CODSIS = CASE WHEN PAR_A_CODSIS IS NULL THEN A_CODSIS ELSE PAR_A_CODSIS END,
+		V_TIPROC = CASE WHEN PAR_V_TIPROC IS NULL THEN V_TIPROC ELSE PAR_V_TIPROC END,
+		V_LOTE = CASE WHEN PAR_V_LOTE IS NULL THEN V_LOTE ELSE PAR_V_LOTE END,
+		V_RUTA = CASE WHEN PAR_V_RUTA IS NULL THEN V_RUTA ELSE PAR_V_RUTA END,
+		D_FHREG = CASE WHEN PAR_D_FHREG IS NULL THEN D_FHREG ELSE PAR_D_FHREG END,
+		V_ESTADO = CASE WHEN PAR_V_ESTADO IS NULL THEN V_ESTADO ELSE PAR_V_ESTADO END,
+		V_NOMARC = CASE WHEN PAR_V_NOMARC IS NULL THEN V_NOMARC ELSE PAR_V_NOMARC END,
+		N_CODCAR = CASE WHEN PAR_N_CODCAR IS NULL THEN N_CODCAR ELSE PAR_N_CODCAR END,
+		D_FHPROC = SYSDATE
+ WHERE N_CODIGO = PAR_N_CODIGO;
+       
+  EXCEPTION
+     WHEN OTHERS THEN
+          dbms_output.put_line('Se ha producido el siguiente error: ' || sqlerrm);
+END;
+
+END PCK_CAUDAL;

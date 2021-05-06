@@ -1,0 +1,27 @@
+<div th:fragment="resultsList">
+
+	
+	
+	<div class="row actividad border-plan-operativo margen-reporte-ensayo"  >
+		<div th:text="${#messages.msg('reporte.ensayo.column08')}" class="col-md-2 col-sm-2 col-xs-2 text-center border-plan-operativo negrita"></div>
+		<div th:text="${#messages.msg('reporte.ensayo.column01')}" class="col-md-8 col-sm-8 col-xs-8 text-center border-plan-operativo negrita"></div>
+		<div class="col-md-2 col-sm-2 col-xs-2 text-center border-plan-operativo negrita">ACCI&#211;N</div>
+	</div>
+
+	<div class="">
+		<div th:each="reporte,stat : ${reportes}"   class="row actividad margen-reporte-ensayo container-parent-position-middle  border-plan-operativo" >  
+        	<div class="col-md-2 col-sm-2 col-xs-2 text-center container-position-middle" th:text="${reporte.key}" style=""></div>
+        	        	
+        	<div class="col-md-8 col-sm-8 col-xs-8">
+              <div th:each="detalle,ind : ${reporte.value}"   class="row subactividad subactcalcular" >
+               		<div  class="col-md-12 col-sm-12 col-xs-12 text-center punto-muestra border-plan-operativo"  th:text="${detalle.puntoMuestra}">
+               		</div>
+              </div>
+            </div>
+            
+            <div class="col-md-2 col-sm-2 col-xs-2 text-center container-position-middle" th:attr="data-fecha=${reporte.key}">
+        		<button type="button"  onclick="generarReporte(this)" class="btn btn-info"  th:attr="data-fecha=${reporte.key}"  ><span class="glyphicon glyphicon-search"></span><label>Generar</label></button>    
+            </div>
+		</div>
+	 </div>
+</div>

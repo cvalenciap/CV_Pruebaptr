@@ -1,0 +1,6 @@
+projectKey=scr-core-bean
+serverUrl=http://192.168.150.200:9000
+serverVersion=6.4.0.25310
+dashboardUrl=http://192.168.150.200:9000/dashboard/index/scr-core-bean
+ceTaskId=AV87nric8ySwJmqNDRRG
+ceTaskUrl=http://192.168.150.200:9000/api/ce/task?id=AV87nric8ySwJmqNDRRG

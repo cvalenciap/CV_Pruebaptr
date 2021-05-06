@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content-detalle" th:fragment="form-edit-phmetroDigitalDetalle">
+				
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('phmetroDigital.registrar')}">Editar</span> 
+			</h4>
+			
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('phmetroDigital.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('phmetroDigital.crear')}">Crear texto html</span>
+		</div>
+				
+		<div class="modal-footer">
+			<form name="form-edit-phmetroDigital" id="form-edit-phmetroDigital-id" 
+				  th:object="${phmetroDigitalEditBean}"
+				  role="form">			  			
+		  	<fieldset class="col-md-12">
+				<legend></legend>								
+				 <div class="form-group center"> 
+				 	
+						<div class="form-group col-md-12 col-sm-12 col-xs-12">											                    
+		                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strNomEquipo2"><span th:text="${#messages.msg('phmetroDigital.nomEquipo')}"></span></label>
+							<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+								<input type="text"  class="form-control letraMayuscula" id="strNomEquipo2"
+		                    		maxlength="20"  th:field="*{strNomEquipo}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>		
+		                    		
+		                    		
+		                    			                    	 	   			                    	 
+		                    </div>	
+		                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strCodEquipo2"><span th:text="${#messages.msg('phmetroDigital.codigo')}"></span></label>
+							<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+								<input type="text"  class="form-control letraMayuscula" id="strCodEquipo2"
+		                    		maxlength="20"  th:field="*{strCodEquipo}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"
+		                    	 	/>			
+		                    	 	
+		                    		                    	 	   			                    	 
+		                    </div>	
+		                    
+		                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strMarca2"><span th:text="${#messages.msg('phmetroDigital.marca')}"></span></label>
+							<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+								<input type="text"  class="form-control letraMayuscula" id="strMarca2"
+		                    		maxlength="20"  th:field="*{strMarca}" onkeypress="return MYAPPL.soloLetras(event)"
+		                    	 	/>		                    	 	   			                    	 
+		                    </div>			                    			                    
+		 				</div>						
+		 				
+		 				<div class="form-group col-md-12 col-sm-12 col-xs-12 center">											                    
+		                   
+							<div class="form-group col-md-2 col-sm-2 col-xs-2 "></div>											          	 	   			                    	 
+		                   
+		                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strModelo2"><span th:text="${#messages.msg('phmetroDigital.modelo')}"></span></label>
+							<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+								<input type="text"  class="form-control letraMayuscula" id="strModelo2"
+		                    		maxlength="20"  th:field="*{strModelo}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"
+		                    	 	/>					                    	 	   			                    	 
+		                    </div>	
+		                    
+		                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strNroSerie2"><span th:text="${#messages.msg('phmetroDigital.serie')}"></span></label>
+							<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+								<input type="text"  class="form-control letraMayuscula" id="strNroSerie2"
+		                    		maxlength="20"  th:field="*{strNroSerie}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"
+		                    	 	/>		                    	 	   			                    	 
+		                    </div>	
+		                    
+		                    <div class="form-group col-md-2 col-sm-2 col-xs-2 "></div>		                    			                    
+		 				</div>				 							 							 									
+				 	 	
+				 </div>
+			</fieldset>
+			</form>
+			
+			<fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+				<div id="idTableDetallePHMetro">
+					<div class="container_12">					 
+					 	<button type="button" class="btn btn-info btn-crear-mant-correo" data-toggle="modal" onclick="modificarPhmetroDigitalDetalleEdit(0)"><span class="glyphicon glyphicon-plus"></span><label th:text="${#messages.msg('tipoProceso.agregar')}"></label></button>
+					</div>
+					
+					<div class="container_12">
+						<div th:replace="phmetroDigital/phmetroDigitalDetalleTable :: resultsListDetalle" class="grid_10 height800" id="idPhmetroDigitalDetalleTable"></div>
+					</div>	
+				</div>	
+			</fieldset>		
+			
+			 <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+				<span><br /></span>
+				<div class="form-group col-sm-12">
+					<div class="wrapper text-center">
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-sm"
+								data-dismiss="modal">Aceptar</button>
+						</div>
+					</div>
+				</div>
+			</fieldset>  				       								
+			
+		</div>
+	</div>
+</body>
+</html>

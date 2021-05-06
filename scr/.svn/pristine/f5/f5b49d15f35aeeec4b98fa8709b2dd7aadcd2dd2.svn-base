@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-edit-form314">
+	
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('formulario314.editar.detalle')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('formulario314.editar.detalle')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('formulario314.Crear')}">Crear texto html</span>
+		</div>
+		
+		
+		<div class="modal-footer">
+		
+			<form name="form-edit-form" id="form-edit-formulario314" method="post"
+			      th:action="@{/formularioSave314}" th:object="${formulario314}"
+				  role="form">
+					<input type="hidden" id="codigo" name="codigo" th:value="${formulario314.idformulario314}" />		
+				  	<input type="hidden" id="codigoTipo" name="codigoTipo" th:value="${codigoTipoDocumento}" />
+				  	<input type="hidden" id="tipArchDocumento" name="tipArchDocumento" th:value="${tipArchDocumento}" />
+				  	<input type="hidden" id="tamMaxArchDocumento" name="tamMaxArchDocumento" th:value="${tamMaxArchDocumento}" />
+				  	<input type="hidden" id="page" name="page" th:value="${formulario314.page}" />  											
+				<fieldset class="col-md-12 col-sm-12 col-xs-12">
+				
+					<div class="row">
+						<div class="form-group">
+							<div class="col-md-1 col-sm-1 col-xs-1">
+								<label class="control-label" th:text="${#messages.msg('formulario314.Edit.fecha')}"></label>
+							</div>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<input type="text" id="strFecha"  class="form-control" 
+								       th:field="*{strFecha}"
+									   th:placeholder="${#messages.msg('muestra.seleccion')}"
+									   style="text-align: center;" />
+								
+								<input type="hidden" id="strFechaHidden" th:field="*{strFechaHidden}" />	
+									   							    
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-1 col-sm-1 col-xs-1">
+							    <label class="control-label" th:text="${#messages.msg('formulario314.Home.metodoEnsayo')}"></label>
+							</div>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+							         <select class="form-control" id="cboTipoEnsayo2" name="cboTipoEnsayo2" th:field="*{tipoEnsayo}" style="height: 33px;"></select>
+								     <input type="hidden" id="cboTipoEnsayoHidden" th:value="*{tipoEnsayo}" />
+								      <input type="hidden" id="opcion" th:field="*{opcion}" />  
+							     		<input type="hidden" id="idformulario314" th:field="*{idformulario314}" />	
+							     		<input type="hidden" id="tipoEnsayoHidden" th:field="*{tipoEnsayoHidden}" />	
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-1 col-sm-1 col-xs-1">
+								<label class="control-label" th:text="${#messages.msg('formulario314.Edit.Analista')}"></label>
+							</div>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<select class="form-control" id="cboAnalista" name="cboAnalista" th:field="*{tipoAnalista}" style="height: 33px;"></select>
+									<input type="hidden" id="cboAnalistaHidden" th:value="*{tipoAnalista}" />	
+							</div>
+						</div>
+												
+				    </div>
+				    
+				    <div class="row">
+				    <div><p></p></div>
+				    </div>
+				    
+				    <div class="row">
+				    	<div class="form-group">
+						    <div class="col-md-1 col-sm-1 col-xs-1">
+								<label class="control-label" th:text="${#messages.msg('formulario314.Edit.codigoMuestra')}"></label>
+							</div>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<input type="text"  class="form-control letraMayuscula" id="nfrasco"
+								       maxlength="8"  th:field="*{codMuestra}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>   			                    	 		                    	 	   			                    	               
+							</div>
+						</div>
+						
+				    	<div class="form-group">
+					        <div class="col-md-1 col-sm-1 col-xs-1">
+								<label class="control-label" th:text="${#messages.msg('formulario314.Edit.resultado1')}"></label>
+							</div>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<input type="text"  class="form-control letraMayuscula" id="nfrasco"
+								       maxlength="8"  th:field="*{resultado1}" onkeypress="return MYAPPL.soloNumerosPunto(event)"/>   			                    	 		                    	 	   			                    	               
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-1 col-sm-1 col-xs-1">
+								<label class="control-label" th:text="${#messages.msg('formulario314.Edit.resultado2')}"></label>
+							</div>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<input type="text"  class="form-control letraMayuscula" id="nfrasco"
+								       maxlength="8"  th:field="*{resultado2}" onkeypress="return MYAPPL.soloNumerosPunto(event)"/>   			                    	 		                    	 	   			                    	               
+							</div>
+						</div>
+				    </div>
+				    
+				</fieldset>
+				
+				<fieldset class="col-md-12">
+					<div class="panel panel-info">
+						<div class="panel-body">
+							<div class="row">
+								<div class="form-horizontal">
+									<div id="upload_files_esti_limi">
+											<div th:replace="/COMM/subidaArchivos :: fileUpload"></div>
+										</div>
+								</div>
+							</div>
+						</div>
+					</div>			
+						</fieldset>	
+			    
+			    <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset> 	 
+					<script th:inline="javascript">
+						MYAPPL.LOGIC.ESTI_LIMI.initUpload();
+					</script>
+			</form>
+
+		</div>
+	</div>
+</body>
+</html>

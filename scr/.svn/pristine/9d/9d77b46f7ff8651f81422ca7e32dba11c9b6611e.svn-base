@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-edit-colaborador">
+		<script type="text/javascript" th:inline="javascript">
+			    /*<![CDATA[*/
+			    $(document).ready(function() {
+			    	var colaboradorBean = [[${colaboradorEditBean}]];
+			    	logicaEdicion(colaboradorBean);
+			    });
+			    /*]]>*/
+			</script>
+		
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('colaborador.registrar')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('colaborador.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('colaborador.crear')}">Crear texto html</span>
+		</div>
+		
+		<div class="modal-footer left-align">
+			<form name="form-edit-colaborador" id="form-edit-colaborador" method="post" 
+				  th:action="@{/colaboradorSave}" th:object="${colaboradorEditBean}"
+				  role="form">
+				  
+				   	
+         		<input type="hidden" id="codigo" name="codigo"  th:field="*{codigo}" />
+         		<input type="hidden" id="tipoTrabajador" name="tipoTrabajador"  th:field="*{tipoTrabajador}" />
+         		
+         		<input type="hidden" id="flgCtrlV" name="flgCtrlV" />
+
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="control-label col-md-2 text-right" for="colaboradorNombre"><span th:text="${#messages.msg('colaborador.nombre')}"></span></label>
+						<div class="col-md-4">
+	                    	<input id="colaboradorNombre" type="text" class="form-control" 
+	                    		   maxlength="50" th:field="*{nombreColaborador}" 
+	                    	 	   th:placeholder="${#messages.msg('colaborador.nombre')}"  
+	                    	 	   onkeypress="return MYAPPL.soloLetrasEspacio(event)"
+	                    	 	   style="text-transform: uppercase;" />
+	                    </div>
+					</div>
+					
+					 <div class="col-md-1" >
+	                   	<span id="optBuscarTrabajador" class="input-group-btn">
+					       	<button class="btn btn-sm btn-default" type="button" data-toggle="modal" data-target="#modal-busca-trabajador" onclick="openModalTrabajador();"><span class="glyphicon glyphicon-search"></span></button>
+					   	</span>
+					   	<span id="optActualizarInterno" class="input-group-btn">
+					       	<button class="btn btn-sm btn-default" type="button" onclick="actualizarInfoInterno();"><span class="glyphicon glyphicon-refresh"></span></button>
+					   	</span>
+	                 </div>
+					
+					<div class="form-group">
+	                    <label  class="control-label col-md-2 text-right" for="colaboradorDni"><span th:text="${#messages.msg('colaborador.dni')}"></span></label>
+						<div class="col-md-3">
+	                    	<input id="colaboradorDni" type="text" class="form-control"
+	                    		   maxlength="8"  th:field="*{dni}" 	onKeypress="return MYAPPL.soloNumeros(event);" 
+	                    	 	   th:placeholder="${#messages.msg('colaborador.dni')}" />
+	                    </div>
+					</div>
+ 				</div>
+ 				
+ 				<div class="col-md-12">
+ 				
+ 					<div class="form-group">
+						<label class="control-label col-md-2 text-right" for="colaboradorNombreEmpresa">
+							<span th:text="${#messages.msg('colaborador.nombre.empresa')}"></span>
+						</label>
+						<div class="col-md-4">
+	                    	<input id="colaboradorEmpresa" type="text" class="form-control" 
+	                    		   maxlength="80"  th:field="*{nombreEmpresa}" 
+	                    	 	   th:placeholder="${#messages.msg('colaborador.nombre.empresa')}" 
+	                    	 	   onkeypress="return MYAPPL.soloLetrasNumerosEspacio(event)"
+	                    	 	   style="text-transform: uppercase;" />
+	                    </div>
+	                </div>
+	                
+	                 <div class="col-md-1">
+	                </div>
+	                
+	                <div class="form-group">
+						<label class="control-label col-md-2 text-right" for="colaboradorAbreviatura"><span th:text="${#messages.msg('colaborador.abreviatura')}"></span></label>
+						<div class="col-md-3">
+	                    	<input id="colaboradorAbreviatura" type="text"  class="form-control" 
+	                    		maxlength="30"  th:field="*{abreviatura}" 
+	                    		onkeypress="return MYAPPL.soloNumerosLetras(event)"
+	                    	 	th:placeholder="${#messages.msg('colaborador.abreviatura')}"
+	                    	 	style="text-transform: uppercase;" />
+	                    </div>
+	                </div>
+	   
+ 				</div>
+ 				
+ 				<div class="col-md-12">
+ 					<div id="idEstado" class="form-group">
+	                     <label class="control-label col-md-2 text-right"><span th:text="${#messages.msg('colaborador.estado')}"></span></label>
+	                    <div class="col-md-4">
+	                    	<select class="form-control" th:field="*{estado}" >
+								<option value="1">ACTIVO</option>
+								<option value="2">INACTIVO</option>
+							</select>
+	                    </div>
+					</div>
+ 				</div>
+ 				
+				<div class="clearfix"></div>
+				<div class="ln_solid"></div>
+				<div class="form-group col-md-12 col-sm-12 col-xs-12 espaciado-superior">
+					<div class="wrapper text-center">
+						<div class="btn-group">
+							<button type="submit" class="btn btn-primary btn-md" id="guardarButton">
+								<div  th:text="${#messages.msg('colaborador.guardar')}"></div>
+								
+							</button>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-md" data-dismiss="modal">
+								<div  th:text="${#messages.msg('colaborador.cancelar')}"></div>
+							</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+		
+</body>
+</html>

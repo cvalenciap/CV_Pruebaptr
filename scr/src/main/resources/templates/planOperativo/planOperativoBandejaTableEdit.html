@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="grid_10 height800" id="id-modal-content"  style="width:100%; height :100%;padding-top:35px" th:fragment="form-edit-tablaPoisson">
+	 <div class="modal-content" id="id-modal-content">
+	   <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title pull-left" id="idModalTitle" th:text="${#messages.msg('plan.operativo.msg.plan.operativo.crear')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('plan.operativo.msg.plan.operativo.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('plan.operativo.msg.plan.operativo.crear')}">Crear texto html</span>
+		</div>
+		
+		<div class="modal-footer">
+			<form name="form-edit-tablaPoisson" id="form-edit-plan-operativo" method="post" 
+				  th:action="@{/planOperativoSave}" th:object="${planOperativoEditBean}"
+				  role="form">
+					 <div class="center modal-upper"> 
+							<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:40px">
+			                    	<label class="control-label col-md-2 col-sm-2 col-xs-2 " for="strValorPoisson"><span th:text="${#messages.msg('plan.operativo.label.anio')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+				                    	<input id="periodoPlan" type="text" class="form-control fondo-blanco" 
+				                    		   maxlength="200"  th:field="*{periodo}" 
+				                    	 	   th:placeholder="${#messages.msg('plan.operativo.label.anio')}" readonly="readonly"/>
+				                    </div>
+			                    	
+				                    <label class="control-label col-md-2 col-sm-2 col-xs-2" for="strCodIgx"><span th:text="${#messages.msg('plan.operativo.msg.codigo')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3">
+				                    	<input id="strCodIgx" type="text" class="form-control"  onKeyUp="pierdeFoco(this)" 
+				                    		   maxlength="20"  th:field="*{codigoDescripcionPlan}"
+				                    	 	   th:placeholder="${#messages.msg('plan.operativo.msg.codigo')}"/>
+				                    </div>	
+			                    
+				                   
+			 				</div>
+			 				
+			 				<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:30px">
+			 					 <label class="control-label col-md-2 col-sm-2 col-xs-2" for="strValorPoisson"><span th:text="${#messages.msg('plan.operativo.msg.descripcion')}"></span></label>
+									<div class="form-group  col-md-3 col-sm-3 col-xs-3 ">
+				                    	<input id="strValorPoisson" type="text" class="form-control" 
+				                    		   maxlength="200"  th:field="*{descripcion}" 
+				                    	 	   th:placeholder="${#messages.msg('plan.operativo.msg.descripcion')}"/>
+				                    </div>
+			                    
+				                    <label class=" control-label col-md-2 col-sm-2 col-xs-2" th:text="${#messages.msg('actividad.area.label')}"></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3">
+										<input type="hidden" th:field="*{codare}"  th:if="${(codigoArea == 1 || codigoArea == 2)}" class="form-control"/>
+										<input type="text" id="inputArea" class="form-control" th:value="${descripcionArea}" 
+										  th:if="${(codigoArea == 1 || codigoArea == 2)}" th:attr="data-codigoArea=${codigoArea}" disabled="disabled"/>
+										<select th:field="*{codare}" class="form-control"  id="cboAreas"
+										  th:if="${!(codigoArea == 1 || codigoArea == 2)}" name="cboAreas" style="height: 33px;" ></select>
+									</div>
+			 				</div>
+			 				
+					 </div> 	
+					 
+					 <input type="hidden"   th:field="*{codigoPlan}" />
+					 
+					 <fieldset class="col-md-12 col-sm-12 col-xs-12 " style="padding-top:60px;align-bottom:30px; " th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+					<br/><br/><br/><br/><br/><br/>	          				
+			</form>
+			
+			<script>
+			
+			
+			
+			</script>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

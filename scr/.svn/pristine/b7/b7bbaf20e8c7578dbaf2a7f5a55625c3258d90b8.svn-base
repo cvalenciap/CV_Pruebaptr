@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-edit-analisisBacteriologico">
+				
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('analisisBacteriologico.registrar')}">Editar</span> 
+			</h4>
+			
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('analisisBacteriologico.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('analisisBacteriologico.crear')}">Crear texto html</span>
+		</div>
+				
+		<div class="modal-footer  modal-body ">
+		
+			<form name="form-edit-analisisBacteriologico" id="form-edit-analisisBacteriologico-id" method="post" 
+				  th:action="@{/analisisBacteriologicoSave}" th:object="${analisisBacteriologicoEditBean}"
+				  role="form">
+				  	<input type="hidden" id="codigo" name="codigo" th:value="${analisisBacteriologicoEditBean.intId}" />		
+				  	<input type="hidden" id="codigoTipo" name="codigoTipo" th:value="${codigoTipoDocumento}" />
+				  	<input type="hidden" id="tipArchDocumento" name="tipArchDocumento" th:value="${tipArchDocumento}" />
+				  	<input type="hidden" id="tamMaxArchDocumento" name="tamMaxArchDocumento" th:value="${tamMaxArchDocumento}" />
+				  	<input type="hidden" id="page" name="page" th:value="${analisisBacteriologicoEditBean.page}" />
+				  	<fieldset class="col-md-12">
+						<legend></legend>								
+						 <div class="center"> 
+						 		
+				                	
+								<div class="col-md-12 col-sm-12 col-xs-12">
+									<div class="">											                    
+					                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strFechaMuestreo"><span th:text="${#messages.msg('analisisBacteriologico.fechaMuestreo')}"></span></label>
+										<div class="col-md-3 col-sm-3 col-xs-3  form-group">
+											<input type="text"  class="form-control letraMayuscula fondo-blanco" id="strFechaMuestreo" 
+												readonly="readonly" 	maxlength="20"  th:field="*{strFechaMuestreo}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>	
+					                    	<input type="hidden" id="strFechaMuestreoHide" th:field="*{strFechaMuestreoHide}" />							                    		           	 	   			                    	 
+					                    </div>	
+				                    </div>
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strHoraMuestreo"><span th:text="${#messages.msg('analisisBacteriologico.horaMuestreo')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+														                    	 	
+			                    	    <input type="text" id="strHoraMuestreo" name="strHoraMuestreo" th:field="*{strHoraMuestreo}" class="form-control letraMayuscula"
+									          title="Ingrese la hora de inicio" style="text-align: center;" maxlength="5" />
+									           
+								        	                    	 
+				                    </div>	
+				                    
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strTurno"><span th:text="${#messages.msg('analisisBacteriologico.turno')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+										<input type="text"  class="form-control letraMayuscula" id="strTurno"
+				                    		maxlength="1"  th:field="*{strTurno}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"
+				                    	 	/>		                    	 	   			                    	 
+				                    </div>			                    			                    
+				 				</div>	
+				 				<div class="col-md-12 col-sm-12 col-xs-12">											                    
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strFechaRecepcionMuestra"><span th:text="${#messages.msg('analisisBacteriologico.fechaRecepcion')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+										<input type="text"  class="form-control letraMayuscula" id="strFechaRecepcionMuestra"
+				                    		maxlength="20"  th:field="*{strFechaRecepcionMuestra}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>		
+				                    		
+				                    		<input type="hidden" id="intId" th:field="*{intId}" />		
+				                    			                    	 	   			                    	 
+				                    </div>	
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strHoraRecepcionMuestra"><span th:text="${#messages.msg('analisisBacteriologico.horaRecepcion')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+										<input type="text"  class="form-control letraMayuscula" id="strHoraRecepcionMuestra"
+				                    		maxlength="20"  th:field="*{strHoraRecepcionMuestra}" style="text-align: center;" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"
+				                    	 	/>			
+				                    	 	
+			                    	 	   			                    	 
+				                    </div>	
+				                    
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strMuestreador"><span th:text="${#messages.msg('analisisBacteriologico.muestreadoPor')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+				                    	 <select class="form-control" id="strMuestreador" name="strMuestreador" th:field="*{strMuestreador}" style="height: 33px;"></select>	                    	 	   			                    	 
+				                   		 <input type="hidden" id="strMuestreadorHide" th:field="*{strMuestreadorHide}" /> 
+				                    </div>			                    			                    
+				 				</div>					
+				 				<div class=" col-md-12 col-sm-12 col-xs-12">											                    
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strFechaInicioEnsayo"><span th:text="${#messages.msg('analisisBacteriologico.fechaEnsayo')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+										<input type="text"  class="form-control letraMayuscula" id="strFechaInicioEnsayo"
+				                    		maxlength="20"  th:field="*{strFechaInicioEnsayo}" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"/>		
+				                    		
+				                    		<input type="hidden" id="intId" th:field="*{intId}" />		
+				                    			                    	 	   			                    	 
+				                    </div>	
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strHoraInicioEnsayo"><span th:text="${#messages.msg('analisisBacteriologico.horaEnsayo')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+										<input type="text"  class="form-control letraMayuscula" id="strHoraInicioEnsayo"
+				                    		maxlength="20"  th:field="*{strHoraInicioEnsayo}" style="text-align: center;" onkeypress="return MYAPPL.soloNumerosLetrasGuiones(event)"
+				                    	 	/>			
+				                    	 	
+			                    	 	   			                    	 
+				                    </div>	
+				                    
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strAnalista"><span th:text="${#messages.msg('analisisBacteriologico.analista')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+										<select class="form-control" id="strAnalista" name="strAnalista" th:field="*{strAnalista}" style="height: 33px;"></select>
+	                    	 	   		<input type="hidden" id="strAnalistaHide" th:field="*{strAnalistaHide}" />  	                    	 
+				                    </div>			                    			                    
+				 				</div>	
+				 				<div class="col-md-12 col-sm-12 col-xs-12">	
+					 				<label class="control-label col-md-1 col-sm-1 col-xs-1 text-left" for="strObservacion"><span th:text="${#messages.msg('analisisBacteriologico.observacion')}"></span></label>
+					 				<div class="form-group col-md-11 col-sm-11 col-xs-11 ">										
+										<textarea class="form-control" th:field="*{strObservacion}" maxlength="200" rows="2" id="strObservacion"></textarea>																		
+									</div>	
+								</div>		
+								
+								<div class="col-md-12 col-sm-12 col-xs-12">		
+						 		
+				                   	<label class="control-label col-md-3 col-sm-3 col-xs-3 text-left" for="bolCumplimientoLBD"><span th:text="${#messages.msg('analisisBacteriologico.cumplimientoLBD')}"></span></label>				                    
+				                   	<div class="form-group col-md-1 col-sm-1 col-xs-1 label-name">
+										<input type="checkbox" class="my_checkbox" th:field="*{bolCumplimientoLBD}" value=""/> 	
+										<input type="hidden" id="intCumplimientoLBDHide" th:field="*{intCumplimientoLBDHide}" />	
+										<input type="hidden" th:field="*{intIdHide}" />			                    	 		                    	 	   			                    	 
+				                    </div>
+				                    
+				                    <label class="control-label col-md-3 col-sm-3 col-xs-3 text-left" for="bolMantConexiones"><span th:text="${#messages.msg('analisisBacteriologico.mantenimientoConexiones')}"></span></label>
+				                    <div class="form-group  col-md-1 col-sm-1 col-xs-1 label-name">
+										<input type="checkbox" class="my_checkbox" th:field="*{bolMantConexiones}" value=""/>	
+										<input type="hidden" id="intMantConexionesHide" th:field="*{intMantConexionesHide}" />			                    	 		                    	 	   			                    	 
+				                    </div>	
+				                    
+				                    <label class="control-label col-md-1 col-sm-1 col-xs-1 text-left"  for="intId"><span style="display:none;" th:text="${#messages.msg('analisisBacteriologico.numeroCorrelativo')}"></span></label>
+									<div class="form-group col-md-3 col-sm-3 col-xs-3 ">
+										<input type="hidden"  class="form-control letraMayuscula" id="intId" maxlength="20"  th:field="*{intId}"/>						                    			                   	 	   			                    	 
+				                    </div>	
+				                    
+				                </div>		 					 							 							 									
+						 	 	
+						 </div>
+					</fieldset>	
+					<fieldset class="col-md-12 espaciado-superior">
+					<div class="panel panel-info">
+						<div class="panel-body">
+							<div class="row">
+								<div class="form-horizontal">
+									<div id="upload_files_analisis">
+											<div th:replace="/COMM/subidaArchivos :: fileUpload"></div>
+										</div>
+								</div>
+							</div>
+						</div>
+					</div>			
+						</fieldset>			 
+					<fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm" 
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								
+								
+								
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset>  					
+					       				
+			</form>	
+			
+			<div id="idDetalleAnalisisBactereologico">
+				<fieldset class="col-md-12 col-sm-12 col-xs-12 espaciado-superior" th:fragment="buttons">
+					<div id="idTableMuestraFirst">							
+						<div class="container_12">
+							<div th:replace="analisisBacteriologico/analisisMuestraFirstTable :: resultsListFirst" class="grid_10 height800" id="idMuestraFirstTable"></div>
+						</div>	
+					</div>	
+				</fieldset>
+				
+				
+								
+				<fieldset class="espaciado-superior5 col-md-12 col-sm-12 col-xs-12" th:fragment="buttons" style="align: left;">
+					<div class="btn-group">
+						<button class="btn btn-info btn-modif-punto" id="idBtnFirst" title="Calcular Primera muestra" onclick="calcularMuestraFirst()">Calcular</button>
+						
+					</div>
+					<div class="espaciado-superior5" id="idTableMuestraResultFirst">							
+						<div class="container_12">
+							<div th:replace="analisisBacteriologico/analisisMuestraResultFirstTable :: resultsListResultFirst" class="grid_10 height800" id="idMuestraResultFirstTable"></div>
+						</div>	
+					</div>	
+				</fieldset>
+				
+				<fieldset class="espaciado-superior5 col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+					<div id="idTableMuestraSecond">							
+						<div class="container_12">
+							<div th:replace="analisisBacteriologico/analisisMuestraSecondTable :: resultsListSecond"  id="idMuestraSecondTable"></div>
+						</div>	
+					</div>	
+				</fieldset>
+				
+								
+				<fieldset class="espaciado-superior5 col-md-12 col-sm-12 col-xs-12" th:fragment="buttons" style="align: left;">
+					<div class="btn-group">
+						<button class="btn btn-info btn-modif-punto" id="idBtnSecond" title="Calcular Segunda muestra" onclick="calcularMuestraSecond()">Calcular</button>
+						
+					</div>
+					<div class="espaciado-superior5" id="idTableMuestraResultSecond">							
+						<div class="container_12 espaciado-inferior2">
+							<div th:replace="analisisBacteriologico/analisisMuestraResultSecondTable :: resultsListResultSecond" class="grid_10 height800" id="idMuestraResultSecondTable"></div>
+						</div>	
+					</div>	
+				</fieldset>
+				
+				<fieldset class="espaciado-superior"></fieldset>
+				
+				<script th:inline="javascript">
+				
+				$(document).ready(function() {
+					
+// 					var d = new Date();
+// 					var id;
+					
+// 					/*<![CDATA[*/
+// 					d = /*[[${analisisBacteriologicoEditBean.strFechaMuestreo}]]*/; 
+// 					id = /*[[${analisisBacteriologicoEditBean.intId}]]*/; 
+// 					/*]]>*/
+									
+// 					if(id != 0){
+						
+// 						$('#strFechaMuestreo').datetimepicker({
+// 							format : 'DD/MM/YYYY',
+// 							locale : 'es',
+// 							maxDate : new Date(),
+// 							ignoreReadonly: true,
+// 							date: d
+// 						});					
+							
+// 					}else{
+											
+// 						$('#strFechaMuestreo').datetimepicker({
+// 							format : 'DD/MM/YYYY',
+// 							locale : 'es',
+// 							ignoreReadonly: true,
+// 							maxDate : new Date(),
+// 							date : new Date()
+// 						});	
+						
+// 					}
+
+				
+				
+				
+ 					MYAPPL.LOGIC.ANALISIS.initUpload();
+					
+// 					revalidateField = function($field){
+// 						let $id = "#" + $field;
+// 						$('#form-edit-analisisBacteriologico').bootstrapValidator('revalidateField', $($id));
+// 					};
+					
+// 					$("#strFechaMuestreo").on('dp.change dp.show dp.hide', function(e){
+// 						revalidateField('strFechaMuestreo');
+// 					});	
+					
+// 					$("#strFechaMuestreo").on('change', function(e){
+// 						revalidateField('strFechaMuestreo');
+// 					});		
+				});	
+				</script>
+			</div>	
+			
+			
+
+						
+			
+		</div>
+	</div>
+</body>
+</html>

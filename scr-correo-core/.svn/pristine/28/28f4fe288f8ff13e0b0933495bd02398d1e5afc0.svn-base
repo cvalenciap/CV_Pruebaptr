@@ -1,0 +1,7 @@
+pe\com\sedapal\scr\correo\core\util\ArchivoUtil.class
+pe\com\sedapal\scr\correo\core\common\Messages.class
+pe\com\sedapal\scr\correo\core\helper\CaudalDetalleHelper.class
+pe\com\sedapal\scr\correo\core\util\ExpRegUtil.class
+pe\com\sedapal\scr\correo\core\util\MensajeUtil.class
+pe\com\sedapal\scr\correo\core\common\Constants.class
+pe\com\sedapal\scr\correo\core\util\FechaUtil.class

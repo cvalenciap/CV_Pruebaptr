@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+/**
+* Funcion para añadir una nueva columna en la tabla
+*/
+$("#add").click(function(){
+// Obtenemos el numero de filas (td) que tiene la primera columna
+// (tr) del id "tabla"
+var tds=$("#tabla tr:first td").length;
+// Obtenemos el total de columnas (tr) del id "tabla"
+var trs=$("#tabla tr").length;
+var nuevaFila="<tr>";
+for(var i=0;i<tds;i++){
+// añadimos las columnas
+nuevaFila+="<td><input name='pr_co.i' type='text' id='pr_co.i' value='$_POST['pr_co'.i])' size='1' /></td>";
+}
+// Añadimos una columna con el numero total de columnas.
+// Añadimos uno al total, ya que cuando cargamos los valores para la
+// columna, todavia no esta añadida
+// nuevaFila+="<td>"+(trs+1)+" columnas";
+nuevaFila+="</tr>";
+$("#tabla").append(nuevaFila);
+});
+
+/**
+* Funcion para eliminar la ultima columna de la tabla.
+* Si unicamente queda una columna, esta no sera eliminada
+*/
+$("#del").click(function(){
+// Obtenemos el total de columnas (tr) del id "tabla"
+var trs=$("#tabla tr").length;
+if(trs>1)
+{
+// Eliminamos la ultima columna
+$("#tabla tr:last").remove();
+}
+});
+});
+</script>
+
+<style>
+#add, #del {cursor:pointer;text-decoration:underline;color:#00f;}
+</style>
+</head>
+
+<body>
+<input name="add" type="submit" id="add" value="Consultar" />
+<div id="del">pulsa aquí para eliminar la ultima fila desde jquery</div>
+<p>
+<table id="tabla" border=1>
+<tr>
+<td>primera columma</td>
+</tr>
+</table>
+</p>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<div th:fragment="resultsListFirst" class="grid_10 height800" id="idFirstTable">
+		
+		<table  class="fancyTable" id="myTableMuestraFirst" cellpadding="0" cellspacing="0" style="width: 100% important">
+			<thead>
+				
+				<tr>		
+					<th th:text="${#messages.msg('muestraForm21.table.col0')}" ></th>			
+					<th th:text="${#messages.msg('muestraForm21.table.col1')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col2')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col3')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col4')}" ></th>	
+					<th th:text="${#messages.msg('muestraForm21.table.col5')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col6')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col7')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col8')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col9')}" ></th>	
+					<th th:text="${#messages.msg('muestraForm21.table.col10')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col11')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col12')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col13')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col14')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col15')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col16')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col17')}" ></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col17')}" style="width: 0px;" class="hidden-xs"></th>
+					<th th:text="${#messages.msg('muestraForm21.table.col18')}" ></th>
+							
+				</tr>
+			</thead>
+		</table>
+		
+		<script type="text/javascript">
+			$( document ).ready(function() {
+				$('#myTableMuestraFirst').DataTable({
+					"bProcessing": true,
+					"serverSide": false,
+					"searching": false,
+					"lengthChange":   false,
+					"bPaginate": false,
+					"bInfo": false,
+					
+          			
+					"ajax":{
+						url :"tableFirst/pagination", // json datasource
+			            type: "post",  // type of method  ,GET/POST/DELETE
+			            error: function(){
+			              $("#myTableMuestraFirst_processing").css("display","none");
+			            },
+			            "data": function ( d ) {
+			            	
+			            	d.idCabecera = $('#intIdHide').val();
+			            }
+					},
+					"order": [ 18, 'asc' ],
+					"columnDefs": [ 
+						///{ targets: '_all', visible: true,  },		
+			            {	
+		        			className: "dt-body-left dt-body-width-300",
+		                	"targets": 1                
+		            	},
+		            	{
+		            		visible : false,
+		            		"width": "0px",		            	
+		                	"targets": [18]                
+		            	},
+		            	{
+		              		className: "dt-body-center dt-body-width-95",
+		              		"orderable": false,
+		              		"targets": 19,
+		              		visible: true,
+		              		"data": 1,
+		              		"render": function ( data, type, row) {
+		              			return row[1] != 'DUPLICADO'? '<button class="btn btn-success" title="Calcular" onclick="calcularValores('+row[18]+')"><span class="glyphicon glyphicon-pencil"></span></button>':"";
+		              		}
+		              	},
+			            {
+			        		className: "dt-body-center alto_imput dt-body-width-200",
+			                "targets": [2,3,4,5,6,7,8,9,10,11,12,15]                
+			            },			
+			            {
+			        		className: "dt-body-center alto_imput dt-body-width-250",
+			                "targets": [13,14,16,17]                
+			            },	
+		              	{
+		              		className: "dt-body-center dt-body-width-80",
+		              		"orderable": false,
+		              		"targets": 0,
+		              		visible: true,
+		              		"data": 1,
+		              		"render": function ( data, type, row) {
+		              			return row[1] != 'DUPLICADO'? '<button class="btn btn-info btn-modif-punto" title="Editar Equipo" onclick="modificarTableFirst('+row[18]+')"><span class="glyphicon glyphicon-pencil"></span></button>':"";
+		              		}
+		              	}
+					]
+				});
+			}); 
+			
+			
+		</script>	
+	</div>
+</body>
+</html>

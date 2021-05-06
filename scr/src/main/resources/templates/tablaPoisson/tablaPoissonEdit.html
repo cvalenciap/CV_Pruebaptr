@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+<body>
+	<!-- Modal content-->
+	<div class="modal-content" id="id-modal-content" th:fragment="form-edit-tablaPoisson">
+	
+	<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">
+				<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('tablaPoisson.registrar')}">Editar</span> 
+			</h4>
+			<!-- Texto html escondido -->
+			<span id="idValEditModalTitle"  style="display:none;" th:text="${#messages.msg('tablaPoisson.editar')}">Editar texto html</span>
+        	<span id="idValCrearModalTitle" style="display:none;" th:text="${#messages.msg('tablaPoisson.crear')}">Crear texto html</span>
+		</div>
+		
+		<div class="modal-footer">
+			<form name="form-edit-tablaPoisson" id="form-edit-tablaPoisson-id" method="post" 
+				  th:action="@{/tablaPoissonSave}" th:object="${tablaPoissonEditBean}"
+				  role="form">
+				  											
+					 <div class="center"> 
+							<div class="col-md-12 col-sm-12 col-xs-12">
+								
+								<div class="form-group">			                    
+				                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-center" for="intCodLambda"><span th:text="${#messages.msg('tablaPoisson.lambda')}"></span></label>
+									<div class="col-md-2 col-sm-2 col-xs-2 ">
+				                    	<input id="intCodLambda" type="text" class="form-control"
+				                    		   maxlength="20"  th:field="*{intCodLambda}" onkeypress="return MYAPPL.soloNumeros(event)"
+				                    	 	   th:placeholder="${#messages.msg('tablaPoisson.lambda')}"/>				                    	 	   			                    	 
+				                    </div>	
+				                </div>
+			                    
+			                    <div class="form-group">
+				                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-center" for="strCodIgx"><span th:text="${#messages.msg('tablaPoisson.x')}"></span></label>
+									<div class="col-md-2 col-sm-2 col-xs-2">
+				                    	<input id="strCodIgx" type="text" class="form-control" 
+				                    		   maxlength="20"  th:field="*{strCodIgx}" onkeypress="return MYAPPL.soloNumeros(event)"
+				                    	 	   th:placeholder="${#messages.msg('tablaPoisson.x')}"/>				                    	
+				                    </div>	
+				                </div>
+			                    
+			                    <div class="form-group">
+				                    <label class="control-label col-md-2 col-sm-2 col-xs-2 text-center" for="strValorPoisson"><span th:text="${#messages.msg('tablaPoisson.valor')}"></span></label>
+									<div class="col-md-2 col-sm-2 col-xs-2 ">
+				                    	<input id="strValorPoisson" type="text" class="form-control" 
+				                    		   maxlength="20"  th:field="*{strValorPoisson}" 
+				                    	 	   th:placeholder="${#messages.msg('tablaPoisson.valor')}"/>
+				                    </div>
+				                </div>
+			 				</div>
+			 							 									
+					 </div> 	
+					 
+					 <input type="hidden" id="intCodLambdaHide" name="intCodLambdaHide"  th:field="*{intCodLambdaHide}" />
+					 <input type="hidden" id="strCodIgxHide" name="strCodIgxHide"  th:field="*{strCodIgxHide}" />
+					 <input type="hidden" id="intCodPoisson" name="intCodPoisson"  th:field="*{intCodPoisson}" />
+					 
+					 <fieldset class="col-md-12 col-sm-12 col-xs-12" th:fragment="buttons">
+						<span><br /></span>
+						<div class="form-group col-sm-12">
+							<div class="wrapper text-center">
+								<div class="btn-group">
+									<button type="submit" class="btn btn-primary btn-sm"
+										id="guardarButton" th:value="actualizar">Guardar</button>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-sm"
+										data-dismiss="modal">Cancelar</button>
+								</div>
+							</div>
+						</div>
+					</fieldset>  	          				
+			</form>
+		</div>
+	</div>
+</body>
+</html>

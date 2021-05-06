@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+</head>
+	<body>		
+		<div class="modal-content" id="id-modal-content" th:fragment="form-search-trabajador">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">
+					<span class="modal-title" id="idModalTitle" th:text="${#messages.msg('trabajador.search.title')}">Buscar</span> 
+				</h4>
+			</div>
+		    <div class="modal-footer">
+		    	<form name="form-search-tp" id="form-search-tp" action="#"
+				 method="post" class="form-horizontal" role="form">		    	
+					<div class="form-group col-md-12 col-sm-12 col-xs-12">
+						<label class="control-label col-md-2 col-sm-2 col-xs-3 text-right"><span th:text="${#messages.msg('trabajador.search.ficha')}"></span></label>
+						<div class="form-group form-group-sm col-md-3 col-sm-3 col-xs-3 no-padding-right">
+	                    	<input type="text" class="form-control input-sm" 
+	                    		   maxlength="5" id="numFicha" name="numFicha"
+	                    	 	   th:placeholder="${#messages.msg('trabajador.search.ficha')}"  
+	                    	 	   onkeypress="return MYAPPL.soloNumeros(event)" 
+	                    	 	   style="text-transform: uppercase;"/>
+                    	</div>                    	
+                    	<label class="control-label col-md-2 col-sm-2 col-xs-3 text-right"><span th:text="${#messages.msg('trabajador.search.nombres')}"></span></label>
+						<div class="form-group form-group-sm col-md-3 col-sm-3 col-xs-3 no-padding-right">
+	                    	<input type="text" class="form-control input-sm" 
+	                    		   maxlength="50" id="nombreCompleto" name="nombreCompleto"
+	                    	 	   th:placeholder="${#messages.msg('trabajador.search.nombres')}"  
+	                    	 	   onkeypress="return MYAPPL.soloLetras(event)" 
+	                    	 	   style="text-transform: uppercase;" />
+                    	</div>
+					</div>
+					<div class="form-group col-md-12 col-sm-12 col-xs-12">
+						<div class="btn-group">
+							<button type="button" id="idBtnFormBuscarTrabajador" class="btn btn-primary">
+								<span class="glyphicon glyphicon-search"></span>
+								<label th:text="${#messages.msg('trabajador.search')}"></label>
+							</button>														
+						</div>
+					</div>										
+				</form>
+				
+				<div class="panel espaciado-superior">
+					<div class="container_12 espaciado-superior">
+						<div th:replace="trabajadorTable :: resultsList" id="idTrabajadorTable"></div>
+					</div>			
+				</div>
+				
+		    </div>
+		</div>
+	</body>
+</html>
